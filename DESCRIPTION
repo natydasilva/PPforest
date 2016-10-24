@@ -11,6 +11,7 @@ Depends:
     R (>= 3.2.0)
 Imports:
       Rcpp (>= 0.12.7),
+      RcppArmadillo,
     ggplot2,
     magrittr,
      plyr,
@@ -33,5 +34,5 @@ Suggests:
     roxygen2 (>= 3.0.0),
     rmarkdown
 VignetteBuilder: knitr
-LinkingTo: Rcpp
+LinkingTo: Rcpp,RcppArmadillo
 RoxygenNote: 5.0.1.9000

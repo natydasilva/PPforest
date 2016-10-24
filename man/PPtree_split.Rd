@@ -8,7 +8,7 @@ PPtree_split(form, data, PPmethod='LDA', weight=TRUE,
 size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
 }
 \arguments{
-\item{form}{a formula describing the model to be fitted, with the form \code{response~predictors}}
+\item{form}{A character with the name of the class variable.}
 
 \item{data}{Data frame with the complete data set.}
 
@@ -41,7 +41,7 @@ Find tree structure using various projection pursuit indices of classification i
 }
 \examples{
 #leukemia data set
-Tree.leukemia <- PPtree_split('Type~.', data = leukemia, 
+Tree.leukemia <- PPtree_split("Type~.", data = leukemia, 
  PPmethod = "PDA", size.p = 0.9)
 Tree.leukemia
 #crab data set

@@ -3,7 +3,7 @@
 #' Find tree structure using various projection pursuit indices of classification in each split.
 #' @usage PPtree_split(form, data, PPmethod='LDA', weight=TRUE, 
 #' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
-#' @param form a formula describing the model to be fitted, with the form \code{response~predictors}
+#' @param form A character with the name of the class variable.
 #' @param data Data frame with the complete data set.
 #' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'
 #' @param weight  flag in LDA, PDA and Lr index
@@ -22,11 +22,13 @@
 #' @references Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 
 #' PPtree: Projection pursuit classification tree, 
 #' Electronic Journal of Statistics, 7:1369-1386.
+#' @useDynLib PPforest2
+#' @importFrom Rcpp evalCpp
 #' @export
 #' @keywords tree
 #' @examples
 #' #leukemia data set
-#' Tree.leukemia <- PPtree_split('Type~.', data = leukemia, 
+#' Tree.leukemia <- PPtree_split("Type~.", data = leukemia, 
 #'  PPmethod = "PDA", size.p = 0.9)
 #' Tree.leukemia
 #' #crab data set
@@ -34,12 +36,17 @@
 #'  PPmethod = "LDA", size.p = 0.9)
 #' Tree.crab
 PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
-    maxiter = 50000, ...) {
+                            maxiter = 50000, ...) {
+  # function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
+  #   maxiter = 50000, ...) {
     TOL <- NULL
-    formula <- stats::as.formula(form)
-    mf <- stats::model.frame(formula, data = data)
-    origclass <- stats::model.response(mf)
+     formula <- stats::as.formula(form)
+     mf <- stats::model.frame(formula, data = data)
+     origclass <- stats::model.response(mf)
+    
+    #origclass <- factor( ( data %>% dplyr::select_(class) )[,1])
     cls <- all.vars(formula)[[1]]
+    #cls <- class
     origdata <- data[,-which(colnames(data)%in%cls)]
     origdata <- as.matrix(origdata)
     
@@ -56,7 +63,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
             origdata <- origdata[, -remove]
         }
         
-        v.rnd <- var_select(origdata, size.p)
+        v.rnd <- varselect(1:ncol(origdata), round(size.p*ncol(origdata)), replace =FALSE)
         vari <- dim(i.data.ori)[2]
         origdata <- origdata[, v.rnd]
         

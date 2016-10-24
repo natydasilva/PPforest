@@ -46,10 +46,10 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
     var.sel <- floor((ncol(train)-1) * size.p)
     
     if (strata == TRUE) {
-        data.b <- ppf_bootstrap(data = train, class, m, strata)  
+        data.b <- ppfboot(data = train, class, m, strata)  
         output <- data.b %>% trees_pp(size.p, PPmethod, lambda = 0.1)
     } else {
-        data.b <- ppf_bootstrap(data = train, class, m, strata = FALSE)
+        data.b <- ppfboot(data = train, class, m, strata = FALSE)
         output <- data.b %>% trees_pp( size.p, PPmethod, lambda = 0.1)
     }
     
