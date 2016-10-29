@@ -9,6 +9,18 @@ imposoon <- function(train, classes, oobid, permute, trees, noob, TRstrL, TRsplL
     .Call('PPforest2_imposoon', PACKAGE = 'PPforest2', train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL)
 }
 
+LDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE) {
+    .Call('PPforest2_LDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
+}
+
+tableC <- function(x) {
+    .Call('PPforest2_tableC', PACKAGE = 'PPforest2', x)
+}
+
+LDAopt <- function(origclass, origdata, q = 1L, PPmethod = "LDA", weight = TRUE) {
+    .Call('PPforest2_LDAopt', PACKAGE = 'PPforest2', origclass, origdata, q, PPmethod, weight)
+}
+
 varselect <- function(ids, sampS, replace, prob = as.numeric( c())) {
     .Call('PPforest2_varselect', PACKAGE = 'PPforest2', ids, sampS, replace, prob)
 }

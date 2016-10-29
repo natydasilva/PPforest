@@ -5,26 +5,22 @@
 \title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
 PPtree_split(form, data, PPmethod='LDA', weight=TRUE, 
-size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...)
+size.p=0.9, r=1, lambda=0.1,...)
 }
 \arguments{
 \item{form}{A character with the name of the class variable.}
 
 \item{data}{Data frame with the complete data set.}
 
-\item{PPmethod}{index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'}
+\item{PPmethod}{index to use for projection pursuit: 'LDA', 'PDA'}
 
-\item{weight}{flag in LDA, PDA and Lr index}
+\item{weight}{flag in LDA and PDA}
 
 \item{size.p}{proportion of variables randomly sampled in each split.}
 
 \item{r}{is a positive integer value, it is the power in Lr index. The default value is 1.}
 
 \item{lambda}{penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.}
-
-\item{energy}{optimization parameter for projection pursuit. Is the parameter for the probability to take a new projection. The smaller \code{energy} the higher the probability to take a new projection, by default is 0.}
-
-\item{maxiter}{number of maximum iterations.}
 
 \item{...}{arguments to be passed to methods}
 }

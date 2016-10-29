@@ -2,16 +2,14 @@
 #' 
 #' Find tree structure using various projection pursuit indices of classification in each split.
 #' @usage PPtree_split(form, data, PPmethod='LDA', weight=TRUE, 
-#' size.p=0.9, r=1, lambda=0.1, energy=0, maxiter=50000, ...) 
+#' size.p=0.9, r=1, lambda=0.1,...) 
 #' @param form A character with the name of the class variable.
 #' @param data Data frame with the complete data set.
-#' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA', 'Lr', 'GINI', and 'ENTROPY'
-#' @param weight  flag in LDA, PDA and Lr index
+#' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA'
+#' @param weight  flag in LDA and PDA 
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param r is a positive integer value, it is the power in Lr index. The default value is 1.
 #' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
-#' @param energy optimization parameter for projection pursuit. Is the parameter for the probability to take a new projection. The smaller \code{energy} the higher the probability to take a new projection, by default is 0.
-#' @param maxiter number of maximum iterations. 
 #' @param ... arguments to be passed to methods
 #' @return An object of class \code{PPtreeclass} with components
 #' \item{Tree.Struct}{Tree structure of projection pursuit classification tree}
@@ -35,8 +33,7 @@
 #' Tree.crab <- PPtree_split("Type~.", data = crab, 
 #'  PPmethod = "LDA", size.p = 0.9)
 #' Tree.crab
-PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
-                            maxiter = 50000, ...) {
+PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, ...) {
   # function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 0.9, r = 1, lambda = 0.1, energy = 0, 
   #   maxiter = 50000, ...) {
     TOL <- NULL
@@ -50,7 +47,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
     origdata <- data[,-which(colnames(data)%in%cls)]
     origdata <- as.matrix(origdata)
     
-    Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda, maxiter, ...) {
+    Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda,...) {
         
         i.data.ori <- origdata  #original data set
         
@@ -75,40 +72,15 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
         
         origclass <- as.numeric(factor(origclass))
         if (PPmethod == "LDA") {
-            indexbest <- PPtreeViz::LDAindex(origclass, as.matrix(origdata), weight = weight)
-        } else if (PPmethod == "PDA") {
-            indexbest <- PPtreeViz::PDAindex(origclass, as.matrix(origdata), weight = weight, lambda = lambda)
-        } else if (PPmethod == "Lr") {
-            indexbest <- PPtreeViz::Lrindex(origclass, as.matrix(origdata), weight = weight, r = r)
-        } else if (PPmethod == "GINI") {
-            indexbest <- 0
-            for (i in 1:p) {
-                tempdata <- origdata[, i]
-                tempindex <- PPtreeViz::GINIindex1D(origclass, tempdata)
-                if (indexbest < tempindex) 
-                  indexbest <- tempindex
-            }
-        } else if (PPmethod == "ENTROPY") {
-            indexbest <- 0
-            for (i in 1:p) {
-                tempdata <- origdata[, i]
-                tempindex <- PPtreeViz::ENTROPYindex1D(origclass, tempdata)
-                if (indexbest < tempindex) 
-                  indexbest <- tempindex
-            }
-        }
-        energy <- ifelse(energy == 0, 1 - indexbest, energy)
-        energy.temp <- 1 - indexbest
-        TOL <- energy.temp/1e+06
-        
-        if (PPmethod == "LDA") {
-            a <- PPtreeViz::LDAopt(as.numeric(as.factor(origclass)), origdata, weight, q = 1)
+            a <- LDAopt(as.numeric(as.factor(origclass)),origdata, q=1, 
+                        PPmethod="LDA",weight=TRUE)
+            indexbest <- LDAindex(origclass,origdata, 
+                                  proj=as.matrix(a[[2]]), weight=TRUE)
         } else if (PPmethod == "PDA") {
             a <- PPtreeViz::PDAopt(as.numeric(as.factor(origclass)), origdata, weight, q = 1, lambda = lambda)
-        } else if (PPmethod == "Lr") {
-            a <- PPtreeViz::PPopt(as.numeric(as.factor(origclass)), as.matrix(origdata), weight, q = 1, PPmethod = PPmethod, 
-                r = r, energy = energy, cooling = 0.999, TOL = TOL)
-        }
+            indexbest <- 0
+            } 
+        
         proj.data <- as.matrix(origdata) %*% a$projbest
         sign <- sign(a$projbest[abs(a$projbest) == max(abs(a$projbest))])
         index <- (1:p) * (abs(a$projbest) == max(abs(a$projbest)))
@@ -139,40 +111,16 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
             G <- length(g)
             n <- nrow(origdata)
             class <- as.numeric(factor(class))
+            
             if (PPmethod == "LDA") {
-                indexbest <- PPtreeViz::LDAindex(class, as.matrix(origdata), weight = weight)
-            } else if (PPmethod == "PDA") {
-                indexbest <- PPtreeViz::PDAindex(class, as.matrix(origdata), weight = weight, lambda = lambda)
-            } else if (PPmethod == "Lr") {
-                indexbest <- PPtreeViz::Lrindex(class, as.matrix(origdata), weight = weight, r = r)
-            } else if (PPmethod == "GINI") {
-                indexbest <- 0
-                for (i in 1:p) {
-                  tempdata <- origdata[, i]
-                  tempindex <- PPtreeViz::GINIindex1D(class, as.matrix(tempdata))
-                  if (indexbest < tempindex) 
-                    indexbest <- tempindex
-                }
-            } else if (PPmethod == "ENTROPY") {
-                indexbest <- 0
-                for (i in 1:p) {
-                  tempdata <- origdata[, i]
-                  tempindex <- PPtreeViz::ENTROPYindex1D(class, as.matrix(tempdata))
-                  if (indexbest < tempindex) 
-                    indexbest <- tempindex
-                }
-            }
-            energy <- ifelse(energy == 0, 1 - indexbest, energy)
-            energy.temp <- 1 - indexbest
-            TOL <- energy.temp/1e+06
-            if (PPmethod == "LDA") {
-                a <- PPtreeViz::LDAopt(as.numeric(as.factor(class)), as.matrix(origdata), weight, q = 1)
-            } else if (PPmethod == "PDA") {
+                a <- LDAopt(as.numeric(as.factor(origclass)),origdata, q=1, 
+                PPmethod="LDA",weight=TRUE)
+                indexbest <- LDAindex(origclass,origdata, 
+                                      proj=as.matrix(a[[2]]), weight=TRUE)
+                } else if (PPmethod == "PDA") {
                 a <- PPtreeViz::PDAopt(as.numeric(as.factor(class)), as.matrix(origdata), weight, q = 1, lambda = lambda)
-            } else {
-                a <- PPtreeViz::PPopt(as.numeric(as.factor(class)), as.matrix(origdata), PPmethod = PPmethod, r = r, 
-                  q = 1, energy = energy, cooling = 0.999, TOL = TOL)
-            }
+            indexbest <- 0
+                } 
             if (sign != sign(a$projbest[index])) 
                 a$projbest <- -a$projbest
             proj.data <- as.matrix(origdata) %*% a$projbest
@@ -210,8 +158,11 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
         list(Index = Index, Alpha = Alpha, C = C, IOindexL = IOindexL, IOindexR = IOindexR)
     }
     
+    
+    
+    
     Tree.construct <- function(origclass, origdata, Tree.Struct, id, rep, rep1, rep2, projbest.node, splitCutoff.node, 
-        PPmethod, r = NULL, lambda = NULL, maxiter, ...) {
+        PPmethod, r = NULL, lambda = NULL, m...) {
         origclass <- as.integer(origclass)
         n <- nrow(origdata)
         g <- table(origclass)
@@ -231,7 +182,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
             rep1 <- rep1 + 1
             Tree.Struct[id, 4] <- rep2
             rep2 <- rep2 + 1
-            a <- Find.proj(origclass, origdata, PPmethod, weight, r, lambda, maxiter, ...)
+            a <- Find.proj(origclass, origdata, PPmethod, weight, r, lambda, ...)
             splitCutoff.node <- rbind(splitCutoff.node, a$C)
             Tree.Struct[id, 5] <- a$Index
             projbest.node <- rbind(projbest.node, a$Alpha)
@@ -244,7 +195,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
             t.class <- t.class[t.index]
             t.data <- origdata[t.index, ]
             b <- Tree.construct(t.class, t.data, Tree.Struct, Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, 
-                splitCutoff.node, PPmethod, r, lambda, maxiter, ...)
+                splitCutoff.node, PPmethod, r, lambda,...)
             Tree.Struct <- b$Tree.Struct
             projbest.node <- b$projbest.node
             splitCutoff.node <- b$splitCutoff.node
@@ -262,7 +213,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
             n <- nrow(t.data)
             G <- length(table(t.class))
             b <- Tree.construct(t.class, t.data, Tree.Struct, Tree.Struct[id, 3], rep, rep1, rep2, projbest.node, 
-                splitCutoff.node, PPmethod, r, lambda, maxiter, ...)
+                splitCutoff.node, PPmethod, r, lambda, ...)
             Tree.Struct <- b$Tree.Struct
             projbest.node <- b$projbest.node
             splitCutoff.node <- b$splitCutoff.node
@@ -282,7 +233,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
     rep <- 1
     
     Tree.final <- Tree.construct(origclass, origdata, Tree.Struct, id, rep, rep1, rep2, projbest.node, splitCutoff.node, 
-        PPmethod, r, lambda, TOL, maxiter, ...)
+        PPmethod, r, lambda, TOL,...)
     Tree.Struct <- Tree.final$Tree.Struct
     colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", "Coef.ID", "Index")
     projbest.node <- Tree.final$projbest.node
