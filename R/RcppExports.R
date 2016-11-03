@@ -13,12 +13,20 @@ LDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE) {
     .Call('PPforest2_LDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
 }
 
-tableC <- function(x) {
-    .Call('PPforest2_tableC', PACKAGE = 'PPforest2', x)
-}
-
 LDAopt <- function(origclass, origdata, q = 1L, PPmethod = "LDA", weight = TRUE) {
     .Call('PPforest2_LDAopt', PACKAGE = 'PPforest2', origclass, origdata, q, PPmethod, weight)
+}
+
+PDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE, lambda = 0.1) {
+    .Call('PPforest2_PDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight, lambda)
+}
+
+PDAopt <- function(origclass, origdata, q = 1L, PPmethod = "PDA", weight = TRUE, lambda = 0.1) {
+    .Call('PPforest2_PDAopt', PACKAGE = 'PPforest2', origclass, origdata, q, PPmethod, weight, lambda)
+}
+
+split_rel <- function(origclass, origdata, projdata) {
+    .Call('PPforest2_split_rel', PACKAGE = 'PPforest2', origclass, origdata, projdata)
 }
 
 varselect <- function(ids, sampS, replace, prob = as.numeric( c())) {
