@@ -49,77 +49,89 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
     
     Find.proj <- function(origclass, origdata, PPmethod, weight, r, lambda,...) {
         
-        i.data.ori <- origdata  #original data set
-        
         pp <- ncol(origdata)
-        
         #remove the variable with zero variance
         remove <- (1:pp) * (apply(origdata, 2, sd) == 0)
         remove <- remove[remove != 0]
         if (length(remove) != 0) {
             origdata <- origdata[, -remove]
         }
-        
-        v.rnd <- varselect(1:ncol(origdata), round(size.p*ncol(origdata)), replace =FALSE)
-        vari <- dim(i.data.ori)[2]
+        #variable selection for each node partition in Rcpp
+        v.rnd <- varselect(1:ncol(origdata), round(size.p*ncol(origdata)), replace = FALSE)
+        vari <- dim(origdata)[2]
         origdata <- origdata[, v.rnd]
+        
+        origclass <- as.numeric(factor(origclass))
+        
+        if (PPmethod == "LDA") {
+            a <- LDAopt(origclass ,origdata, q=1, 
+                        PPmethod="LDA",weight=TRUE)
+            indexbest <- LDAindex(origclass,origdata, 
+                                  proj=as.matrix(a[[2]]), weight=TRUE)
+        } else if (PPmethod == "PDA") {
+            a <- PDAopt(origclass , origdata, weight=TRUE, q = 1, lambda = lambda)
+            indexbest <- PDAindex(origclass,origdata, 
+                                  proj=as.matrix(a[[2]]), weight=TRUE,lambda = lambda)
+            } 
+        
         
         n <- nrow(origdata)
         p <- ncol(origdata)
         g <- table(origclass)
         g.name <- names(g)
-        G <- length(g)
+        G <- length(g) 
         
-        origclass <- as.numeric(factor(origclass))
-        if (PPmethod == "LDA") {
-            a <- LDAopt(as.numeric(as.factor(origclass)),origdata, q=1, 
-                        PPmethod="LDA",weight=TRUE)
-            indexbest <- LDAindex(origclass,origdata, 
-                                  proj=as.matrix(a[[2]]), weight=TRUE)
-        } else if (PPmethod == "PDA") {
-            a <- PPtreeViz::PDAopt(as.numeric(as.factor(origclass)), origdata, weight, q = 1, lambda = lambda)
-            indexbest <- 0
-            } 
-        
-        proj.data <- as.matrix(origdata) %*% a$projbest
+        proj.data <-  a[[2]] #projected data
         sign <- sign(a$projbest[abs(a$projbest) == max(abs(a$projbest))])
         index <- (1:p) * (abs(a$projbest) == max(abs(a$projbest)))
-        index <- index[index > 0]
-        if (G == 2) {
+        index <- index[index > 0] #index of the biggest coefficient
+        if (G == 2) { # only two classes not to relabel the classes in to 
             class <- origclass
-        } else {
-            m <- tapply(c(proj.data), origclass, mean)
-            sd <- tapply(c(proj.data), origclass, sd)
-            sd.sort <- sort.list(sd)
-            m.list <- sort.list(m)
-            m.sort <- sort(m)
-            m.name <- as.numeric(names(m.sort))
-            G <- length(m)
-            dist <- 0
-            split <- 0
-            for (i in 1:(G - 1)) {
-                if (m[m.list[i + 1]] - m[m.list[i]] > dist) {
-                  split <- i
-                  dist <- m[m.list[i + 1]] - m[m.list[i]]
-                }
-            }
-            class <- rep(0, n)
-            for (i in 1:split) class <- class + (origclass == m.name[i])
-            class <- 2 - class
-            g <- table(class)
-            g.name <- (names(g))
-            G <- length(g)
-            n <- nrow(origdata)
-            class <- as.numeric(factor(class))
+        } else { # need to transform the problem in a two class problem
+            # m <- tapply(c(proj.data), origclass, mean) # by class mean
+              sd <- tapply(c(proj.data), origclass, sd) # by class sd
+              sd.sort <- sort.list(sd)
+            # m.list <- sort.list(m)
+            # m.sort <- sort(m)
+            # m.name <- as.numeric(names(m.sort))
+            # G <- length(m)
+            # 
+           #  dist <- 0
+           #  split <- 0
+           #  for (i in 1:(G - 1)) {
+           #      if (m[m.list[i + 1]] - m[m.list[i]] > dist) {
+           #        split <- i
+           #        dist <- m[m.list[i + 1]] - m[m.list[i]]
+           #      }
+           #  }
+           #  class <- rep(0, n)
+           #  for (i in 1:split) class <- class + (origclass == m.name[i])
+           #  class <- 2 - class
+           #  g <- table(class)
+           #  g.name <- (names(g))
+           #  G <- length(g)
+           #  n <- nrow(origdata)
+           #  class <- as.numeric(factor(class))
+           # 
+           #  w <- which.max( diff( sort(m)))
+           #  a <- mean(sort(m)[w:(w+1)])
+           #  aux <- m - a 
+           # cl<- as.vector(1:length(m))[aux>=0]
+           # class <- origclass
+           #   class[class%in%cl]<-2
+           #   class[!(class%in%cl)]<-1
             
+          class <- split_rel(origclass ,origdata ,proj.data )
+          
             if (PPmethod == "LDA") {
-                a <- LDAopt(as.numeric(as.factor(origclass)),origdata, q=1, 
+                a <- LDAopt(class,origdata, q=1, 
                 PPmethod="LDA",weight=TRUE)
-                indexbest <- LDAindex(origclass,origdata, 
+                indexbest <- LDAindex(class,origdata, 
                                       proj=as.matrix(a[[2]]), weight=TRUE)
                 } else if (PPmethod == "PDA") {
-                a <- PPtreeViz::PDAopt(as.numeric(as.factor(class)), as.matrix(origdata), weight, q = 1, lambda = lambda)
-            indexbest <- 0
+                  a <- PDAopt(class, origdata, weight=TRUE, q = 1, lambda = lambda)
+                  indexbest <- PDAindex(class,origdata, 
+                                        proj=as.matrix(a[[2]]), weight=TRUE,lambda = lambda)
                 } 
             if (sign != sign(a$projbest[index])) 
                 a$projbest <- -a$projbest
@@ -145,7 +157,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
             (IQR.LR[2]/sqrt(n.LR[2]))))
         
         C <- c(c1, c2, c3, c4, c5, c6, c7, c8)
-        Index <- a$indexbest
+       
         a1 <- rep(0, pp)  # zeros lenght original variables    
         a1[v.rnd] <- t(a$projbest)  # best.proj with selected variables and 0 in no selected original length      
         Alpha <- a1
@@ -155,7 +167,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
         sort.LR <- as.numeric(names(sort(m.LR)))
         IOindexL <- class == sort.LR[1]
         IOindexR <- class == sort.LR[2]
-        list(Index = Index, Alpha = Alpha, C = C, IOindexL = IOindexL, IOindexR = IOindexR)
+        list(Index = indexbest, Alpha = Alpha, C = C, IOindexL = IOindexL, IOindexR = IOindexR)
     }
     
     

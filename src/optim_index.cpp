@@ -250,15 +250,7 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
   arma::colvec mean_all(p);
   arma::mat  mean_g(g, p);
   
-  //data.std <- as.matrix(origdata)
-  //class.table<-table(origclass)
-  // g<-length(class.table)
-  // class.name<-names(class.table)
-  //p<-ncol(data.std)
-  // n<-nrow(data.std)
-  //mean.g<-matrix(apply(data.std,2,function(x) 
-  //    tapply(x,origclass,mean,na.rm=TRUE)),ncol=p)
-  //  mean.all<-matrix(apply(data.std,2,mean),ncol=p)           
+          
   for (int i=0; i < p; i++){
     mean_all[i] = mean( origdata.col(i) ) ;
     for (int k=0; k < g; k++) {
@@ -324,6 +316,54 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
   
   return Rcpp::List::create( Rcpp::Named("projbest") = real(eigvec.col(mm)),
                              Rcpp::Named("projdata") = origdata*real(eigvec.col(mm)));                            
+}
+
+
+//--------First split, redefine the problem in a two class problem
+// [[Rcpp::export]]
+arma::vec split_rel(IntegerVector origclass,arma::mat origdata, arma::colvec  projdata){
+  
+  int n = origdata.n_rows;
+  
+  // group totals, group means and overall mean
+  std::map<int, int> ng = tableC(origclass); 
+  int g = ng.size();
+  arma::colvec mean_g(g);
+  
+  if (g == 2) {
+    IntegerVector class_rel = origclass;
+  } else { 
+    for (int k=0; k < g; k++) {
+      double tot=0.0;
+      for (int j=0; j<n; j++) {
+        if (origclass[j] == (k+1) ) tot += projdata(j);  
+      }
+      mean_g(k) = tot/ng[k+1] ; 
+    }
+  }
+  arma::uvec mlist = sort_index(mean_g);
+  arma::vec sm = sort(mean_g);
+  arma::vec msort = diff(sm);
+  
+  int mm = msort.index_max();
+  double pm = (sm(mm)+sm((mm+1)))/2.0;
+  arma::vec newclass(n);
+  
+  for (int k=0; k < g; k++) {
+    for(int i=0; i<n;i++){
+      if (origclass[i] == (k+1) ) {
+        if((mean_g(k)-pm)>0){
+          newclass[i]=2;
+        }else{
+          newclass[i]=1;
+        }
+      }
+    }
+  }
+  
+  
+  return newclass;
+  
 }
 
 // ===================================== 
