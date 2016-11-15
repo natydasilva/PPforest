@@ -49,7 +49,7 @@ An object of class \code{PPforest} with components.
 \examples{
 #leukemia data set with all the observations used as training
 pprf.leukemia <- PPforest(data = leukemia, class = "Type",
- size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
+ size.tr = 1, m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE)
 pprf.leukemia
 }
 

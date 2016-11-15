@@ -39,6 +39,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// tableC
+arma::vec tableC(arma::vec x);
+RcppExport SEXP PPforest2_tableC(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(tableC(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // LDAindex
 double LDAindex(IntegerVector origclass, NumericMatrix origdata, NumericMatrix proj, bool weight);
 RcppExport SEXP PPforest2_LDAindex(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {
@@ -53,13 +64,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// signC
+double signC(double x);
+RcppExport SEXP PPforest2_signC(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(signC(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // LDAopt
-List LDAopt(IntegerVector origclass, arma::mat origdata, int q, std::string PPmethod, bool weight);
+arma::vec LDAopt(arma::vec origclass, arma::mat origdata, int q, std::string PPmethod, bool weight);
 RcppExport SEXP PPforest2_LDAopt(SEXP origclassSEXP, SEXP origdataSEXP, SEXP qSEXP, SEXP PPmethodSEXP, SEXP weightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
     Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
@@ -84,12 +106,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // PDAopt
-List PDAopt(IntegerVector origclass, arma::mat origdata, int q, std::string PPmethod, bool weight, double lambda);
+arma::vec PDAopt(arma::vec origclass, arma::mat origdata, int q, std::string PPmethod, bool weight, double lambda);
 RcppExport SEXP PPforest2_PDAopt(SEXP origclassSEXP, SEXP origdataSEXP, SEXP qSEXP, SEXP PPmethodSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
     Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
@@ -99,30 +121,79 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// varselect
+arma::uvec varselect(int p, int s);
+RcppExport SEXP PPforest2_varselect(SEXP pSEXP, SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(varselect(p, s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// datanode
+List datanode(arma::mat origdata, double sizep);
+RcppExport SEXP PPforest2_datanode(SEXP origdataSEXP, SEXP sizepSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< double >::type sizep(sizepSEXP);
+    rcpp_result_gen = Rcpp::wrap(datanode(origdata, sizep));
+    return rcpp_result_gen;
+END_RCPP
+}
 // split_rel
-arma::vec split_rel(IntegerVector origclass, arma::mat origdata, arma::colvec projdata);
+arma::vec split_rel(arma::vec origclass, arma::mat origdata, arma::colvec projdata);
 RcppExport SEXP PPforest2_split_rel(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
     Rcpp::traits::input_parameter< arma::colvec >::type projdata(projdataSEXP);
     rcpp_result_gen = Rcpp::wrap(split_rel(origclass, origdata, projdata));
     return rcpp_result_gen;
 END_RCPP
 }
-// varselect
-NumericVector varselect(IntegerVector ids, int sampS, bool replace, NumericVector prob);
-RcppExport SEXP PPforest2_varselect(SEXP idsSEXP, SEXP sampSSEXP, SEXP replaceSEXP, SEXP probSEXP) {
+// findproj
+List findproj(arma::vec origclass, arma::mat origdata, std::string PPmethod, double lambda);
+RcppExport SEXP PPforest2_findproj(SEXP origclassSEXP, SEXP origdataSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type ids(idsSEXP);
-    Rcpp::traits::input_parameter< int >::type sampS(sampSSEXP);
-    Rcpp::traits::input_parameter< bool >::type replace(replaceSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type prob(probSEXP);
-    rcpp_result_gen = Rcpp::wrap(varselect(ids, sampS, replace, prob));
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(findproj(origclass, origdata, PPmethod, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// findprojPDA
+List findprojPDA(arma::vec origclass, arma::mat origdata, double lambda);
+RcppExport SEXP PPforest2_findprojPDA(SEXP origclassSEXP, SEXP origdataSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(findprojPDA(origclass, origdata, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// findprojLDA
+List findprojLDA(arma::vec origclass, arma::mat origdata);
+RcppExport SEXP PPforest2_findprojLDA(SEXP origclassSEXP, SEXP origdataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    rcpp_result_gen = Rcpp::wrap(findprojLDA(origclass, origdata));
     return rcpp_result_gen;
 END_RCPP
 }

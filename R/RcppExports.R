@@ -9,8 +9,16 @@ imposoon <- function(train, classes, oobid, permute, trees, noob, TRstrL, TRsplL
     .Call('PPforest2_imposoon', PACKAGE = 'PPforest2', train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL)
 }
 
+tableC <- function(x) {
+    .Call('PPforest2_tableC', PACKAGE = 'PPforest2', x)
+}
+
 LDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE) {
     .Call('PPforest2_LDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
+}
+
+signC <- function(x) {
+    .Call('PPforest2_signC', PACKAGE = 'PPforest2', x)
 }
 
 LDAopt <- function(origclass, origdata, q = 1L, PPmethod = "LDA", weight = TRUE) {
@@ -25,11 +33,27 @@ PDAopt <- function(origclass, origdata, q = 1L, PPmethod = "PDA", weight = TRUE,
     .Call('PPforest2_PDAopt', PACKAGE = 'PPforest2', origclass, origdata, q, PPmethod, weight, lambda)
 }
 
+varselect <- function(p, s) {
+    .Call('PPforest2_varselect', PACKAGE = 'PPforest2', p, s)
+}
+
+datanode <- function(origdata, sizep) {
+    .Call('PPforest2_datanode', PACKAGE = 'PPforest2', origdata, sizep)
+}
+
 split_rel <- function(origclass, origdata, projdata) {
     .Call('PPforest2_split_rel', PACKAGE = 'PPforest2', origclass, origdata, projdata)
 }
 
-varselect <- function(ids, sampS, replace, prob = as.numeric( c())) {
-    .Call('PPforest2_varselect', PACKAGE = 'PPforest2', ids, sampS, replace, prob)
+findproj <- function(origclass, origdata, PPmethod = "LDA", lambda = 0.1) {
+    .Call('PPforest2_findproj', PACKAGE = 'PPforest2', origclass, origdata, PPmethod, lambda)
+}
+
+findprojPDA <- function(origclass, origdata, lambda = 0.1) {
+    .Call('PPforest2_findprojPDA', PACKAGE = 'PPforest2', origclass, origdata, lambda)
+}
+
+findprojLDA <- function(origclass, origdata) {
+    .Call('PPforest2_findprojLDA', PACKAGE = 'PPforest2', origclass, origdata)
 }
 

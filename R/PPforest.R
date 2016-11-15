@@ -32,7 +32,7 @@
 #' @examples
 #' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
-#'  size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
+#'  size.tr = 1, m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia
 PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
    
@@ -46,10 +46,10 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, str
     var.sel <- floor((ncol(train)-1) * size.p)
     
     if (strata == TRUE) {
-        data.b <- ppfboot(data = train, class, m, strata)  
+        data.b <- ppf_bootstrap(data = train, class, m, strata)  
         output <- data.b %>% trees_pp(size.p, PPmethod, lambda = 0.1)
     } else {
-        data.b <- ppfboot(data = train, class, m, strata = FALSE)
+        data.b <- ppf_bootstrap(data = train, class, m, strata = FALSE)
         output <- data.b %>% trees_pp( size.p, PPmethod, lambda = 0.1)
     }
     

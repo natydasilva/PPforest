@@ -1,14 +1,19 @@
-#include <RcppArmadillo.h>  
+#include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]] 
 using namespace arma; 
 using namespace Rcpp;
 
+// [[Rcpp::export]]
+arma::vec tableC(arma::vec x) {
+  arma::vec values = arma::unique(x);
+    arma::vec counts(values.size());
+    for(int i = 0; i < values.size(); i++) {
+      for(int j=0; j<x.size();j++){
+        if(x(j)==values(i)){
+          counts(i)++;
+            }
+      }
 
-std::map<int, int> tableC(IntegerVector x) {
-  std::map<int, int> counts;
-  int n = x.size();
-  for (int i = 0; i < n; i++) {
-    counts[x[i]]++;
   }
   
   return counts;
@@ -72,17 +77,28 @@ double LDAindex(IntegerVector origclass, NumericMatrix origdata,
   return index;
 }
 
-
+// [[Rcpp::export]] 
+double signC(double x) {
+  if (x > 0) {
+    return 1;
+  } else if (x == 0) {
+    return 0;
+  } else {
+    return -1;
+  }
+}
    
 // [[Rcpp::export]] 
-  List LDAopt(IntegerVector origclass,arma::mat origdata,int q=1, 
+  arma::vec LDAopt(arma::vec origclass,arma::mat origdata,int q=1, 
               std::string PPmethod="LDA",bool weight=true){
     
   int n=origdata.n_rows, p=origdata.n_cols;
   
   // group totals, group means and overall mean
-  std::map<int, int> ng = tableC(origclass); 
+  arma::vec ng = tableC(origclass); 
   int g = ng.size();
+  arma::vec clval = arma::unique(origclass);
+  
   
    arma::colvec mean_all(p);
    arma::mat  mean_g(g, p);
@@ -90,11 +106,11 @@ double LDAindex(IntegerVector origclass, NumericMatrix origdata,
     for (int i=0; i < p; i++){
       mean_all[i] = mean( origdata.col(i) ) ;
       for (int k=0; k < g; k++) {
-        NumericVector tot(g);
+        double tot = 0.0;
         for (int j=0; j<n; j++) {
-          if (origclass[j] == (k+1) ) tot(k) += origdata(j,i) ;  
+          if (origclass(j) == clval(k) ) tot += origdata(j,i) ;  
         }
-        mean_g(k, i) = tot(k)/ng[k+1] ; 
+        mean_g(k, i) = tot/ng(k) ; 
       }
     }  
     
@@ -107,7 +123,7 @@ double LDAindex(IntegerVector origclass, NumericMatrix origdata,
       double gn1 = 0.0;
       
         if(weight) {
-          gn1 = ng[k+1];
+          gn1 = ng(k);
         } else {
           gn1 = n/g;
         }
@@ -124,7 +140,7 @@ double LDAindex(IntegerVector origclass, NumericMatrix origdata,
    arma::mat rr(n, p, arma::fill::zeros); 
         for (int i=0; i < n; i++) {
           for (int k=0; k < g; k++) {    
-            if ( origclass[i] == (k+1) ) {
+            if ( origclass(i) == clval(k) ) {
               for (int j=0; j<p; j++)
               rr(i,j) = origdata(i,j) - mean_g(k,j); 
             }
@@ -140,7 +156,7 @@ double LDAindex(IntegerVector origclass, NumericMatrix origdata,
   arma::eig_gen(eigval, eigvec, B);
   int mm = eigval.index_max();
   
-//   arma::vec temp_proj = real(eigvec.col(mm));
+   arma::vec bestproj = real(eigvec.col(mm));
 //   NumericMatrix proj(p,1);  
 //   for (int i=0; i < p; i++)  proj(i,1) =  temp_proj[i];
    // PAra poder usar LDAindex, hay que transformar de rcpp a rcpp armadillo
@@ -148,8 +164,10 @@ double LDAindex(IntegerVector origclass, NumericMatrix origdata,
 //   double index = LDAindex(origclass, origdata, proj, weight);
    // Rcpp::Named("indexbest")=index,
 
-   return Rcpp::List::create( Rcpp::Named("projbest")= real(eigvec.col(mm)),
-                              Rcpp::Named("projdata") = origdata*real(eigvec.col(mm)));                            
+   // return Rcpp::List::create( Rcpp::Named("projbest")= temp_proj,
+   //                            Rcpp::Named("projdata") = origdata*temp_proj
+   //                           );    
+   return bestproj;
 }
 
 // [[Rcpp::export]]
@@ -238,15 +256,15 @@ double PDAindex(IntegerVector origclass, NumericMatrix origdata,
 
 
 // [[Rcpp::export]]
-List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1, 
+arma::vec PDAopt(arma::vec origclass,arma::mat origdata,int q=1, 
             std::string PPmethod="PDA",bool weight=true, double lambda=0.1){
   
   int n=origdata.n_rows, p=origdata.n_cols;
   
   // group totals, group means and overall mean
-  std::map<int, int> ng = tableC(origclass); 
+  arma::vec ng = tableC(origclass); 
   int g = ng.size();
-  
+  arma::vec clval = arma::unique(origclass);
   arma::colvec mean_all(p);
   arma::mat  mean_g(g, p);
   
@@ -254,11 +272,11 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
   for (int i=0; i < p; i++){
     mean_all[i] = mean( origdata.col(i) ) ;
     for (int k=0; k < g; k++) {
-      NumericVector tot(g);
+      double tot = 0.0;
       for (int j=0; j<n; j++) {
-        if (origclass[j] == (k+1) ) tot(k) += origdata(j,i) ;  
+        if (origclass(j) == clval(k) ) tot += origdata(j,i) ;  
       }
-      mean_g(k, i) = tot(k)/ng[k+1] ; 
+      mean_g(k, i) = tot/ng(k) ; 
     }
   }  
   
@@ -275,7 +293,7 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
     double gn1 = 0.0;
     
     if(weight) {
-      gn1 = ng[k+1];
+      gn1 = ng(k);
     } else {
       gn1 = n/g;
     }
@@ -292,7 +310,7 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
   arma::mat rr(n, p, arma::fill::zeros); 
   for (int i=0; i < n; i++) {
     for (int k=0; k < g; k++) {    
-      if ( origclass[i] == (k+1) ) {
+      if ( origclass(i) == clval(k) ) {
         for (int j=0; j<p; j++)
           rr(i,j) = origdata(i,j) - mean_g(k,j); 
       }
@@ -305,7 +323,6 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
   Wt.diag() = W.diag() ;
   
   
-  
   // eigen decomposition and compute projection
   Wt = arma::inv(Wt+B);
   B = Wt * B;
@@ -314,57 +331,260 @@ List PDAopt(IntegerVector origclass,arma::mat origdata,int q=1,
   arma::eig_gen(eigval, eigvec, B);
   int mm = eigval.index_max();
   
-  return Rcpp::List::create( Rcpp::Named("projbest") = real(eigvec.col(mm)),
-                             Rcpp::Named("projdata") = origdata*real(eigvec.col(mm)));                            
+  arma::vec bestproj = real(eigvec.col(mm));
+  
+  // return Rcpp::List::create( Rcpp::Named("projbest") = temp_proj,
+  //                            Rcpp::Named("projdata") = origdata*temp_proj);    
+  
+  return bestproj;
 }
 
 
-//--------First split, redefine the problem in a two class problem
+
 // [[Rcpp::export]]
-arma::vec split_rel(IntegerVector origclass,arma::mat origdata, arma::colvec  projdata){
+arma::uvec varselect(int p, int s){//p number of variables, s number of selected variables
+  arma::uvec id = arma::linspace<uvec>(0, p-1,p); //integer sequence from 0 to p-1
+  arma:: uvec idx = arma::linspace<uvec>(0,s-1,s);
+  arma::uvec idsuff = arma::shuffle<uvec>(id);// suffle the indexes
+  arma::uvec ids = idsuff.elem(idx);//select only s indexes
+  return arma::sort(ids);//sort the selected variables
+}
+
+//Subset of random selected variables from origdata used in each node partition,
+//remove variables with 0 variance
+// [[Rcpp::export]]
+List datanode(arma::mat origdata, double sizep){
+  //remove the variable with zero variance
+  arma::mat sdcol = arma::stddev(origdata); //sd by column
+  arma::uvec idx = find(sdcol.row(0) > 0);//find indices of non-zero elements, or elements satisfying a relational condition
+  arma::mat redudata = origdata.cols(idx);//select the columns with 0 variance
+  int p = redudata.n_cols;
+  int sp = std::round(sizep*p);
   
-  int n = origdata.n_rows;
+  arma::uvec vrnd = varselect(p, sp);//variable selection for each node partition in Rcpp
+  arma::mat datanode = redudata.cols(vrnd);//data with the selected variables for each node partition
   
-  // group totals, group means and overall mean
-  std::map<int, int> ng = tableC(origclass); 
+  return Rcpp::List::create( Rcpp::Named("data") = datanode,
+                             Rcpp::Named("varselected") = vrnd);
+}
+
+//--------First split, redefine the problem in a two class problem,this is used inside findproj
+// [[Rcpp::export]]
+arma::vec split_rel(arma::vec origclass,arma::mat origdata, arma::colvec  projdata){
+//origdata here are after variable selection (varselect and datenode functions)  
+  
+int n = origdata.n_rows;
+  
+// group totals, group means and overall mean
+  arma::vec ng = tableC(origclass); 
   int g = ng.size();
+  arma::vec clval = arma::unique(origclass);
   arma::colvec mean_g(g);
+  arma::vec newclass(n);
   
-  if (g == 2) {
-    IntegerVector class_rel = origclass;
+  if (g==2) {
+    //IntegerVector class_rel = origclass;
+    newclass = origclass;
+    
   } else { 
     for (int k=0; k < g; k++) {
       double tot=0.0;
       for (int j=0; j<n; j++) {
-        if (origclass[j] == (k+1) ) tot += projdata(j);  
+        if (origclass(j) == clval(k) ) tot += projdata(j);  
       }
-      mean_g(k) = tot/ng[k+1] ; 
+      mean_g(k) = tot/ng(k) ; 
     }
-  }
+
   arma::uvec mlist = sort_index(mean_g);
   arma::vec sm = sort(mean_g);
   arma::vec msort = diff(sm);
   
   int mm = msort.index_max();
   double pm = (sm(mm)+sm((mm+1)))/2.0;
-  arma::vec newclass(n);
+  //arma::vec newclass(n);
   
   for (int k=0; k < g; k++) {
     for(int i=0; i<n;i++){
-      if (origclass[i] == (k+1) ) {
+      if (origclass(i) == clval(k) ) {
         if((mean_g(k)-pm)>0){
-          newclass[i]=2;
+          newclass(i)=2;
         }else{
-          newclass[i]=1;
+          newclass(i)=1;
         }
       }
     }
   }
-  
+  }
   
   return newclass;
   
 }
+
+
+//Finds the 1D projection for separating all classes
+// [[Rcpp::export]]
+List findproj(arma::vec origclass,
+              arma::mat origdata, std::string PPmethod="LDA", 
+              double lambda=0.1){
+  
+  arma::vec a1(origdata.n_cols) , a2(origdata.n_cols), a(origdata.n_cols);
+  arma::vec ng = tableC(origclass); 
+  int g = ng.size();
+  arma::vec projdata(origclass.size());
+ // arma::vec a( a1.size() );
+ // double indexbest=0.0;
+ 
+  if (PPmethod =="LDA"){
+    a1 = LDAopt(origclass,origdata,1, "LDA",true);
+   //double indexbest = LDAindex(origclass,origdata);
+   } else {
+    a1 = PDAopt(origclass, origdata, 1,"PDA",true, lambda);
+  //double indexbest = PDAindex(origclass,origdata)
+  }
+
+  int  index = arma::index_max(arma::abs(a1));
+  double sign = signC(a1(index));
+  arma::vec classe = split_rel(origclass, origdata,  origdata*a1); 
+
+  if (g > 2) {
+    
+    if (PPmethod =="LDA"){
+      a2 = LDAopt(classe,origdata,1, "LDA",true);
+      } else {
+      a2 = PDAopt(classe, origdata, 1,"PDA",true, lambda);
+    }
+      
+    double sign2 = signC(a2(index));
+      if (sign != sign2) {
+        a  = -1*a2;
+      } else {
+        a = a2;
+      }
+  } else {
+    a = a1;
+  }
+ 
+ 
+  projdata = origdata*a;
+  return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
+                           Rcpp::Named("projbest") = a,
+                           Rcpp::Named("class")= classe);
+}
+
+
+
+// [[Rcpp::export]]
+List findprojPDA(arma::vec origclass,
+              arma::mat origdata, 
+              double lambda=0.1){
+  
+  arma::vec a = PDAopt(origclass, origdata, lambda);
+  arma::vec classe = split_rel(origclass, origdata,  origdata*a );
+  
+  arma::vec ng = tableC(origclass);
+  int g = ng.size();
+   
+   int  index = arma::index_max(arma::abs(a));
+   double sign = signC(a(index));
+
+  arma::vec  out;
+  
+  if (g > 2) {
+    arma::vec a2 = PDAopt(classe, origdata, lambda);
+    double sign2 = signC(a2(index));
+    if (sign != sign2) {
+       out  = (-1)*a2;
+    } else {
+      out = a2;
+    }
+  } else {
+    out = a;
+  }
+
+    arma::vec projdata = origdata*a;
+    return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
+                              Rcpp::Named("projbest") = out,
+                              Rcpp::Named("class")= classe);
+}
+  
+
+
+  // [[Rcpp::export]]
+  List findprojLDA(arma::vec origclass,
+                   arma::mat origdata){
+    
+    arma::vec a = LDAopt(origclass, origdata);
+    arma::vec classe = split_rel(origclass, origdata,  origdata*a );
+    
+    arma::vec ng = tableC(origclass);
+    int g = ng.size();
+    
+    int  index = arma::index_max(arma::abs(a));
+    double sign = signC(a(index));
+    
+    arma::vec  out;
+    
+    if (g > 2) {
+      arma::vec a2 = LDAopt(classe, origdata);
+      double sign2 = signC(a2(index));
+      if (sign != sign2) {
+        out  = (-1)*a2;
+      } else {
+        out = a2;
+      }
+    } else {
+      out = a;
+    }
+    
+    arma::vec projdata = origdata*a;
+    return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
+                              Rcpp::Named("projbest") = out,
+                              Rcpp::Named("class")= classe);
+  }
+
+
+
+
+//   n <- nrow(origdata)
+//     p <- ncol(origdata)
+//     g <- table(origclass)
+//     g.name <- names(g)
+//     G <- length(g) 
+//     
+//     proj.data <-  a[[2]] #projected data
+// # sign <- sign(a$projbest[abs(a$projbest) == max(abs(a$projbest))])
+// # index <- (1:p) * (abs(a$projbest) == max(abs(a$projbest)))
+// # index <- index[index > 0] #index of the biggest coefficient
+//     sign <-signC(max(abs(a$projbest)))
+//     index <- which.max(abs(a$projbest))
+//     
+//     
+//     if (G == 2) { # only two classes not to relabel the classes in to 
+//       class <- split_rel(origclass ,origdata ,proj.data )  
+//     } else { # need to transform the problem in a two class problem
+// # m <- tapply(c(proj.data), origclass, mean) # by class mean
+//       sd <- tapply(c(proj.data), origclass, sd) # by class sd
+//       sd.sort <- sort.list(sd)
+//       class <- split_rel(origclass ,origdata ,proj.data )  
+// #redefine the problem in a two class problem if there are more than 2 classes
+//       
+// # redo the 1D projection
+//       
+//       if (PPmethod == "LDA") {
+//         a <- LDAopt(class,origdata, q=1, 
+//                     PPmethod="LDA",weight=TRUE)
+//         indexbest <- LDAindex(class,origdata, 
+//                               proj=as.matrix(a[[2]]), weight=TRUE)
+//       } else if (PPmethod == "PDA") {
+//         a <- PDAopt(class, origdata, weight=TRUE, q = 1, lambda = lambda)
+//         indexbest <- PDAindex(class,origdata, 
+//                               proj=as.matrix(a[[2]]), weight=TRUE,lambda = lambda)
+//       } 
+//       if (sign != signC(a$projbest[index])) 
+//         a$projbest <- -a$projbest
+//         proj.data <- as.matrix(origdata) %*% a$projbest
+//     }
+//   
 
 // ===================================== 
 // 
@@ -435,4 +655,5 @@ arma::vec split_rel(IntegerVector origclass,arma::mat origdata, arma::colvec  pr
 //   c = cube_sum1(d);
 //   return c;
 // }
+
 

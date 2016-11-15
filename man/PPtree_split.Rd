@@ -5,7 +5,7 @@
 \title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
 PPtree_split(form, data, PPmethod='LDA', weight=TRUE, 
-size.p=0.9, r=1, lambda=0.1,...)
+size.p=1, r=1, lambda=0.1,...)
 }
 \arguments{
 \item{form}{A character with the name of the class variable.}
@@ -16,7 +16,7 @@ size.p=0.9, r=1, lambda=0.1,...)
 
 \item{weight}{flag in LDA and PDA}
 
-\item{size.p}{proportion of variables randomly sampled in each split.}
+\item{size.p}{proportion of variables randomly sampled in each split, default is 1, returns a PPtree.}
 
 \item{r}{is a positive integer value, it is the power in Lr index. The default value is 1.}
 
@@ -42,7 +42,7 @@ Tree.leukemia <- PPtree_split("Type~.", data = leukemia,
 Tree.leukemia
 #crab data set
 Tree.crab <- PPtree_split("Type~.", data = crab, 
- PPmethod = "LDA", size.p = 0.9)
+ PPmethod = "LDA", size.p = 1)
 Tree.crab
 }
 \references{
