@@ -53,16 +53,17 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
       origdata <- dataspl[[1]]
       v.rnd <- as.vector(dataspl[[2]] + 1)
       
-      if(PPmethod == "LDA"){
-      oneDproj <- findprojLDA(origclass,as.matrix(origdata))
-      }else{
-        oneDproj <- findprojPDA(origclass,as.matrix(origdata),lambda)
-      }
+      # if(PPmethod == "LDA"){
+      # oneDproj <- findprojLDA(origclass,as.matrix(origdata))
+      # }else{
+      #   oneDproj <- findprojPDA(origclass,as.matrix(origdata),lambda)
+      # }
+      oneDproj <- findproj(origclass,as.matrix(origdata),PPmethod,lambda)
         #1 Find the optial 1D projection alpha for separating all classes
         
       proj.data <- oneDproj[[1]]
       class <- as.numeric((oneDproj[[3]]))
-    #class<-oneDproj[[3]]
+    
       sd <- tapply(c(proj.data), origclass, sd)
       sd.sort <- sort.list(sd)
 
@@ -125,7 +126,6 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", weight = TRUE, size.p = 
                                id, rep, rep1, rep2, projbest.node, splitCutoff.node, 
                                PPmethod, r = NULL, lambda = NULL, ...) {
       origclass <- as.integer(origclass)
-      #origclass <- as.numeric(factor(origclass))
       n <- nrow(origdata)
       g <- table(origclass)
       G <- length(g)

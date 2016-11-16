@@ -434,11 +434,13 @@ List findproj(arma::vec origclass,
  // arma::vec a( a1.size() );
  // double indexbest=0.0;
  
-  if (PPmethod =="LDA"){
+  if (PPmethod.compare("LDA")==0){
+    //Rcout << "LDA\n";
     a1 = LDAopt(origclass,origdata,1, "LDA",true);
    //double indexbest = LDAindex(origclass,origdata);
    } else {
-    a1 = PDAopt(origclass, origdata, 1,"PDA",true, lambda);
+    //Rcout << "PDA\n";
+     a1 = PDAopt(origclass, origdata, 1,"PDA",true, lambda);
   //double indexbest = PDAindex(origclass,origdata)
   }
 
@@ -447,11 +449,13 @@ List findproj(arma::vec origclass,
   arma::vec classe = split_rel(origclass, origdata,  origdata*a1); 
 
   if (g > 2) {
-    
-    if (PPmethod =="LDA"){
+        if (PPmethod.compare("LDA")==0){
+         // Rcout << "still LDA\n";
+          
       a2 = LDAopt(classe,origdata,1, "LDA",true);
       } else {
-      a2 = PDAopt(classe, origdata, 1,"PDA",true, lambda);
+        //Rcout << "still PDA\n";
+        a2 = PDAopt(classe, origdata, 1,"PDA",true, lambda);
     }
       
     double sign2 = signC(a2(index));
