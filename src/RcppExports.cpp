@@ -64,6 +64,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// LDAindex2
+arma::vec LDAindex2(arma::vec origclass, arma::mat origdata, arma::mat proj, bool weight);
+RcppExport SEXP PPforest2_LDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type proj(projSEXP);
+    Rcpp::traits::input_parameter< bool >::type weight(weightSEXP);
+    rcpp_result_gen = Rcpp::wrap(LDAindex2(origclass, origdata, proj, weight));
+    return rcpp_result_gen;
+END_RCPP
+}
 // signC
 double signC(double x);
 RcppExport SEXP PPforest2_signC(SEXP xSEXP) {
@@ -102,6 +116,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(PDAindex(origclass, origdata, proj, weight, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// PDAindex2
+double PDAindex2(arma::vec origclass, arma::mat origdata, arma::mat proj, bool weight, double lambda);
+RcppExport SEXP PPforest2_PDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type proj(projSEXP);
+    Rcpp::traits::input_parameter< bool >::type weight(weightSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(PDAindex2(origclass, origdata, proj, weight, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -194,6 +223,90 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
     rcpp_result_gen = Rcpp::wrap(findprojLDA(origclass, origdata));
+    return rcpp_result_gen;
+END_RCPP
+}
+// arma_sub_cond
+arma::uvec arma_sub_cond(arma::vec x, int val);
+RcppExport SEXP PPforest2_arma_sub_cond(SEXP xSEXP, SEXP valSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type val(valSEXP);
+    rcpp_result_gen = Rcpp::wrap(arma_sub_cond(x, val));
+    return rcpp_result_gen;
+END_RCPP
+}
+// quantileCpp
+double quantileCpp(arma::vec x, double probs);
+RcppExport SEXP PPforest2_quantileCpp(SEXP xSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(quantileCpp(x, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// quant
+NumericVector quant(NumericVector x, NumericVector q);
+RcppExport SEXP PPforest2_quant(SEXP xSEXP, SEXP qSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type q(qSEXP);
+    rcpp_result_gen = Rcpp::wrap(quant(x, q));
+    return rcpp_result_gen;
+END_RCPP
+}
+// nodestr
+arma::vec nodestr(arma::vec classe, arma::vec projdata);
+RcppExport SEXP PPforest2_nodestr(SEXP classeSEXP, SEXP projdataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type classe(classeSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type projdata(projdataSEXP);
+    rcpp_result_gen = Rcpp::wrap(nodestr(classe, projdata));
+    return rcpp_result_gen;
+END_RCPP
+}
+// findprojwrap
+List findprojwrap(arma::vec origclass, arma::mat origdata, std::string PPmethod, double sizep, double lambda);
+RcppExport SEXP PPforest2_findprojwrap(SEXP origclassSEXP, SEXP origdataSEXP, SEXP PPmethodSEXP, SEXP sizepSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
+    Rcpp::traits::input_parameter< double >::type sizep(sizepSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(findprojwrap(origclass, origdata, PPmethod, sizep, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// treeconstruct
+List treeconstruct(arma::vec origclass, arma::mat origdata, arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat splitCutoffnode, std::string PPmethod, double lambda);
+RcppExport SEXP PPforest2_treeconstruct(SEXP origclassSEXP, SEXP origdataSEXP, SEXP TreestructSEXP, SEXP idSEXP, SEXP repSEXP, SEXP rep1SEXP, SEXP rep2SEXP, SEXP projbestnodeSEXP, SEXP splitCutoffnodeSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Treestruct(TreestructSEXP);
+    Rcpp::traits::input_parameter< int >::type id(idSEXP);
+    Rcpp::traits::input_parameter< int >::type rep(repSEXP);
+    Rcpp::traits::input_parameter< int >::type rep1(rep1SEXP);
+    Rcpp::traits::input_parameter< int >::type rep2(rep2SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type projbestnode(projbestnodeSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type splitCutoffnode(splitCutoffnodeSEXP);
+    Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(treeconstruct(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda));
     return rcpp_result_gen;
 END_RCPP
 }

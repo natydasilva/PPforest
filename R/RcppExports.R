@@ -17,6 +17,10 @@ LDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE) {
     .Call('PPforest2_LDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
 }
 
+LDAindex2 <- function(origclass, origdata, proj, weight = TRUE) {
+    .Call('PPforest2_LDAindex2', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
+}
+
 signC <- function(x) {
     .Call('PPforest2_signC', PACKAGE = 'PPforest2', x)
 }
@@ -27,6 +31,10 @@ LDAopt <- function(origclass, origdata, q = 1L, PPmethod = "LDA", weight = TRUE)
 
 PDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE, lambda = 0.1) {
     .Call('PPforest2_PDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight, lambda)
+}
+
+PDAindex2 <- function(origclass, origdata, proj, weight = TRUE, lambda = 0.1) {
+    .Call('PPforest2_PDAindex2', PACKAGE = 'PPforest2', origclass, origdata, proj, weight, lambda)
 }
 
 PDAopt <- function(origclass, origdata, q = 1L, PPmethod = "PDA", weight = TRUE, lambda = 0.1) {
@@ -55,5 +63,29 @@ findprojPDA <- function(origclass, origdata, lambda = 0.1) {
 
 findprojLDA <- function(origclass, origdata) {
     .Call('PPforest2_findprojLDA', PACKAGE = 'PPforest2', origclass, origdata)
+}
+
+arma_sub_cond <- function(x, val) {
+    .Call('PPforest2_arma_sub_cond', PACKAGE = 'PPforest2', x, val)
+}
+
+quantileCpp <- function(x, probs) {
+    .Call('PPforest2_quantileCpp', PACKAGE = 'PPforest2', x, probs)
+}
+
+quant <- function(x, q) {
+    .Call('PPforest2_quant', PACKAGE = 'PPforest2', x, q)
+}
+
+nodestr <- function(classe, projdata) {
+    .Call('PPforest2_nodestr', PACKAGE = 'PPforest2', classe, projdata)
+}
+
+findprojwrap <- function(origclass, origdata, PPmethod = "LDA", sizep = 1, lambda = .1) {
+    .Call('PPforest2_findprojwrap', PACKAGE = 'PPforest2', origclass, origdata, PPmethod, sizep, lambda)
+}
+
+treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod = "LDA", lambda = 0.1) {
+    .Call('PPforest2_treeconstruct', PACKAGE = 'PPforest2', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda)
 }
 
