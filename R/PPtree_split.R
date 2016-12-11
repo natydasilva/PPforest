@@ -34,11 +34,9 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda=0.1,
      formula <- stats::as.formula(form)
      mf <- stats::model.frame(formula, data = data)
      origclass <- stats::model.response(mf)
-    
-     
-    #origclass <- factor( ( data %>% dplyr::select_(class) )[,1])
+ 
     cls <- all.vars(formula)[[1]]
-    #cls <- class
+    
     origdata <- data[,-which(colnames(data)%in%cls)]
     origdata <- as.matrix(origdata)
     pp <- ncol(origdata)
@@ -48,65 +46,8 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda=0.1,
     findprojwrap(origclass,origdata, PPmethod,
                 sizep= size.p, lambda  )
     }
-    # Find.proj <- function(origclass, origdata, PPmethod, lambda,...) {
-    #   dataspl <- datanode(origdata, sizep = size.p)
-    #   origdata <- dataspl[[1]]
-    #   v.rnd <- as.vector(dataspl[[2]] + 1)
-    # 
-    # 
-    #   oneDproj <- findproj(origclass,as.matrix(origdata),PPmethod,lambda)
-    # 
-    #    #1 Find the optial 1D projection alpha for separating all classes
-    # 
-    #   proj.data <- oneDproj[[1]]
-    #   class <- as.numeric((oneDproj[[3]]))
-    # 
-    #    # sd <- tapply(c(proj.data), origclass, sd)
-    #    # sd.sort <- sort.list(sd)
-    # 
-    #   if(length(unique(origclass)) == 2){
-    #     origclass <- class
-    #     if(PPmethod == "LDA"){
-    #       x<- as.integer(as.factor(origclass))
-    #       indexbest <- LDAindex(x,origdata)
-    #     }else if(PPmethod=="PDA"){
-    #       x<- as.integer(as.factor(origclass))
-    #       indexbest <- PDAindex(x,origdata)
-    #     }
-    #   }else{
-    # 
-    #   if(PPmethod == "LDA"){
-    #     x<-as.integer(as.factor(class))
-    #     indexbest <- LDAindex(x,origdata)
-    #   }else if(PPmethod == "PDA"){
-    #     x<-as.integer(as.factor(class))
-    #     indexbest <- PDAindex(x,origdata)
-    #   }
-    #   }
-    # 
-    #      m.LR <- tapply(proj.data, class, mean)# compute the mean value for the projected data by class(2 clas problem)
-    #      temp.list <- sort.list(m.LR) #sort in ascending
-    #      m.LR <- m.LR[temp.list]#select the mean in the ordered cases
-    #     C <-as.vector(nodestr(oneDproj[[3]], oneDproj[[1]]))
-    # 
-    #   a1 <- rep(0, pp)  # zeros lenght original variables
-    #     a1[v.rnd] <- oneDproj[[2]]  # best.proj with selected variables and 0 in no selected original length
-    #     #a1 <- oneDproj[[2]]
-    #     Alpha <- a1
-    # 
-    #     IOindexR <- NULL
-    #     IOindexL <- NULL
-    #     sort.LR <- as.numeric(names(sort(m.LR)))
-    # 
-    #      IOindexL <- class == sort.LR[1]
-    #      IOindexR <- class == sort.LR[2]
-    # 
-    # 
-    #     list(Index = indexbest, Alpha = Alpha, C = C, IOindexL = IOindexL, IOindexR = IOindexR)
-    # 
-    #     }
-
     
+
     Tree.construct <- function(origclass, origdata, Tree.Struct, 
                                id, rep, rep1, rep2, projbest.node, splitCutoff.node, 
                                PPmethod, lambda, size.p,...) {

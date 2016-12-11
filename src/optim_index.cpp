@@ -683,8 +683,7 @@ List findproj(arma::vec origclass,
  
   projdata = origdata*a;
   return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
-                           Rcpp::Named("projbest") = a,
-                           Rcpp::Named("class")= classe);
+                           Rcpp::Named("projbest") = a);
 }
 
 
@@ -887,7 +886,9 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod="
 
   List oneDproj = findproj(origclass, origdata, PPmethod, lambda);
   arma::vec projdata = as<vec>(oneDproj["projdata"]);
-  arma::vec classe =  as<vec>(oneDproj["class"]);
+  arma::vec classe = split_rel(origclass, origdata, projdata);
+  //arma::vec classe =  as<vec>(oneDproj["class"]);
+  //Rcout << classe;
   arma::mat projbest = as<mat>(oneDproj["projbest"]);
 
        arma::vec C = nodestr(classe, projdata);
@@ -910,58 +911,61 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod="
 
          // group totals, group means and overall mean
          arma::vec ng = tableC(classe);
+        
          int g = ng.size();
          arma::vec clval = arma::unique(classe);
 
          arma::colvec mean_g(g,fill::zeros);
-
+         
          for (int k=0; k < g; k++) {
            double tot = 0.0;
-
            for (int j = 0; j<n; j++) {
              if (classe(j) == clval(k) ) {
                tot += projdata(j) ;
 
                }
            }
-          if (ng(k) > 0 ) {
-           mean_g(k) = tot/ng(k) ;
-          } else {
-            mean_g(k) = 0.0;
-          }
+          
+          mean_g(k) = tot/ng(k);
+           //Rcout<<mean_g;
+          // if (ng(k) > 0 ) {
+          //  mean_g(k) = tot/ng(k) ;
+          // } else {
+          //   mean_g(k) = 0.0;
+          // }
           
           
          }
          
            arma::colvec mLR = sort(mean_g);
            arma::uvec sortLR  = sort_index(mean_g);
-
+           
          arma::vec IOindexL(classe.size());
          arma::vec IOindexR(classe.size());
 
          
-         //
-         int ncl=classe.size();
-          arma::vec newclass(ncl, fill::zeros);
-         for(int i=0;i<ncl;i++){
-           for (int k=0; k < clval.size(); k++) {
-             if (classe(i) == clval(k) ){
-               newclass(i) = k ;
-             }
-           }
-           
-         }
-         classe=newclass;
-         //
+         //-----
+         // int ncl=classe.size();
+         //  arma::vec newclass(ncl, fill::zeros);
+         // for(int i=0;i<ncl;i++){
+         //   for (int k=0; k < clval.size(); k++) {
+         //     if (classe(i) == clval(k) ){
+         //       newclass(i) = k ;
+         //     }
+         //   }
+         //   
+         // }
+         // classe=newclass;
+         // //----
          
          
          for(int i=0; i<classe.size(); i++){
-           if(classe(i)==(sortLR(0))){
+           if(classe(i)==(clval(sortLR(0)))){
            IOindexL(i) = true;
            }else{
              IOindexL(i) = false;
            }
-           if(classe(i)==(sortLR(1))){
+           if(classe(i)==(clval(sortLR(1)))){
            IOindexR(i) = true;
            }else{
              IOindexR(i) = false;
