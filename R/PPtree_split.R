@@ -29,11 +29,13 @@
 #' #crab data set
 #' Tree.crab <- PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 1)
 #' Tree.crab
-PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda=0.1, ...) {
+PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.1, ...) {
      TOL <- NULL
      formula <- stats::as.formula(form)
      mf <- stats::model.frame(formula, data = data)
      origclass <- stats::model.response(mf)
+    
+     
  
     cls <- all.vars(formula)[[1]]
     
@@ -72,8 +74,8 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda=0.1,
         Tree.Struct[id, 4] <- rep2
         rep2 <- rep2 + 1
         
-        a <- Find.proj(origclass, origdata, PPmethod, size.p=size.p, 
-                        lambda=lambda, ...)
+        a <- findprojwrap(origclass,origdata, PPmethod,
+                          sizep= size.p, lambda  )
         splitCutoff.node <- rbind(splitCutoff.node, t(a$C))
         Tree.Struct[id, 5] <- a$Index
         projbest.node <- rbind(projbest.node, t(a$Alpha))
@@ -85,8 +87,11 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda=0.1,
         t.index <- sort(t.index[-(1:t.n)])
         t.class <- t.class[t.index]
         t.data <- origdata[t.index, ]
+        
+        print(Tree.Struct[id, 2])
+        
         b <- Tree.construct(t.class, t.data, Tree.Struct, 
-                            Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, 
+                            id=Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, 
                             splitCutoff.node, PPmethod, lambda,size.p, 
                             ...)
         Tree.Struct <- b$Tree.Struct
@@ -105,10 +110,12 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda=0.1,
         t.data <- origdata[t.index, ]
         n <- nrow(t.data)
         G <- length(table(t.class))
+        print(Tree.Struct[id, 3])
         b <- Tree.construct(t.class, t.data, Tree.Struct, 
                             Tree.Struct[id, 3], rep, rep1, rep2, projbest.node, 
                             splitCutoff.node, PPmethod,  lambda,size.p, 
                             ...)
+        
         Tree.Struct <- b$Tree.Struct
         projbest.node <- b$projbest.node
         splitCutoff.node <- b$splitCutoff.node

@@ -290,8 +290,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // treeconstruct
-List treeconstruct(arma::vec origclass, arma::mat origdata, arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat splitCutoffnode, std::string PPmethod, double lambda);
-RcppExport SEXP PPforest2_treeconstruct(SEXP origclassSEXP, SEXP origdataSEXP, SEXP TreestructSEXP, SEXP idSEXP, SEXP repSEXP, SEXP rep1SEXP, SEXP rep2SEXP, SEXP projbestnodeSEXP, SEXP splitCutoffnodeSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP) {
+List treeconstruct(arma::vec origclass, arma::mat origdata, arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat splitCutoffnode, std::string PPmethod, double lambda, double sizep);
+RcppExport SEXP PPforest2_treeconstruct(SEXP origclassSEXP, SEXP origdataSEXP, SEXP TreestructSEXP, SEXP idSEXP, SEXP repSEXP, SEXP rep1SEXP, SEXP rep2SEXP, SEXP projbestnodeSEXP, SEXP splitCutoffnodeSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP, SEXP sizepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -306,7 +306,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type splitCutoffnode(splitCutoffnodeSEXP);
     Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(treeconstruct(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda));
+    Rcpp::traits::input_parameter< double >::type sizep(sizepSEXP);
+    rcpp_result_gen = Rcpp::wrap(treeconstruct(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep));
     return rcpp_result_gen;
 END_RCPP
 }

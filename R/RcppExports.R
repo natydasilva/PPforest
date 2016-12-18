@@ -85,7 +85,7 @@ findprojwrap <- function(origclass, origdata, PPmethod = "LDA", sizep = 1, lambd
     .Call('PPforest2_findprojwrap', PACKAGE = 'PPforest2', origclass, origdata, PPmethod, sizep, lambda)
 }
 
-treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod = "LDA", lambda = 0.1) {
-    .Call('PPforest2_treeconstruct', PACKAGE = 'PPforest2', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda)
+treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod = "LDA", lambda = 0.1, sizep = 1) {
+    .Call('PPforest2_treeconstruct', PACKAGE = 'PPforest2', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep)
 }
 
