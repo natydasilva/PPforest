@@ -31,8 +31,8 @@
 #' @export
 #' @examples
 #' #leukemia data set with all the observations used as training
-#' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
-#'  size.tr = 1, m = 500, size.p = .2, PPmethod = 'PDA', strata = TRUE)
+#' pprf.crab <- PPforest(data = leukemia, class = "Type",
+#'  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia
 PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
    

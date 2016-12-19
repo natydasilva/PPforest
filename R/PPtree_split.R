@@ -24,7 +24,7 @@
 #' @keywords tree
 #' @examples
 #' #leukemia data set
-#' Tree.leukemia <- PPtree_split("Type~.", data = leukemia,PPmethod = "PDA", size.p = 0.9)
+#' Tree.leukemia <- PPtree_split("Type~.", data =leukemia,PPmethod = "PDA", size.p = 0.9)
 #' Tree.leukemia
 #' #crab data set
 #' Tree.crab <- PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 1)
@@ -35,8 +35,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.
      mf <- stats::model.frame(formula, data = data)
      origclass <- stats::model.response(mf)
     
-     
- 
+
     cls <- all.vars(formula)[[1]]
     
     origdata <- data[,-which(colnames(data)%in%cls)]
@@ -44,106 +43,30 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.
     pp <- ncol(origdata)
     origclass <- as.numeric(as.factor(origclass))
 
-    Find.proj <- function(origclass, origdata, PPmethod,size.p,lambda,...) {
-    findprojwrap(origclass,origdata, PPmethod,
-                sizep= size.p, lambda  )
-    }
-    
 
-    Tree.construct <- function(origclass, origdata, Tree.Struct, 
-                               id, rep, rep1, rep2, projbest.node, splitCutoff.node, 
-                               PPmethod, lambda, size.p,...) {
-      origclass <- as.integer(origclass)
-      n <- nrow(origdata)
-      g <- table(origclass)
-      G <- length(g)
-      if (length(Tree.Struct) == 0) {
-        Tree.Struct <- matrix(1:(2 * G - 1), ncol = 1)
-        Tree.Struct <- cbind(Tree.Struct, 0, 0, 0, 0)
-      }
-      if (G == 1) {
-        Tree.Struct[id, 3] <- as.numeric(names(g))
-        list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
-             splitCutoff.node = splitCutoff.node, rep = rep, 
-             rep1 = rep1, rep2 = rep2)
-      }else{
-        Tree.Struct[id, 2] <- rep1
-        rep1 <- rep1 + 1
-        Tree.Struct[id, 3] <- rep1
-        rep1 <- rep1 + 1
-        Tree.Struct[id, 4] <- rep2
-        rep2 <- rep2 + 1
-        
-        a <- findprojwrap(origclass,origdata, PPmethod,
-                          sizep= size.p, lambda  )
-        splitCutoff.node <- rbind(splitCutoff.node, t(a$C))
-        Tree.Struct[id, 5] <- a$Index
-        projbest.node <- rbind(projbest.node, t(a$Alpha))
-        t.class <- origclass
-        t.data <- origdata
-        t.class <- t.class * a$IOindexL
-        t.n <- length(t.class[t.class == 0])
-        t.index <- sort.list(t.class)
-        t.index <- sort(t.index[-(1:t.n)])
-        t.class <- t.class[t.index]
-        t.data <- origdata[t.index, ]
-        
-        print(Tree.Struct[id, 2])
-        
-        b <- Tree.construct(t.class, t.data, Tree.Struct, 
-                            id=Tree.Struct[id, 2], rep, rep1, rep2, projbest.node, 
-                            splitCutoff.node, PPmethod, lambda,size.p, 
-                            ...)
-        Tree.Struct <- b$Tree.Struct
-        projbest.node <- b$projbest.node
-        splitCutoff.node <- b$splitCutoff.node
-        rep <- b$rep
-        rep1 <- b$rep1
-        rep2 <- b$rep2
-        t.class <- origclass
-        t.data <- origdata
-        t.class <- (t.class * a$IOindexR)
-        t.n <- length(t.class[t.class == 0])
-        t.index <- sort.list(t.class)
-        t.index <- sort(t.index[-(1:t.n)])
-        t.class <- t.class[t.index]
-        t.data <- origdata[t.index, ]
-        n <- nrow(t.data)
-        G <- length(table(t.class))
-        print(Tree.Struct[id, 3])
-        b <- Tree.construct(t.class, t.data, Tree.Struct, 
-                            Tree.Struct[id, 3], rep, rep1, rep2, projbest.node, 
-                            splitCutoff.node, PPmethod,  lambda,size.p, 
-                            ...)
-        
-        Tree.Struct <- b$Tree.Struct
-        projbest.node <- b$projbest.node
-        splitCutoff.node <- b$splitCutoff.node
-        rep <- b$rep
-        rep1 <- b$rep1
-        rep2 <- b$rep2
-      }
-      list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
-           splitCutoff.node = splitCutoff.node, rep = rep, rep1 = rep1, 
-           rep2 = rep2)
-    }
+    g <- table(origclass)
+    G <- length(g)
     
-    splitCutoff.node <- NULL
-    projbest.node <- NULL
-    Tree.Struct <- NULL
-    id <- 1
-    rep1 <- 2
-    rep2 <- 1
-    rep <- 1
-    Tree.final <- Tree.construct(origclass, origdata, Tree.Struct, 
-                                 id, rep, rep1, rep2, projbest.node, splitCutoff.node, 
-                                 PPmethod,lambda=lambda,size.p=size.p, ...)
-    Tree.Struct <- Tree.final$Tree.Struct
+    Tree.final <- treeconstruct(origclass, origdata, Treestruct = cbind( 1:(2*G-1), matrix(0, ncol = 4, nrow = 2*G-1) ), 
+                  id = 0,  rep = 1, rep1 = 2, rep2 = 1, projbestnode = matrix(0, ncol = pp, nrow = 1), 
+                  splitCutoffnode = matrix(0, ncol = 8, nrow = 1), PPmethod, lambda, size.p )
+    
+   
+    
+    Tree.Struct <- Tree.final$Treestruct
     colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", 
                                "Coef.ID", "Index")
-    projbest.node <- Tree.final$projbest.node
-    splitCutoff.node <- Tree.final$splitCutoff.node
-    colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+    projbest.node <- Tree.final$projbestnode[-1, ]
+    
+   
+    if(nrow(Tree.final$splitCutoffnode)==2){
+      splitCutoff.node <- data.frame(splitCutoffnode = t(Tree.final$splitCutoffnode[-1, ]))
+      colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+      
+    }else{
+      splitCutoff.node <- data.frame(splitCutoffnode = Tree.final$splitCutoffnode[-1, ])
+      colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+    }
     treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
                     splitCutoff.node = splitCutoff.node, origclass = origclass, 
                     origdata = origdata)
