@@ -13,10 +13,6 @@ tableC <- function(x) {
     .Call('PPforest2_tableC', PACKAGE = 'PPforest2', x)
 }
 
-LDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE) {
-    .Call('PPforest2_LDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
-}
-
 LDAindex2 <- function(origclass, origdata, proj, weight = TRUE) {
     .Call('PPforest2_LDAindex2', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
 }
@@ -27,10 +23,6 @@ signC <- function(x) {
 
 LDAopt <- function(origclass, origdata, q = 1L, PPmethod = "LDA", weight = TRUE) {
     .Call('PPforest2_LDAopt', PACKAGE = 'PPforest2', origclass, origdata, q, PPmethod, weight)
-}
-
-PDAindex <- function(origclass, origdata, proj = matrix(0), weight = TRUE, lambda = 0.1) {
-    .Call('PPforest2_PDAindex', PACKAGE = 'PPforest2', origclass, origdata, proj, weight, lambda)
 }
 
 PDAindex2 <- function(origclass, origdata, proj, weight = TRUE, lambda = 0.1) {
@@ -87,5 +79,13 @@ findprojwrap <- function(origclass, origdata, PPmethod = "LDA", sizep = 1, lambd
 
 treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod = "LDA", lambda = 0.1, sizep = 1) {
     .Call('PPforest2_treeconstruct', PACKAGE = 'PPforest2', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep)
+}
+
+csample_num <- function(x, size, replace, prob) {
+    .Call('PPforest2_csample_num', PACKAGE = 'PPforest2', x, size, replace, prob)
+}
+
+boot <- function(origclass, origdata) {
+    .Call('PPforest2_boot', PACKAGE = 'PPforest2', origclass, origdata)
 }
 

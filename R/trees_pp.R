@@ -29,3 +29,4 @@ trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...) 
     }
     trees
 } 
+

@@ -50,20 +50,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// LDAindex
-double LDAindex(IntegerVector origclass, NumericMatrix origdata, NumericMatrix proj, bool weight);
-RcppExport SEXP PPforest2_LDAindex(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type origclass(origclassSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type origdata(origdataSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type proj(projSEXP);
-    Rcpp::traits::input_parameter< bool >::type weight(weightSEXP);
-    rcpp_result_gen = Rcpp::wrap(LDAindex(origclass, origdata, proj, weight));
-    return rcpp_result_gen;
-END_RCPP
-}
 // LDAindex2
 arma::vec LDAindex2(arma::vec origclass, arma::mat origdata, arma::mat proj, bool weight);
 RcppExport SEXP PPforest2_LDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {
@@ -101,21 +87,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type PPmethod(PPmethodSEXP);
     Rcpp::traits::input_parameter< bool >::type weight(weightSEXP);
     rcpp_result_gen = Rcpp::wrap(LDAopt(origclass, origdata, q, PPmethod, weight));
-    return rcpp_result_gen;
-END_RCPP
-}
-// PDAindex
-double PDAindex(IntegerVector origclass, NumericMatrix origdata, NumericMatrix proj, bool weight, double lambda);
-RcppExport SEXP PPforest2_PDAindex(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type origclass(origclassSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type origdata(origdataSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type proj(projSEXP);
-    Rcpp::traits::input_parameter< bool >::type weight(weightSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(PDAindex(origclass, origdata, proj, weight, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -308,6 +279,32 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< double >::type sizep(sizepSEXP);
     rcpp_result_gen = Rcpp::wrap(treeconstruct(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep));
+    return rcpp_result_gen;
+END_RCPP
+}
+// csample_num
+arma::vec csample_num(arma::vec x, int size, bool replace, arma::vec prob);
+RcppExport SEXP PPforest2_csample_num(SEXP xSEXP, SEXP sizeSEXP, SEXP replaceSEXP, SEXP probSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< bool >::type replace(replaceSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type prob(probSEXP);
+    rcpp_result_gen = Rcpp::wrap(csample_num(x, size, replace, prob));
+    return rcpp_result_gen;
+END_RCPP
+}
+// boot
+arma::vec boot(arma::mat origclass, arma::mat origdata);
+RcppExport SEXP PPforest2_boot(SEXP origclassSEXP, SEXP origdataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    rcpp_result_gen = Rcpp::wrap(boot(origclass, origdata));
     return rcpp_result_gen;
 END_RCPP
 }

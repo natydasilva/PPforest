@@ -16,6 +16,7 @@ Imports:
     magrittr,
      plyr,
     dplyr,
+    doMC,
     PPtreeViz,
     reshape2,
     plotly,

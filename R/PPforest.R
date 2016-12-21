@@ -5,7 +5,7 @@
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
-#' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
+#' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this number no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param strata if set \code{TRUE} then the bootrap samples are stratifyed by class variable.
@@ -31,7 +31,7 @@
 #' @export
 #' @examples
 #' #leukemia data set with all the observations used as training
-#' pprf.crab <- PPforest(data = leukemia, class = "Type",
+#' pprf.leukemia <- PPforest(data = leukemia, class = "Type",
 #'  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE)
 #' pprf.leukemia
 PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {

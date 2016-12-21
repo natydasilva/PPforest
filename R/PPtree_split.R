@@ -24,13 +24,13 @@
 #' @keywords tree
 #' @examples
 #' #leukemia data set
-#' Tree.leukemia <- PPtree_split("Type~.", data =leukemia,PPmethod = "PDA", size.p = 0.9)
+#' Tree.leukemia <- PPtree_split("Type~.", data =leukemia,PPmethod = "PDA", size.p = 0.15)
 #' Tree.leukemia
 #' #crab data set
-#' Tree.crab <- PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 1)
+#' Tree.crab <- PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.6)
 #' Tree.crab
 PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.1, ...) {
-     TOL <- NULL
+   
      formula <- stats::as.formula(form)
      mf <- stats::model.frame(formula, data = data)
      origclass <- stats::model.response(mf)
