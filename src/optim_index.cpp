@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include <RcppArmadilloExtensions/sample.h>
 // [[Rcpp::depends(RcppArmadillo)]] 
 using namespace arma; 
 using namespace Rcpp;
@@ -18,69 +19,6 @@ arma::vec tableC(arma::vec x) {
   
   return counts;
 }  
-
-// [[Rcpp::export]]
-double LDAindex(IntegerVector origclass, NumericMatrix origdata, 
-                NumericMatrix proj=NumericMatrix(0),bool weight=true){
-  double index;
-  int n=origdata.nrow(),p=origdata.ncol(),q=proj.ncol(),p1=proj.nrow();
-  Environment base("package:base");
-  Function table=base["table"];
-  NumericVector gn=table(origclass);
-  int g=gn.size();  
-  
-  if(p1!=p)
-    q=p;
-  NumericVector allmean(q);
-  NumericMatrix W(q,q),WB(q,q),gsum(q,g);        
-  NumericMatrix projdata(n,q);
-  if(p1!=p||p1==1){
-    projdata=origdata; 
-  } else{
-    for(int i=0;i<n;i++){
-      for(int j=0;j<q;j++){
-        for(int k=0;k<p;k++){
-          projdata(i,j)+=origdata(i,k)*proj(k,j);
-        }
-      }
-    }
-  }
-  for(int i=0;i<n;i++){
-    for(int k=0;k<q;k++){
-      allmean(k)+=projdata(i,k)/n;
-      gsum(k,(origclass(i)-1) )+=projdata(i,k);
-    }
-  }
-  for(int i=0;i<n;i++){
-    int l=origclass[i]-1;
-    double gn1;
-    if(weight){
-      gn1=gn(l);
-    } else{
-      gn1=n/g; 
-    }
-    for(int j1=0;j1<q;j1++){
-      for(int j2=0;j2<=j1;j2++){
-        W(j1,j2)+=((projdata(i,j1)-gsum(j1,l)/gn(l))*
-          (projdata(i,j2)-gsum(j2,l)/gn(l)))/gn(l)*gn1;
-        W(j2,j1)=W(j1,j2);
-        double temp=((projdata(i,j1)-gsum(j1,l)/gn(l))*
-                     (projdata(i,j2)-gsum(j2,l)/gn(l))+
-                     (gsum(j1,l)/gn(l)-allmean(j1))*
-                     (gsum(j2,l)/gn(l)-allmean(j2)))/gn(l)*gn1;
-        WB(j1,j2)+=temp;
-        WB(j2,j1)=WB(j1,j2);
-      }
-    }
-  }
-  Function det=base["det"];
-  //double dw=as<double>(det(wrap(W)));
-  double dw=0.0;
-   dw =as<double>(det(wrap(WB)));
-  index=1.0-as<double>(det(wrap(W)))/as<double>(det(wrap(WB)));
-  return index;
-}
-
 
 
 
@@ -161,12 +99,6 @@ arma::vec LDAindex2(arma::vec origclass, arma::mat origdata,
       }
     }
   }
-//   Environment base("package:base");
-//  Function det=base["det"];
-//  double dw = as<double>(det(wrap(W)));
-// index = 1.0-as<double>(det(wrap(W)))/as<double>(det(wrap(WB)));
-
-
 
   index = 1.0-det(W)/det(WB);
   
@@ -275,89 +207,6 @@ double signC(double x) {
 
 
 
-// [[Rcpp::export]]
-double PDAindex(IntegerVector origclass, NumericMatrix origdata,
-                NumericMatrix proj=NumericMatrix(0),bool weight=true,
-                double lambda=0.1){
-  double index;
-  int n=origdata.nrow(),p=origdata.ncol(),q=proj.ncol(),p1=proj.nrow();
-  Environment base("package:base");
-  Function table=base["table"];
-  NumericVector gn=table(origclass);
-  int g=gn.size();  
-  NumericMatrix W(p,p),WB(p,p),gsum(p,g);
-  NumericVector allmean(p);
-  if(p1!=p)
-    q=p;
-  for(int i=0;i<n;i++){
-    for(int k=0;k<p;k++){
-      allmean(k)+=origdata(i,k)/n;
-      gsum(k,(origclass(i)-1))+=origdata(i,k);
-    }
-  }
-  for(int i=0;i<n;i++){
-    int l=origclass[i]-1;
-    double gn1;
-    if(weight){
-      gn1=gn(l);
-    } else{
-      gn1=n/g; 
-    }
-    for(int j1=0;j1<p;j1++){
-      for(int j2=0; j2<=j1; j2++){
-        double temp1,temp2;
-        if(j1!=j2){
-          temp1=(1-lambda)*((origdata(i,j1)-gsum(j1,l)/gn(l))*
-            (origdata(i,j2)-gsum(j2,l)/gn(l)))/gn(l)*gn1;
-          
-          temp2=(1-lambda)*((origdata(i,j1)-gsum(j1,l)/gn(l))*
-            (origdata(i,j2)-gsum(j2,l)/gn(l)))+
-            (gsum(j1,l)/gn(l)-allmean(j1))*
-            (gsum(j2,l)/gn(l)-allmean(j2))/gn(l)*gn1;
-        } else{
-          temp1=((origdata(i,j1)-gsum(j1,l)/gn(l))*
-            (origdata(i,j2)-gsum(j2,l)/gn(l)))/gn(l)*gn1;
-          
-          temp2=((origdata(i,j1)-gsum(j1,l)/gn(l))*
-            (origdata(i,j2)-gsum(j2,l)/gn(l))+
-            (gsum(j1,l)/gn(l)-allmean(j1))*
-            (gsum(j2,l)/gn(l)-allmean(j2)))/gn(l)*gn1;              
-        }  
-        W(j1,j2)+=temp1;  
-        WB(j1,j2)+=temp2;
-        W(j2,j1)=W(j1,j2);            
-        WB(j2,j1)=WB(j1,j2);
-      }
-    }      
-  }
-  NumericMatrix Wt(q,p),WBt(q,p);    
-  NumericMatrix Wtt(q,q),WBtt(q,q); 
-  if(p1!=p||p1==1){
-    Wtt=W;
-    WBtt=WB;
-  } else{
-    for(int i=0;i<p;i++){
-      for(int j=0;j<q;j++){
-        for(int k=0;k<p;k++){
-          Wt(j,i)+=W(k,i)*proj(k,j);
-          WBt(j,i)+=WB(k,i)*proj(k,j);               
-        }
-      }
-    }    
-    for(int i=0;i<q;i++){
-      for(int j=0;j<q;j++){
-        for(int k=0;k<p;k++){
-          Wtt(i,j)+=Wt(i,k)*proj(k,j);
-          WBtt(i,j)+=WBt(i,k)*proj(k,j);               
-        }
-      }
-    }      
-  }   
-  Function det=base["det"];
-  index=1.0-as<double>(det(wrap(Wtt)))/as<double>(det(wrap(WBtt)));   
-  return index;
-}
-
 
 // [[Rcpp::export]]
 double PDAindex2(arma::vec origclass, arma::mat origdata,
@@ -456,9 +305,7 @@ double PDAindex2(arma::vec origclass, arma::mat origdata,
       }
     }      
   }   
-  //Function det=base["det"];
-  //index=1.0-as<double>(det(wrap(Wtt)))/as<double>(det(wrap(WBtt)));   
-
+  
   index = 1.0-det(Wtt)/det(WBtt);
   return index;
 }
@@ -887,8 +734,7 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod="
   List oneDproj = findproj(origclass, origdata, PPmethod, lambda);
   arma::vec projdata = as<vec>(oneDproj["projdata"]);
   arma::vec classe = split_rel(origclass, origdata, projdata);
-  //arma::vec classe =  as<vec>(oneDproj["class"]);
-  //Rcout << classe;
+ 
   arma::mat projbest = as<mat>(oneDproj["projbest"]);
 
        arma::vec C = nodestr(classe, projdata);
@@ -927,12 +773,7 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod="
            }
           
           mean_g(k) = tot/ng(k);
-           //Rcout<<mean_g;
-          // if (ng(k) > 0 ) {
-          //  mean_g(k) = tot/ng(k) ;
-          // } else {
-          //   mean_g(k) = 0.0;
-          // }
+        
           
           
          }
@@ -970,25 +811,14 @@ return Rcpp::List::create(Rcpp::Named("Index") = indexbest,Rcpp::Named("Alpha") 
 
 }
 
-
+//tree structure
 // [[Rcpp::export]]
 List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
-                   std::string PPmethod = "LDA", double lambda = 0.1, double sizep=1) {
+                   std::string PPmethod = "LDA", double lambda = 0.1, double sizep = 1) {
   
   int n = origdata.n_rows;
-  //int p = origdata.n_cols; 
   arma::vec g = tableC(origclass);
- 
   arma::vec cl2= unique(origclass);
- 
-  //int cl = cl2.n_rows;
-  //arma::vec clid = arma::linspace<vec>(1, cl, cl);
-    
-  //matrix with number of observations by class
-  // arma::mat gg;
-  // gg.insert_cols(gg.n_cols,clid);
-  // gg.insert_cols(gg.n_cols, g);
-
   int G = g.size();
   
   List a;
@@ -1016,8 +846,7 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
     
     // Rcout<< Treestruct;
     a = findprojwrap(origclass, origdata, PPmethod,sizep, lambda);
-    //classe = split_rel(origclass, origdata, origdata*as<vec>(a["Alpha"]));
-     classe =as<vec>(a["classe"]);
+    classe =as<vec>(a["classe"]);
     C = nodestr(classe,as<vec>(a["projdata"]));
    
     splitCutoffnode.insert_rows( splitCutoffnode.n_rows,C.t());
@@ -1071,10 +900,10 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
         
         b = treeconstruct(tclass, tdata, Treestruct,
                             Treestruct(id, 2)-1, rep, rep1, rep2, projbestnode,
-                            splitCutoffnode, PPmethod, lambda);
+                            splitCutoffnode, PPmethod, lambda,sizep);
 
         Treestruct = as<mat>(b["Treestruct"]);
-        projbestnode = as<vec>(b["projbestnode"]);
+        projbestnode = as<mat>(b["projbestnode"]);
         splitCutoffnode = as<mat>(b["splitCutoffnode"]);
         rep = as<int>(b["rep"]);
         rep1 =  as<int>(b["rep1"]);
@@ -1086,234 +915,64 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
 
 
 
-  // return Rcpp::List::create(Rcpp::Named("GS") = GS,
-  //                           Rcpp::Named("gg") = gg, Rcpp::Named("Treestruct")=Treestruct,
-  //                           Rcpp::Named("part")=part, Rcpp::Named("sp")=splitCutoffnode,
-  //                           Rcpp::Named("a")=a,  Rcpp::Named("C")=C);
+// [[Rcpp::export]]
+arma::vec csample_num( arma::vec x,
+                           int size,
+                           bool replace,
+                           arma::vec prob) {
+arma::vec ret = Rcpp::RcppArmadillo::sample(x, size, replace, prob);
+  return ret;
+}
+
+// [[Rcpp::export]]
+arma::vec boot( arma::mat origclass, arma::mat origdata) {
+ //
+
+   int n=origdata.n_rows;
+   arma::vec id = arma::linspace<vec>(0, n-1,n); //integer sequence from 0 to n-1
+    arma::vec clval = arma::unique(origclass.col(0));
+    origclass.insert_cols(origclass.n_cols,id);
+    
+    arma::vec bootsel;
+       for (int k = 0; k < clval.size(); k++) {
+         arma::uvec idx = find(origclass.col(0) == clval(k));//find indices of non-zero elements, or elements satisfying a relational condition
+         arma::mat reduclass = origclass.rows(idx);
+         int nc = reduclass.n_rows;
+           arma::vec samp = csample_num(reduclass.col(1), reduclass.n_rows, true,  ones<vec>(nc));
+       bootsel = join_cols(bootsel,samp);
+       }
+  return bootsel;
+}
+
+
+//boot and tree
+
+// // [[Rcpp::export]]
+// arma::vec boottree( arma::mat origclass, arma::mat origdata,arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
+//                     std::string PPmethod = "LDA", double lambda = 0.1, double sizep = 1,
+//                     ){
+// 
+//   int n = origdata.n_rows
+// 
+// 
+//  boot(origclass, origdata)
+// 
+// 
+// 
+// }
   // 
+  // trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...) {
+  //                          . <- NULL
+  // 
+  // names(data.b)[1] <- "class"
+  //   if (PPmethod == "LDA") {
+  //     trees <- data.b %>% dplyr::do(tr = PPtree_split(class~., data = .,  PPmethod = "LDA",  size.p = size.p, 
+  //                  ...))
+  //     
+  //   } else {
+  //     trees <- data.b %>% dplyr::do(tr = PPtree_split(class~. ,  data = ., PPmethod = "PDA", size.p = size.p, 
+  //                                                     lambda, ...))
+  //   }
+  //   trees
+  // } 
 
-
-  // return Rcpp::List::create(Rcpp::Named("Treestruct") = Treestruct,
-  //                           Rcpp::Named("projbestnode") = projbestnode,
-  //                           Rcpp::Named("splitCutoffnode")= splitCutoffnode,
-  //                           Rcpp::Named("rep")= rep,
-  //                           Rcpp::Named("rep1")= rep1,
-  //                           Rcpp::Named("rep2")= rep2);
-
-//}
-
-
-
-
-// List treeconstruct(arma::vec origclass, arma::mat origdata, arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
-//                         std::string PPmethod = "LDA", double lambda = 0.1 ) {
-  //   origclass should be an integer
-  
-  
-// 
-//   splitCutoffnode = NA_REAL;
-//   //Rcpp::Nullable<arma::mat> splitCutoffnode = R_NilValue;
-//   projbestnode = NA_REAL;
-//   Treestruct = NA_REAL;
-//   id = 1;
-//   rep1 = 2;
-//   rep2 = 1;
-//   rep = 1;
-//   List Treefinal = treeconstruct(origclass, origdata, Treestruct,
-//                                id, rep, rep1, rep2, projbestnode, splitCutoffnode,
-//                                PPmethod, lambda);
-// 
-//     Treestruct = as<mat>(Treefinal["Treestruct"]);
-// 
-//     // colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID",
-//     //          "Coef.ID", "Index")
-//     projbestnode = as<mat>(Treefinal["projbestnode"]);
-//     splitCutoffnode = as<mat>(Treefinal["splitCutoffnode"]);
-// //colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
-//    // List treeobj =  List::create list(Treestruct, projbestnode,
-//    //                  splitCutoffnode, origclass,origdata )
-// 
-//     //class(treeobj) <- append(class(treeobj), "PPtreeclass")
-//     return Rcpp::List::create(Rcpp::Named("Treestruct") = Treestruct,
-//                               Rcpp::Named("projbestnode") = projbestnode,
-//                               Rcpp::Named("splitCutoffnode")= splitCutoffnode,
-//                               Rcpp::Named("origclass")= origclass,
-//                               Rcpp::Named("origdata")= origdata);
-//   
-//     }
-
-
-
-  
-  
-  
-///////////
-  
-  
-//
-// Tree.construct <- function(origclass, origdata, Tree.Struct,
-//                            id, rep, rep1, rep2, projbest.node, splitCutoff.node,
-//                            PPmethod, r = NULL, lambda = NULL, ...) {
-//   origclass <- as.integer(origclass)
-//   n <- nrow(origdata)
-//   g <- table(origclass)
-//   G <- length(g)
-//   if (length(Tree.Struct) == 0) {
-//     Tree.Struct <- matrix(1:(2 * G - 1), ncol = 1)
-//     Tree.Struct <- cbind(Tree.Struct, 0, 0, 0, 0)
-//   }
-//   if (G == 1) {
-//     Tree.Struct[id, 3] <- as.numeric(names(g))
-//     list(Tree.Struct = Tree.Struct, projbest.node = projbest.node,
-//          splitCutoff.node = splitCutoff.node, rep = rep,
-//          rep1 = rep1, rep2 = rep2)
-//   }
-//   else {
-//     Tree.Struct[id, 2] <- rep1
-//     rep1 <- rep1 + 1
-//     Tree.Struct[id, 3] <- rep1
-//     rep1 <- rep1 + 1
-//     Tree.Struct[id, 4] <- rep2
-//     rep2 <- rep2 + 1
-//     a <- Find.proj(origclass, origdata, PPmethod, weight,
-//                    r, lambda, ...)
-//     splitCutoff.node <- rbind(splitCutoff.node, a$C)
-//     Tree.Struct[id, 5] <- a$Index
-//     projbest.node <- rbind(projbest.node, a$Alpha)
-//     t.class <- origclass
-//     t.data <- origdata
-//     t.class <- t.class * a$IOindexL
-//     t.n <- length(t.class[t.class == 0])
-//     t.index <- sort.list(t.class)
-//     t.index <- sort(t.index[-(1:t.n)])
-//     t.class <- t.class[t.index]
-//     t.data <- origdata[t.index, ]
-//     b <- Tree.construct(t.class, t.data, Tree.Struct,
-//                         Tree.Struct[id, 2], rep, rep1, rep2, projbest.node,
-//                         splitCutoff.node, PPmethod, r, lambda,
-//                                    ...)
-//                         Tree.Struct <- b$Tree.Struct
-//     projbest.node <- b$projbest.node
-//     splitCutoff.node <- b$splitCutoff.node
-//     rep <- b$rep
-//     rep1 <- b$rep1
-//     rep2 <- b$rep2
-//     t.class <- origclass
-//     t.data <- origdata
-//     t.class <- (t.class * a$IOindexR)
-//     t.n <- length(t.class[t.class == 0])
-//     t.index <- sort.list(t.class)
-//     t.index <- sort(t.index[-(1:t.n)])
-//     t.class <- t.class[t.index]
-//     t.data <- origdata[t.index, ]
-//     n <- nrow(t.data)
-//     G <- length(table(t.class))
-//     b <- Tree.construct(t.class, t.data, Tree.Struct,
-//                         Tree.Struct[id, 3], rep, rep1, rep2, projbest.node,
-//                         splitCutoff.node, PPmethod, r, lambda,
-//                                    ...)
-//                         Tree.Struct <- b$Tree.Struct
-//     projbest.node <- b$projbest.node
-//     splitCutoff.node <- b$splitCutoff.node
-//     rep <- b$rep
-//     rep1 <- b$rep1
-//     rep2 <- b$rep2
-//   }
-//   list(Tree.Struct = Tree.Struct, projbest.node = projbest.node,
-//        splitCutoff.node = splitCutoff.node, rep = rep, rep1 = rep1,
-//        rep2 = rep2)
-// }
-//
-// splitCutoff.node <- NULL
-// projbest.node <- NULL
-// Tree.Struct <- NULL
-// id <- 1
-// rep1 <- 2
-// rep2 <- 1
-// rep <- 1
-// Tree.final <- Tree.construct(origclass, origdata, Tree.Struct,
-//                              id, rep, rep1, rep2, projbest.node, splitCutoff.node,
-//                              PPmethod, r, lambda, TOL, ...)
-//   Tree.Struct <- Tree.final$Tree.Struct
-//   colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID",
-//            "Coef.ID", "Index")
-//   projbest.node <- Tree.final$projbest.node
-//   splitCutoff.node <- Tree.final$splitCutoff.node
-//   colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
-//   treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node,
-//                   splitCutoff.node = splitCutoff.node, origclass = origclass,
-//                   origdata = origdata)
-//   class(treeobj) <- append(class(treeobj), "PPtreeclass")
-//   return(treeobj)
-//   }
-
-
-// ===================================== 
-// 
-// 
-// // [[Rcpp::export]]  
-// extern "C" SEXP fastLm(SEXP ys, SEXP Xs) {
-//   
-//   Rcpp::NumericVector yr(ys);                 // creates Rcpp vector from SEXP
-//   Rcpp::NumericMatrix Xr(Xs);                 // creates Rcpp matrix from SEXP
-//   int n = Xr.nrow(), k = Xr.ncol();
-//   
-//   arma::mat X(Xr.begin(), n, k, false);       // reuses memory and avoids extra copy
-//   arma::colvec y(yr.begin(), yr.size(), false);
-//   
-//   arma::colvec coef = arma::solve(X, y);      // fit model y ~ X
-//   arma::colvec resid = y - X*coef;            // residuals
-//   
-//   double sig2 = arma::as_scalar( arma::trans(resid)*resid/(n-k) );
-//   // std.error of estimate
-//   arma::colvec stderrest = arma::sqrt( sig2 * arma::diagvec( arma::inv(arma::trans(X)*X)) );
-//   
-//   return Rcpp::List::create(
-//     Rcpp::Named("coefficients") = coef,
-//     Rcpp::Named("stderr")       = stderrest
-//   ) ;
-//   
-// }
-// 
-// // [[Rcpp::export]]
-// arma::mat outerC2(arma::colvec a, arma::rowvec b) {
-//   return a*b;
-// }
-// 
-// // [[Rcpp::export]]
-// arma::mat cube_sum(Rcpp::NumericVector vx) {
-//   
-//   Rcpp::IntegerVector x_dims = vx.attr("dim");
-//   arma::cube x(vx.begin(), x_dims[0], x_dims[1], x_dims[2], false);
-//   
-//   arma::mat result(x.n_cols, x.n_slices);
-//   for (unsigned int i = 0; i < x.n_slices; i++) {
-//     result.col(i) = arma::conv_to<arma::colvec>::from(arma::sum(x.slice(i)));  
-//   }
-//   
-//   return result;
-// }
-// 
-// // [[Rcpp::export]]
-// arma::mat cube_sum1(arma::cube c) {
-//   arma::mat ss(c.n_rows, c.n_cols, arma::fill::zeros);
-//   for(int i = 0; i < c.n_slices; i++) {
-//     //ss += c.tube(arma::span::all, arma::span(i));
-//     ss += c.slice(i);
-//   }
-//   return ss;
-// }
-// 
-// 
-// // [[Rcpp::export]]
-// arma::mat prueba(arma::mat a, arma::vec b) {
-//   arma::mat c(a.n_rows, a.n_cols) ;
-//   int n = b.size();
-//   
-//   arma:cube d(a.n_rows, a.n_cols, n);
-//   for(int i =0; i <n; i++) {
-//     d.slice(i) =   b[i] * a;
-//   }
-//   c = cube_sum1(d);
-//   return c;
-// }
