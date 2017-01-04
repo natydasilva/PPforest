@@ -56,16 +56,18 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.
     Tree.Struct <- Tree.final$Treestruct
     colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", 
                                "Coef.ID", "Index")
-    projbest.node <- Tree.final$projbestnode[-1, ]
+    #projbest.node <- Tree.final$projbestnode[-1, ]
     
    
     if(nrow(Tree.final$splitCutoffnode)==2){
       splitCutoff.node <- data.frame(splitCutoffnode = t(Tree.final$splitCutoffnode[-1, ]))
       colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+      projbest.node <- t(as.matrix(Tree.final$projbestnode[-1, ]))
       
     }else{
       splitCutoff.node <- data.frame(splitCutoffnode = Tree.final$splitCutoffnode[-1, ])
       colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+      projbest.node <- Tree.final$projbestnode[-1, ]
     }
     treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
                     splitCutoff.node = splitCutoff.node, origclass = origclass, 
