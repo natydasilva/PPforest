@@ -41,17 +41,15 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
   tree <- NULL
   pred <- NULL
   id <- NULL
-  #clnum <- as.numeric( as.factor(.subset2(data, class) ) )
-  clnum <- as.numeric( as.factor(data[, class] ) )
   
-  tr.index <- trainfn(as.matrix(clnum), as.matrix(data[ , setdiff(colnames(data), class)]),  sizetr = size.tr)+1
-
+  clnum <- as.numeric( as.factor(data[, class] ) )
+  tr.index <- trainfn(as.matrix(clnum), as.matrix(data[ , setdiff(colnames(data), class)]),
+                      sizetr = size.tr) + 1
   train <-  data %>% 
     dplyr::slice(tr.index)
   
-  
   type = "Classification"
-  var.sel <- round( (ncol(train ) -1) * size.p )
+  var.sel <- round( (ncol(train ) - 1) * size.p )
   
   outputaux <- baggtree(data , class , m , PPmethod , lambda , size.p )
   
@@ -62,15 +60,12 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
 
   
   pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
-
-  tri.low <- pos %>% dplyr::filter(pos[,1] >= pos[, 2])
-
-  same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[1]]), 2, function(x) x[.subset2(tri.low, 1)] == x[.subset2(tri.low,2)])) 
-  #same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[1]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 2]]))
-
- proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[1]]))[1])
-  #proximity <- data.frame(a = .subset2(same.node, 1),b = .subset2(same.node, 2), proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[1]]))[1])
   
+  prox <- proximi(t(pred.tr[[1]]))
+  proximity <- pos %>% dplyr::filter(pos[,1] > pos[, 2]) %>% 
+   mutate(prox = prox[lower.tri(prox)]/dim((pred.tr[[1]]))[1] )
+ 
+ 
   l.train <- 1:nrow(train)
   index <- lapply(data.b, function(x) x + 1)
   

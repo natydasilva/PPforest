@@ -93,3 +93,7 @@ trainfn <- function(origclass, origdata, sizetr) {
     .Call('PPforest2_trainfn', PACKAGE = 'PPforest2', origclass, origdata, sizetr)
 }
 
+proximi <- function(predtr) {
+    .Call('PPforest2_proximi', PACKAGE = 'PPforest2', predtr)
+}
+
