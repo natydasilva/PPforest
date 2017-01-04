@@ -971,7 +971,21 @@ arma::vec trainfn( arma::mat origclass, arma::mat origdata, double sizetr) {
   return sort(trainsel);
 }
 
-
 //proximity matrix
 // [[Rcpp::export]]
+arma::mat proximi(arma::mat predtr){
+arma::mat prox(predtr.n_rows, predtr.n_rows, fill::zeros);
 
+for(int k = 0; k < predtr.n_cols; k++) { 
+  
+  for(int i = 0; i < predtr.n_rows; i++) {
+    for(int j = 0; j < i; j++) {
+      if (predtr(i, k) == predtr(j,k) ) {
+        prox(i,j) += 1;
+      } 
+    }
+  }
+
+}
+return(prox);
+}
