@@ -5,7 +5,7 @@
 \title{Grow a PPtree_split for each bootstrap sample}
 \usage{
 baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
-  size.p = 1)
+  size.p = 1, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -20,7 +20,7 @@ baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
 
 \item{size.p}{proportion of random sample variables in each split.}
 
-\item{...}{arguments to be passed to methods}
+\item{cores}{The number of cores to use for parallel execution. By default is 2 cores.}
 }
 \value{
 data frame with trees_pp output for all the bootstraps samples.

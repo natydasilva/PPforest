@@ -8,7 +8,7 @@
 #' @param size.p proportion of random sample variables in each split.
 #' @param PPmethod is the projection pursuit index to be optimized, options LDA or PDA, by default it is LDA.
 #' @param lambda a parameter for PDA index
-#' @param ... arguments to be passed to methods
+#' @param cores The number of cores to use for parallel execution. By default is 2 cores.
 #' @return data frame with trees_pp output for all the bootstraps samples.
 #' @export
 #' @importFrom magrittr %>%
@@ -18,27 +18,32 @@
 #'  m =  70, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
 #' str(leukemia.trees, max.level = 1)
 
-baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1){
+baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1, cores = 2){
    bootsam <- NULL
    . <- NULL
-boottree <- function(data , class , PPmethod, lambda, size.p ){
+   
+ boottree <- function(data , class , PPmethod, lambda, size.p ){
   
   origclass <- data[,class]
   origdata <- data[ , setdiff( colnames( data ), class )]
-   bt1 <- boot(as.matrix(as.numeric(as.factor( origclass ) ) ), as.matrix( origdata ) )
- 
-   tree <- PPtree_split2( class, data = data[ ( bt1 + 1 ), ] , PPmethod, lambda ,size.p )
-   tree
+  origdata <- as.matrix(origdata)
+  origclass <- as.numeric(as.factor(origclass))
+  
+   bt1 <- boot(as.matrix( origclass ),  origdata  )   
+   
+ f <- stats::as.formula(paste(class, "~.",sep=''))
+   tree <- PPtree_split( f, data = data[ ( bt1 + 1 ), ] , PPmethod, lambda ,size.p = size.p )
+   
+   list( tree, bt1 )
    
 }
 
-doMC::registerDoMC(2)
+doMC::registerDoMC( cores )
 
 # getDoParWorkers()
 ## [1] 4
 
-data.frame(bootsam = 1:m) %>% 
-    plyr::dlply( plyr::.(bootsam), function(x) boottree(data , class, PPmethod , lambda , size.p ) ,  .parallel = TRUE)
+    plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data , class, PPmethod , lambda , size.p ) ,  .parallel = TRUE)
 
 
 }

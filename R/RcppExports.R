@@ -45,7 +45,7 @@ split_rel <- function(origclass, origdata, projdata) {
     .Call('PPforest2_split_rel', PACKAGE = 'PPforest2', origclass, origdata, projdata)
 }
 
-findproj <- function(origclass, origdata, PPmethod = "LDA", lambda = 0.1) {
+findproj <- function(origclass, origdata, PPmethod, lambda = 0.1) {
     .Call('PPforest2_findproj', PACKAGE = 'PPforest2', origclass, origdata, PPmethod, lambda)
 }
 
@@ -73,11 +73,11 @@ nodestr <- function(classe, projdata) {
     .Call('PPforest2_nodestr', PACKAGE = 'PPforest2', classe, projdata)
 }
 
-findprojwrap <- function(origclass, origdata, PPmethod = "LDA", sizep = 1, lambda = .1) {
+findprojwrap <- function(origclass, origdata, PPmethod, sizep = 1, lambda = .1) {
     .Call('PPforest2_findprojwrap', PACKAGE = 'PPforest2', origclass, origdata, PPmethod, sizep, lambda)
 }
 
-treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod = "LDA", lambda = 0.1, sizep = 1) {
+treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda = 0.1, sizep = 1) {
     .Call('PPforest2_treeconstruct', PACKAGE = 'PPforest2', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep)
 }
 
@@ -87,5 +87,9 @@ csample_num <- function(x, size, replace, prob) {
 
 boot <- function(origclass, origdata) {
     .Call('PPforest2_boot', PACKAGE = 'PPforest2', origclass, origdata)
+}
+
+trainfn <- function(origclass, origdata, sizetr) {
+    .Call('PPforest2_trainfn', PACKAGE = 'PPforest2', origclass, origdata, sizetr)
 }
 

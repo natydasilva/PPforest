@@ -36,7 +36,7 @@ Find tree structure using various projection pursuit indices of classification i
 Tree.leukemia <- PPtree_split2("Type", data =leukemia,PPmethod = "PDA", lambda=.1, size.p = 0.15)
 Tree.leukemia
 #crab data set
-Tree.crab <- PPtree_split2("Type", data = crab, PPmethod = "LDA", size.p = 0.6, lambda=.1)
+Tree.crab <- PPtree_split2("Type", data = crab, PPmethod = "LDA", size.p = .55, lambda=.1)
 Tree.crab
 }
 \references{

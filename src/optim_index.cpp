@@ -417,7 +417,7 @@ List datanode(arma::mat origdata, double sizep){
   arma::uvec idx = find(sdcol.row(0) > 0);//find indices of non-zero elements, or elements satisfying a relational condition
   arma::mat redudata = origdata.cols(idx);//select the columns with 0 variance
   int p = redudata.n_cols;
-  int sp = std::round(sizep*p);
+  int sp = std::round<int>(sizep*p);
   
   arma::uvec vrnd = varselect(p, sp);//variable selection for each node partition in Rcpp
   arma::mat datanode = redudata.cols(vrnd);//data with the selected variables for each node partition
@@ -482,7 +482,7 @@ int n = origdata.n_rows;
 //Finds the 1D projection for separating all classes
 // [[Rcpp::export]]
 List findproj(arma::vec origclass,
-              arma::mat origdata, std::string PPmethod="LDA", 
+              arma::mat origdata, std::string PPmethod, 
               double lambda=0.1){
   
   arma::vec a1(origdata.n_cols) , a2(origdata.n_cols), a(origdata.n_cols);
@@ -492,13 +492,17 @@ List findproj(arma::vec origclass,
  // arma::vec a( a1.size() );
  // double indexbest=0.0;
  
-  if (PPmethod.compare("LDA")==0){
+  if(PPmethod.compare("LDA")==0){
     //Rcout << "LDA\n";
-    a1 = LDAopt(origclass,origdata,1, "LDA",true);
+    //if(PPmethod == "LDA"){
+    a1 = LDAopt(origclass, origdata,1, "LDA", true);
    //double indexbest = LDAindex(origclass,origdata);
-   } else {
-    //Rcout << "PDA\n";
-     a1 = PDAopt(origclass, origdata, 1,"PDA",true, lambda);
+   } else{
+ // if(PPmethod.compare("LDA")!=0){
+  //
+Rcout << "PDA\n";
+     a1 = PDAopt(origclass, origdata, 1,"PDA", true, lambda);
+     
   //double indexbest = PDAindex(origclass,origdata)
   }
 
@@ -712,7 +716,6 @@ int n = projdata.n_rows;
       C(7) = (medianLR(0)*(IQRLR(1)/sqrt(nLR(1))) + medianLR(1)*(IQRLR(0)/sqrt(nLR(0))))/((IQRLR(0)/sqrt(nLR(0))) + 
           (IQRLR(1)/sqrt(nLR(1))));
     
-  
     }
    
 
@@ -723,7 +726,7 @@ int n = projdata.n_rows;
 
 
 //[[Rcpp::export]]
-List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod="LDA",
+List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod,
                   double sizep=1, double lambda =.1){
 
   int pp = origdata.n_cols;
@@ -747,9 +750,12 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod="
        }
 
   arma::vec indexbest(1);
-  if(PPmethod.compare("LDA")==0){
+if(PPmethod.compare("LDA")==0){
+ //if(PPmethod == "LDA"){
  indexbest = LDAindex2(classe,origdata,projbest);
   }else{
+
+  //if(PPmethod == "PDA"){
     indexbest = PDAindex2(classe,origdata,projbest);
   }
 
@@ -814,7 +820,7 @@ return Rcpp::List::create(Rcpp::Named("Index") = indexbest,Rcpp::Named("Alpha") 
 //tree structure
 // [[Rcpp::export]]
 List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
-                   std::string PPmethod = "LDA", double lambda = 0.1, double sizep = 1) {
+                   std::string PPmethod, double lambda = 0.1, double sizep = 1) {
   
   int n = origdata.n_rows;
   arma::vec g = tableC(origclass);
@@ -845,7 +851,7 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
     rep2 = rep2 + 1;
     
     // Rcout<< Treestruct;
-    a = findprojwrap(origclass, origdata, PPmethod,sizep, lambda);
+    a = findprojwrap(origclass, origdata, PPmethod, sizep, lambda);
     classe =as<vec>(a["classe"]);
     C = nodestr(classe,as<vec>(a["projdata"]));
    
@@ -945,34 +951,27 @@ arma::vec boot( arma::mat origclass, arma::mat origdata) {
 }
 
 
-//boot and tree
+//stratified training sample
+// [[Rcpp::export]]
+arma::vec trainfn( arma::mat origclass, arma::mat origdata, double sizetr) {
 
-// // [[Rcpp::export]]
-// arma::vec boottree( arma::mat origclass, arma::mat origdata,arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
-//                     std::string PPmethod = "LDA", double lambda = 0.1, double sizep = 1,
-//                     ){
-// 
-//   int n = origdata.n_rows
-// 
-// 
-//  boot(origclass, origdata)
-// 
-// 
-// 
-// }
-  // 
-  // trees_pp <- function(data.b, size.p = 0.9, PPmethod = "LDA", lambda = 0.1, ...) {
-  //                          . <- NULL
-  // 
-  // names(data.b)[1] <- "class"
-  //   if (PPmethod == "LDA") {
-  //     trees <- data.b %>% dplyr::do(tr = PPtree_split(class~., data = .,  PPmethod = "LDA",  size.p = size.p, 
-  //                  ...))
-  //     
-  //   } else {
-  //     trees <- data.b %>% dplyr::do(tr = PPtree_split(class~. ,  data = ., PPmethod = "PDA", size.p = size.p, 
-  //                                                     lambda, ...))
-  //   }
-  //   trees
-  // } 
+  int n = origdata.n_rows;
+  arma::vec id = arma::linspace<vec>( 0, n-1, n ); //integer sequence from 0 to n-1
+  arma::vec clval = arma::unique(origclass.col(0));
+  origclass.insert_cols(origclass.n_cols, id);
+  
+  arma::vec trainsel;
+  for (int k = 0; k < clval.size(); k++) {
+    arma::uvec idx = find(origclass.col(0) == clval(k));//find indices of non-zero elements, or elements satisfying a relational condition
+    arma::mat reduclass = origclass.rows(idx);
+    int nc = std::round<int>(reduclass.n_rows*sizetr);
+    arma::vec samp = csample_num(reduclass.col(1), nc, false,  ones<vec>(reduclass.n_rows));
+    trainsel = join_cols(trainsel,samp);
+  }
+  return sort(trainsel);
+}
+
+
+//proximity matrix
+// [[Rcpp::export]]
 

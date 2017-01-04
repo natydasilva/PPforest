@@ -4,7 +4,8 @@
 \alias{PPforest2}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE,
+ lambda = .1, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -49,7 +50,7 @@ An object of class \code{PPforest} with components.
 \examples{
 #leukemia data set with all the observations used as training
 pprf.leukemia <- PPforest2(data = leukemia, class = "Type",
- size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE)
+ size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE )
 pprf.leukemia
 }
 

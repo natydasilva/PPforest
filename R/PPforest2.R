@@ -1,7 +1,8 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest2} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE, lambda=.1)
+#' @usage PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE,
+#'  lambda = .1, cores = 2)
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
@@ -32,94 +33,98 @@
 #' @examples
 #' #leukemia data set with all the observations used as training
 #' pprf.leukemia <- PPforest2(data = leukemia, class = "Type",
-#'  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE)
+#'  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE )
 #' pprf.leukemia
 PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
   
   Var1 <- NULL
-  tr.index <- train_fn(data, class,  size.tr)
+  tree <- NULL
+  pred <- NULL
+  id <- NULL
+  #clnum <- as.numeric( as.factor(.subset2(data, class) ) )
+  clnum <- as.numeric( as.factor(data[, class] ) )
+  
+  tr.index <- trainfn(as.matrix(clnum), as.matrix(data[ , setdiff(colnames(data), class)]),  sizetr = size.tr)+1
+
   train <-  data %>% 
-    dplyr::slice(as.numeric(tr.index$id))
+    dplyr::slice(tr.index)
   
   
   type = "Classification"
-  var.sel <- floor((ncol(train)-1) * size.p)
+  var.sel <- round( (ncol(train ) -1) * size.p )
   
-  if (strata == TRUE) {
-    data.b <- ppf_bootstrap(data = train, class, m, strata)  
-    output <- data.b %>% trees_pp(size.p, PPmethod, lambda = 0.1)
-  } else {
-    data.b <- ppf_bootstrap(data = train, class, m, strata = FALSE)
-    output <- data.b %>% trees_pp( size.p, PPmethod, lambda = 0.1)
-  }
+  outputaux <- baggtree(data , class , m , PPmethod , lambda , size.p )
   
+  output <- plyr::llply(outputaux, function(x) x[[1]])
+  data.b <-  plyr::llply(outputaux, function(x) x[[2]])
   
-  pred.tr <- tree_ppred(xnew = dplyr::select(train,-get(class)), output)
+  pred.tr <- tree_ppred2( xnew = dplyr::select( train,-get( class ) ), outputaux)
+
   
   pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
-  tri.low <- pos %>% dplyr::filter(pos[, 1] >= pos[, 2])
-  
-  same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[2]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 
-                                                                                                            2]]))
-  proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[2]]))[1])
+
+  tri.low <- pos %>% dplyr::filter(pos[,1] >= pos[, 2])
+
+  same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[1]]), 2, function(x) x[.subset2(tri.low, 1)] == x[.subset2(tri.low,2)])) 
+  #same.node <- data.frame(tri.low, dif = apply(t(pred.tr[[1]]), 2, function(x) x[tri.low[, 1]] == x[tri.low[, 2]]))
+
+ proximity <- data.frame(same.node[, c(1:2)], proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[1]]))[1])
+  #proximity <- data.frame(a = .subset2(same.node, 1),b = .subset2(same.node, 2), proxi = apply(same.node[, -c(1:2)], 1, function(x) sum(x == 1))/dim((pred.tr[[1]]))[1])
   
   l.train <- 1:nrow(train)
-  index <- lapply(attributes(data.b)$indices, function(x) x + 1)
+  index <- lapply(data.b, function(x) x + 1)
   
-  oob.obs <- plyr::ldply(index, function(x) (!l.train %in% x))
+  oob.obs <- plyr::ldply(index, function(x) (!l.train %in% x))[,-1]
+  
+  
   
   oob.pred <- sapply(X = 1:nrow(train), FUN = function(i) {
     if(sum(oob.obs[, i]>0)){
-      t1 <- table(pred.tr[[2]][oob.obs[, i] == TRUE, i])
-      names(t1)[which.max(t1)]
+      t1 <- table(pred.tr[[1]][oob.obs[, i] == TRUE, i])
+      as.numeric(names(t1)[which.max(t1)])
     }else{
       print("More trees are needed to get the oob predictions")
     }
   })
   
-  
+
+  aux <- data.frame(pred.tr[[1]]) %>% dplyr::mutate(id =  1:m) %>% 
+    tidyr::gather(tree, pred, -id) %>% 
+    dplyr::mutate(pred = factor(pred, labels = levels(train[, class]))) %>%
+    tidyr::spread(key = tree, value = pred)
+           
   votes <- plyr::mdply( dplyr::data_frame( id = 1:nrow(train)) , function(id) {
-    x <- pred.tr[[2]][oob.obs[, id] == TRUE, id] 
-    table(factor(x, levels=levels(train[, class])) )  
-  })[,-1]
+    x <- aux[oob.obs[, id] == TRUE, id]
+    table(factor(x, levels=levels(train[, class])))
+    })[,-1]
   
-  #     votes <- matrix(0, ncol = length(unique(train[, class])), nrow = nrow(train))
-  #     colnames(votes) <- levels(train[, class])
-  #     
-  
-  #     for (i in 1:nrow(train)) {
-  #         cond <- colnames(votes) %in% names(oob.mat[[i]])
-  #         votes[i, cond] <- oob.mat[[i]]
-  #     }
-  #     
-  
+
   
   vote.matrix.prop <-votes/rowSums(votes)
   
   oob.error <- 1 - sum(diag(table(oob.pred, train[, class])))/length(train[, class])
   
   
-  m.pred.tr <- reshape2::melt(pred.tr[[2]])
+  m.pred.tr <- reshape2::melt(pred.tr[[1]])
   m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
   m.pred.tr$oob <- m.oob.obs$value
   m.pred.tr$class <- rep(train[, class], each = m)
   
-  
+
   oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
     dd <- diag(table(x$value, x$class))
     1 - sum(dd)/length(x$value)
-  })$V1
+  }, .parallel = FALSE)$V1
   
   
-  
-  error.tr <- 1 - sum(train[, class] == pred.tr[[3]])/length(pred.tr[[3]])
-  test <- data[-tr.index$id,]%>%  
+  error.tr <- 1 - sum(train[, class] == pred.tr[[2]])/length(pred.tr[[2]])
+  test <- data[-tr.index,]%>%  
     dplyr::select(-get(class))%>%
     dplyr::filter_()
   
   if (dim(test)[1] != 0) {
-    pred.test <- tree_ppred(xnew = test, output)
-    error.test <- 1 - sum(data[-tr.index$id, class] == pred.test[[3]])/length(pred.test[[3]])
+    pred.test <- tree_ppred2(xnew = test, output)
+    error.test <- 1 - sum(data[-tr.index, class] == pred.test[[3]])/length(pred.test[[3]])
   } else {
     pred.test <- NULL
     error.test <- NULL
@@ -134,11 +139,11 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
   class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
   confusion <- cbind(tab.tr, class.error = round(class.error, 2))
   
-  results <- list(prediction.training = pred.tr[[3]], training.error = error.tr, prediction.test = pred.test[[3]], 
+  results <- list(prediction.training = pred.tr[[2]], training.error = error.tr, prediction.test = pred.test[[3]], 
                   error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
                   output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
                   n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
-                  vote.mat = pred.tr[[2]],class.var=class, oob.obs = oob.obs)
+                  vote.mat = pred.tr[[1]],class.var=class, oob.obs = oob.obs)
   class(results) <- "PPforest"
   
   return(results)

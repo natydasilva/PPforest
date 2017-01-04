@@ -308,3 +308,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// trainfn
+arma::vec trainfn(arma::mat origclass, arma::mat origdata, double sizetr);
+RcppExport SEXP PPforest2_trainfn(SEXP origclassSEXP, SEXP origdataSEXP, SEXP sizetrSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type origclass(origclassSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
+    Rcpp::traits::input_parameter< double >::type sizetr(sizetrSEXP);
+    rcpp_result_gen = Rcpp::wrap(trainfn(origclass, origdata, sizetr));
+    return rcpp_result_gen;
+END_RCPP
+}

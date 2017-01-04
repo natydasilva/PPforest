@@ -27,17 +27,18 @@
 #' Tree.leukemia <- PPtree_split2("Type", data =leukemia,PPmethod = "PDA", lambda=.1, size.p = 0.15)
 #' Tree.leukemia
 #' #crab data set
-#' Tree.crab <- PPtree_split2("Type", data = crab, PPmethod = "LDA", size.p = 0.6, lambda=.1)
+#' Tree.crab <- PPtree_split2("Type", data = crab, PPmethod = "LDA", size.p = .55, lambda=.1)
 #' Tree.crab
 PPtree_split2 <- function(class, data,  PPmethod, size.p ,  lambda , ...) {
   
   origclass <- data[ , class]
   origdata <- data[ , setdiff(colnames(data), class)]
+  
   origdata <- as.matrix(origdata)
   pp <- ncol(origdata)
   origclass <- as.numeric(as.factor(origclass))
   
-  
+
   g <- table(origclass)
   G <- length(g)
   
@@ -45,25 +46,27 @@ PPtree_split2 <- function(class, data,  PPmethod, size.p ,  lambda , ...) {
                               id = 0,  rep = 1, rep1 = 2, rep2 = 1, projbestnode = matrix(0, ncol = pp, nrow = 1), 
                               splitCutoffnode = matrix(0, ncol = 8, nrow = 1), PPmethod, lambda, size.p )
   
-  
+ 
   
   Tree.Struct <- Tree.final$Treestruct
-  colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", 
-                             "Coef.ID", "Index")
-  projbest.node <- Tree.final$projbestnode[-1, ]
-  
+  colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", "Coef.ID", "Index")
   
   if(nrow(Tree.final$splitCutoffnode)==2){
     splitCutoff.node <- data.frame(splitCutoffnode = t(Tree.final$splitCutoffnode[-1, ]))
     colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+    projbest.node <- t(as.matrix(Tree.final$projbestnode[-1, ]))
     
   }else{
     splitCutoff.node <- data.frame(splitCutoffnode = Tree.final$splitCutoffnode[-1, ])
     colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+    projbest.node <- Tree.final$projbestnode[-1, ]
   }
+  
   treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
                   splitCutoff.node = splitCutoff.node, origclass = origclass, 
                   origdata = origdata)
-  class(treeobj) <- append(class(treeobj), "PPtreeclass")
-  return(treeobj)
+  
+   class(treeobj) <- append(class(treeobj), "PPtreeclass")
+
+   return(treeobj)
 }
