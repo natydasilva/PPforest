@@ -5,7 +5,7 @@
 \title{Projection Pursuit Random Forest}
 \usage{
 PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE,
- lambda = .1, cores = 2)
+ lambda = .1,  parallel = TRUE, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -23,6 +23,10 @@ PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE,
 \item{strata}{if set \code{TRUE} then the bootrap samples are stratifyed by class variable.}
 
 \item{lambda}{penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.}
+
+\item{parallel}{if TRUE, apply function in parallel}
+
+\item{cores}{The number of cores to use for parallel execution. By default is 2 cores.}
 }
 \value{
 An object of class \code{PPforest} with components.

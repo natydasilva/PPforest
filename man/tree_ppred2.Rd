@@ -4,12 +4,14 @@
 \alias{tree_ppred2}
 \title{Obtain predicted class for new data using PPforest}
 \usage{
-tree_ppred2(xnew, output.tree, cores = 2)
+tree_ppred2(xnew, output.tree, parallel = FALSE, cores = 2)
 }
 \arguments{
 \item{xnew}{data frame with explicative variables used to get new predicted values.}
 
 \item{output.tree}{trees classifiers from trees_pp function or PPforest object}
+
+\item{parallel}{if TRUE, apply function in parallel}
 
 \item{cores}{The number of cores to use for parallel execution. By default is 2 cores.}
 }

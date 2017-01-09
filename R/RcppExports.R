@@ -93,7 +93,27 @@ trainfn <- function(origclass, origdata, sizetr) {
     .Call('PPforest2_trainfn', PACKAGE = 'PPforest2', origclass, origdata, sizetr)
 }
 
-proximi <- function(predtr) {
-    .Call('PPforest2_proximi', PACKAGE = 'PPforest2', predtr)
+proximi <- function(predtrnt, m) {
+    .Call('PPforest2_proximi', PACKAGE = 'PPforest2', predtrnt, m)
+}
+
+mvote <- function(votes) {
+    .Call('PPforest2_mvote', PACKAGE = 'PPforest2', votes)
+}
+
+oobindex <- function(datab, m) {
+    .Call('PPforest2_oobindex', PACKAGE = 'PPforest2', datab, m)
+}
+
+oobobs <- function(index) {
+    .Call('PPforest2_oobobs', PACKAGE = 'PPforest2', index)
+}
+
+mvoteoob <- function(votes, oobobs) {
+    .Call('PPforest2_mvoteoob', PACKAGE = 'PPforest2', votes, oobobs)
+}
+
+ooberrortree <- function(votes, oobobs, classe, m) {
+    .Call('PPforest2_ooberrortree', PACKAGE = 'PPforest2', votes, oobobs, classe, m)
 }
 

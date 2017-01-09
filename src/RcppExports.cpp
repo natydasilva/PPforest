@@ -186,7 +186,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // findprojLDA
-List findprojLDA(arma::vec origclass, arma::mat origdata);
+arma::vec findprojLDA(arma::vec origclass, arma::mat origdata);
 RcppExport SEXP PPforest2_findprojLDA(SEXP origclassSEXP, SEXP origdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -318,6 +318,78 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
     Rcpp::traits::input_parameter< double >::type sizetr(sizetrSEXP);
     rcpp_result_gen = Rcpp::wrap(trainfn(origclass, origdata, sizetr));
+    return rcpp_result_gen;
+END_RCPP
+}
+// proximi
+arma::mat proximi(arma::mat predtrnt, int m);
+RcppExport SEXP PPforest2_proximi(SEXP predtrntSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type predtrnt(predtrntSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(proximi(predtrnt, m));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mvote
+arma::vec mvote(arma::mat votes);
+RcppExport SEXP PPforest2_mvote(SEXP votesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type votes(votesSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvote(votes));
+    return rcpp_result_gen;
+END_RCPP
+}
+// oobindex
+NumericMatrix oobindex(List datab, int m);
+RcppExport SEXP PPforest2_oobindex(SEXP databSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type datab(databSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(oobindex(datab, m));
+    return rcpp_result_gen;
+END_RCPP
+}
+// oobobs
+arma::mat oobobs(arma::mat index);
+RcppExport SEXP PPforest2_oobobs(SEXP indexSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type index(indexSEXP);
+    rcpp_result_gen = Rcpp::wrap(oobobs(index));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mvoteoob
+arma::mat mvoteoob(arma::mat votes, arma::mat oobobs);
+RcppExport SEXP PPforest2_mvoteoob(SEXP votesSEXP, SEXP oobobsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type votes(votesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type oobobs(oobobsSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvoteoob(votes, oobobs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ooberrortree
+arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int m);
+RcppExport SEXP PPforest2_ooberrortree(SEXP votesSEXP, SEXP oobobsSEXP, SEXP classeSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type votes(votesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type oobobs(oobobsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type classe(classeSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(ooberrortree(votes, oobobs, classe, m));
     return rcpp_result_gen;
 END_RCPP
 }
