@@ -7,7 +7,8 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 arma::vec tableC(arma::vec x) {
   arma::vec values = arma::unique(x);
-    arma::vec counts(values.size());
+    arma::vec counts(values.size(), fill::zeros);
+    
     for(int i = 0; i < values.size(); i++) {
       for(int j=0; j<x.size();j++){
         if(x(j)==values(i)){
@@ -27,10 +28,8 @@ arma::vec LDAindex2(arma::vec origclass, arma::mat origdata,
                  arma::mat proj, bool weight=true){
   double index=0.0;
   int n=origdata.n_rows, p=origdata.n_cols; 
-  //arma::mat proj= proj.zeros(n,p);
   int q=proj.n_cols, p1=proj.n_rows;
-  // Environment base("package:base");
-  // Function table=base["table"];
+
   
    
    arma::vec clval = arma::unique(origclass);
@@ -39,7 +38,7 @@ arma::vec LDAindex2(arma::vec origclass, arma::mat origdata,
    for(int i=0;i<n;i++){
    for (int k=0; k < clval.size(); k++) {
        if (origclass(i) == clval(k) ){
-         newclass(i) = k +1;
+         newclass(i) = k + 1;
        }
      }
 
@@ -54,8 +53,8 @@ arma::vec LDAindex2(arma::vec origclass, arma::mat origdata,
    if(p1!=p){
      q=p;
      }
-    arma::vec allmean(q);
-   arma::mat W(q,q),WB(q,q),gsum(q,g);        
+    arma::vec allmean(q, fill::zeros);
+   arma::mat W(q,q, fill::zeros),WB(q,q, fill::zeros),gsum(q,g, fill::zeros);        
    arma::mat projdata(n,q, fill::zeros);
    
   if(p1!=p||p1==1){
@@ -120,17 +119,17 @@ double signC(double x) {
 }
    
 // [[Rcpp::export]] 
-  arma::vec LDAopt(arma::vec origclass,arma::mat origdata,int q=1, 
+  arma::vec LDAopt(arma::vec origclass, arma::mat origdata,int q=1, 
               std::string PPmethod="LDA",bool weight=true){
     
   int n=origdata.n_rows, p=origdata.n_cols;
   
   // group totals, group means and overall mean
-  arma::vec ng = tableC(origclass); 
-  int g = ng.size();
   arma::vec clval = arma::unique(origclass);
-  
-  
+  arma::vec ng(clval.size(), fill::zeros); 
+  ng = tableC(origclass); 
+
+  int g = ng.size();
    arma::colvec mean_all(p);
    arma::mat  mean_g(g, p);
    
@@ -148,6 +147,8 @@ double signC(double x) {
     // between SS matrix
     arma::mat  B(p, p, arma::fill::zeros);
     arma::mat  W(p, p, arma::fill::zeros);
+    double gdbl = ng.size();
+    
    for (int k=0; k < g; k++) {
      arma::vec  temp1(p);
      arma::mat Temp1(p,p, arma::fill::zeros);
@@ -156,10 +157,11 @@ double signC(double x) {
         if(weight) {
           gn1 = ng(k);
         } else {
-          gn1 = n/g;
+          gn1 = n/gdbl;
         }
         temp1 = arma::trans(mean_g.row(k)) - mean_all;
         Temp1 = gn1 * temp1 * arma::trans(temp1); 
+        //Rcout << gn1;
         for (int i=0; i < p; i++) {
           for (int j=0; j < p; j++) {
             B(i,j) += Temp1(i,j);
@@ -320,10 +322,11 @@ arma::vec PDAopt(arma::vec origclass,arma::mat origdata,int q=1,
   int n=origdata.n_rows, p=origdata.n_cols;
   
   // group totals, group means and overall mean
-  arma::vec ng = tableC(origclass); 
-  int g = ng.size();
   arma::vec clval = arma::unique(origclass);
-  arma::colvec mean_all(p);
+  arma::vec ng(clval.size(), fill::zeros);
+  ng = tableC(origclass); 
+  int g = ng.size();
+    arma::colvec mean_all(p);
   arma::mat  mean_g(g, p);
   
           
@@ -438,7 +441,7 @@ int n = origdata.n_rows;
   int g = ng.size();
   arma::vec clval = arma::unique(origclass);
   arma::colvec mean_g(g);
-  arma::vec newclass(n);
+  arma::vec newclass(n, fill::zeros);
   
   if (g==2) {
     //IntegerVector class_rel = origclass;
@@ -485,26 +488,20 @@ List findproj(arma::vec origclass,
               arma::mat origdata, std::string PPmethod, 
               double lambda=0.1){
   
-  arma::vec a1(origdata.n_cols) , a2(origdata.n_cols), a(origdata.n_cols);
+  arma::vec a1(origdata.n_cols, fill::zeros) , a2(origdata.n_cols, fill::zeros), a(origdata.n_cols, fill::zeros);
   arma::vec ng = tableC(origclass); 
   int g = ng.size();
   arma::vec projdata(origclass.size());
- // arma::vec a( a1.size() );
- // double indexbest=0.0;
+ 
  
   if(PPmethod.compare("LDA")==0){
     //Rcout << "LDA\n";
-    //if(PPmethod == "LDA"){
-    a1 = LDAopt(origclass, origdata,1, "LDA", true);
-   //double indexbest = LDAindex(origclass,origdata);
-   } else{
- // if(PPmethod.compare("LDA")!=0){
-  //
-Rcout << "PDA\n";
+    a1 = LDAopt(origclass, origdata,  1, "LDA", true);
+    //Rcout << a1;
+   }else{
+    //Rcout << "PDA\n";
      a1 = PDAopt(origclass, origdata, 1,"PDA", true, lambda);
-     
-  //double indexbest = PDAindex(origclass,origdata)
-  }
+     }
 
   
   int  index = arma::index_max(arma::abs(a1));
@@ -513,9 +510,10 @@ Rcout << "PDA\n";
 
   if (g > 2) {
         if (PPmethod.compare("LDA")==0){
-         // Rcout << "still LDA\n";
+          //Rcout << "still LDA\n";
           
       a2 = LDAopt(classe,origdata,1, "LDA",true);
+          //Rcout<< a2;
       } else {
         //Rcout << "still PDA\n";
         a2 = PDAopt(classe, origdata, 1,"PDA",true, lambda);
@@ -576,37 +574,40 @@ List findprojPDA(arma::vec origclass,
 
 
   // [[Rcpp::export]]
-  List findprojLDA(arma::vec origclass,
+  arma::vec findprojLDA(arma::vec origclass,
                    arma::mat origdata){
     
-    arma::vec a = LDAopt(origclass, origdata);
-    arma::vec classe = split_rel(origclass, origdata,  origdata*a );
-    
-    arma::vec ng = tableC(origclass);
-    int g = ng.size();
-    
-    int  index = arma::index_max(arma::abs(a));
-    double sign = signC(a(index));
-    
-    arma::vec  out;
-    
-    if (g > 2) {
-      arma::vec a2 = LDAopt(classe, origdata);
-      double sign2 = signC(a2(index));
-      if (sign != sign2) {
-        out  = (-1)*a2;
-      } else {
-        out = a2;
-      }
-    } else {
-      out = a;
-    }
-    
-    arma::vec projdata = origdata*a;
-    return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
-                              Rcpp::Named("projbest") = out,
-                              Rcpp::Named("class")= classe);
+    arma::vec a = LDAopt(origclass, origdata,  1, "LDA", true);
+    return a;
   }
+
+  //   arma::vec classe = split_rel(origclass, origdata,  origdata*a );
+  //   
+  //   arma::vec ng = tableC(origclass);
+  //   int g = ng.size();
+  //   
+  //   int  index = arma::index_max(arma::abs(a));
+  //   double sign = signC(a(index));
+  //   
+  //   arma::vec  out;
+  //   
+  //   if (g > 2) {
+  //     arma::vec a2 = LDAopt(classe, origdata);
+  //     double sign2 = signC(a2(index));
+  //     if (sign != sign2) {
+  //       out  = (-1)*a2;
+  //     } else {
+  //       out = a2;
+  //     }
+  //   } else {
+  //     out = a;
+  //   }
+  //   
+  //   arma::vec projdata = origdata*a;
+  //   return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
+  //                             Rcpp::Named("projbest") = out,
+  //                             Rcpp::Named("class")= classe);
+  // }
 
 
 
@@ -641,9 +642,12 @@ arma::vec nodestr(arma::vec classe, arma::vec projdata){
 int n = projdata.n_rows; 
  
  // group totals, group means and overall mean
- arma::vec ng = tableC(classe); 
- int g = ng.size();
  arma::vec clval = arma::unique(classe);
+ arma::vec ng(clval.size(), fill::zeros);
+ ng = tableC(classe); 
+ int g = ng.size();
+ //Rcout << ng; 
+ //Rcout << '\n';
 
  arma::colvec mean_g(g);
  arma::colvec ss_g(g);
@@ -666,6 +670,8 @@ int n = projdata.n_rows;
          
        }
      }
+     
+     //Rcout << ng(k);
       mean_g(k) = tot/ng(k) ; 
     
      if(n > 1){
@@ -736,6 +742,7 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod,
 
   List oneDproj = findproj(origclass, origdata, PPmethod, lambda);
   arma::vec projdata = as<vec>(oneDproj["projdata"]);
+  
   arma::vec classe = split_rel(origclass, origdata, projdata);
  
   arma::mat projbest = as<mat>(oneDproj["projbest"]);
@@ -743,13 +750,15 @@ List findprojwrap(arma::vec origclass,arma::mat origdata, std::string PPmethod,
        arma::vec C = nodestr(classe, projdata);
 
        arma::mat Alpha = zeros<mat>(pp);
+      
+       
        for(int i=0; i<vrnd.size(); i++){
             int v = vrnd(i);
            Alpha(v) = projbest(i,0);
 
        }
 
-  arma::vec indexbest(1);
+  arma::vec indexbest(1, fill::zeros);
 if(PPmethod.compare("LDA")==0){
  //if(PPmethod == "LDA"){
  indexbest = LDAindex2(classe,origdata,projbest);
@@ -762,11 +771,10 @@ if(PPmethod.compare("LDA")==0){
        int n = projdata.n_rows;
 
          // group totals, group means and overall mean
-         arma::vec ng = tableC(classe);
-        
-         int g = ng.size();
          arma::vec clval = arma::unique(classe);
-
+         arma::vec ng(clval.size(), fill::zeros);
+         ng = tableC(classe);
+         int g = ng.size();
          arma::colvec mean_g(g,fill::zeros);
          
          for (int k=0; k < g; k++) {
@@ -787,8 +795,8 @@ if(PPmethod.compare("LDA")==0){
            arma::colvec mLR = sort(mean_g);
            arma::uvec sortLR  = sort_index(mean_g);
            
-         arma::vec IOindexL(classe.size());
-         arma::vec IOindexR(classe.size());
+         arma::vec IOindexL(classe.size(), fill::zeros);
+         arma::vec IOindexR(classe.size(),fill::zeros);
 
          
 
@@ -823,15 +831,17 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
                    std::string PPmethod, double lambda = 0.1, double sizep = 1) {
   
   int n = origdata.n_rows;
-  arma::vec g = tableC(origclass);
   arma::vec cl2= unique(origclass);
+  arma::vec g(cl2.size(), fill::zeros); 
+ g= tableC(origclass);
+
   int G = g.size();
   
   List a;
   List b;
   
-  arma::vec C;
-  arma::vec classe;
+  arma::vec C(8, fill::zeros);
+  arma::vec classe(n, fill::zeros);
 
 
   if(G == 1){
@@ -901,6 +911,7 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
         tdata = tdata.rows(tindex);
           
         n =  tdata.n_rows;
+        g.zeros();
         g = tableC(tclass);
         G = g.size();
         
@@ -973,7 +984,8 @@ arma::vec trainfn( arma::mat origclass, arma::mat origdata, double sizetr) {
 
 //proximity matrix
 // [[Rcpp::export]]
-arma::mat proximi(arma::mat predtr){
+arma::mat proximi(arma::mat predtrnt, int m){
+ arma::mat predtr = predtrnt.t();
 arma::mat prox(predtr.n_rows, predtr.n_rows, fill::zeros);
 
 for(int k = 0; k < predtr.n_cols; k++) { 
@@ -987,5 +999,120 @@ for(int k = 0; k < predtr.n_cols; k++) {
   }
 
 }
-return(prox);
+return(prox/m);
 }
+
+
+//maxvote used in tree_pred2
+// [[Rcpp::export]]
+arma::vec mvote(arma::mat votes){
+  arma::vec clval = arma::unique(votes);
+  arma::mat counts( clval.size(), votes.n_cols, fill::zeros);
+    for(int k = 0; k < clval.size() ; k++) {
+     for(int j=0; j< votes.n_cols ;j++){
+      for(int i=0; i < votes.n_rows; i++) {
+        if( votes(i, j) == k+1 ) {
+          counts(k, j) += 1;
+        }
+        }
+      }
+    }
+    
+    arma::vec maxvote(votes.n_cols, fill::zeros);
+    for(int i = 0; i < votes.n_cols; i++) {
+      maxvote(i)= clval( index_max( counts.col(i) ));
+    }
+    return(maxvote);
+    }
+    
+    
+    
+   // order bootstrap samples
+  // [[Rcpp::export]]
+  NumericMatrix oobindex(List datab, int m){
+    int n = as<NumericVector>(datab[0]).size();
+    NumericMatrix index(m, n); 
+ for(int i = 0; i < m; i++) {
+   index(i,_) = as<NumericVector>(datab[i]);
+  }
+ return(index);
+  }
+  //index <- as.matrix(plyr::ldply(data.b, function(x) c(pp=(x )))[,-1])
+  
+  
+  
+  
+  
+    // Filter oob observations 
+    // [[Rcpp::export]]
+    arma::mat oobobs(arma::mat index){ 
+    int n = index.n_cols;
+    int m = index.n_rows;
+    arma::mat oobobs(m, n, fill::zeros);
+
+      for(int i = 0; i < m; i++) {
+        for(int j = 0; j< n ;j++){
+       arma::uvec oobid = find( index.row(i) == j );
+          if(oobid.size()==0){
+              oobobs(i,j) = 1;
+          }
+      }
+    }
+    return(oobobs);
+    }
+
+
+
+
+
+//maxvote oob oob.pred here votes in pred.tr[[1]] I need to filtrate the oob observations
+//to get the oob prediction
+// [[Rcpp::export]]
+arma::mat mvoteoob(arma::mat votes, arma::mat oobobs){
+  
+  arma::vec clval = arma::unique(votes);
+  arma::mat counts( votes.n_cols, clval.size(), fill::zeros);
+  for(int j=0; j< votes.n_cols ;j++){ //obs
+    for(int i=0; i < votes.n_rows; i++) {//trees
+      for(int k = 0; k < clval.size() ; k++) {
+        
+        if( (oobobs(i,j) > 0) && (votes(i, j) == k+1) ) { 
+          counts(j, k) += 1;
+        }
+       }
+      }
+    }
+  
+  arma::vec maxvote(votes.n_cols, fill::zeros);
+  for(int j = 0; j < votes.n_cols; j++) {
+    maxvote(j)= clval( index_max( counts.row(j) ));
+  }
+  
+  counts.insert_cols(counts.n_cols, maxvote);
+  return counts;
+  
+  // return Rcpp::List::create(Rcpp::Named("Vote") = counts,
+  //                           Rcpp::Named("maxvote") = maxvote);
+  }
+
+// [[Rcpp::export]]
+arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int m){
+  arma::vec err(m);
+  for(int i=0; i < votes.n_rows; i++) {//trees
+    double n = 0.0;
+    double tot = 0.0;
+    for(int j=0; j< votes.n_cols ;j++){ //obs
+    if((oobobs(i, j) > 0) ) {
+      n +=1;
+      if(votes(i, j)!= classe(j)){
+      tot +=1;
+      }
+    }
+  }
+    //Rcout << tot;
+    err(i) = tot/n;
+    
+  }
+  return(err);
+}
+ 
