@@ -2,7 +2,7 @@
 #'
 #'\code{PPforest2} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 #' @usage PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE,
-#'  lambda = .1, cores = 2)
+#'  lambda = .1,  parallel = TRUE, cores = 2)
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
@@ -11,6 +11,8 @@
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param strata if set \code{TRUE} then the bootrap samples are stratifyed by class variable.
 #' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
+#' @param parallel if TRUE, apply function in parallel
+#' @param cores The number of cores to use for parallel execution. By default is 2 cores.
 #' @return An object of class \code{PPforest} with components.
 #' \item{prediction.training}{predicted values for training data set.}
 #' \item{training.error}{error of the training data set.}
@@ -35,7 +37,7 @@
 #' pprf.leukemia <- PPforest2(data = leukemia, class = "Type",
 #'  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE )
 #' pprf.leukemia
-PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1) {
+PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1, parallel = TRUE, cores = 2 ) {
   
   Var1 <- NULL
   tree <- NULL
@@ -51,76 +53,97 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
   type = "Classification"
   var.sel <- round( (ncol(train ) - 1) * size.p )
   
-  outputaux <- baggtree(data , class , m , PPmethod , lambda , size.p )
+  outputaux <- baggtree(train , class , m , PPmethod , lambda , size.p )
   
   output <- plyr::llply(outputaux, function(x) x[[1]])
   data.b <-  plyr::llply(outputaux, function(x) x[[2]])
   
-  pred.tr <- tree_ppred2( xnew = dplyr::select( train,-get( class ) ), outputaux)
+  pred.tr <- tree_ppred2( xnew = dplyr::select( train,-get( class ) ), outputaux, parallel, cores )
 
+  expand.grid.ef <- function(seq1,seq2) {
+    data.frame(a = rep.int(seq1, length(seq2)), 
+          b = rep.int(seq2, rep.int(length(seq1),length(seq2))))
+  }
+  pos <-  expand.grid.ef( 1:dim(train)[1],  1:dim(train)[1])
   
-  pos <- expand.grid(a = 1:dim(train)[1], b = 1:dim(train)[1])
+  # prox <- proximi(pred.tr[[1]], m)
+  # proximity <- pos %>% dplyr::filter(pos[,1] > pos[, 2]) %>%
+  #   dplyr::mutate(prox = prox[lower.tri(prox)]/dim((pred.tr[[1]]))[1] )
+
+  #proximity <- proximi(t(pred.tr[[1]]))/m
+  proximity <- proximi( (pred.tr[[1]]), m)
   
-  prox <- proximi(t(pred.tr[[1]]))
-  proximity <- pos %>% dplyr::filter(pos[,1] > pos[, 2]) %>% 
-   mutate(prox = prox[lower.tri(prox)]/dim((pred.tr[[1]]))[1] )
+  
+  #l.train <- 1:nrow(train)
  
+  #index <- lapply(data.b, function(x) x + 1)
+
+
+
+  #index <- as.matrix(plyr::ldply(data.b, function(x) c(pp=(x )))[,-1])
+
  
-  l.train <- 1:nrow(train)
-  index <- lapply(data.b, function(x) x + 1)
+  index <- oobindex(data.b,m)
+    
+ 
+  #oob.obs <- plyr::ldply(index, function(x) (!l.train %in% x))[,-1]
+  oob.obs <- oobobs(index)
   
-  oob.obs <- plyr::ldply(index, function(x) (!l.train %in% x))[,-1]
+  # oob.pred <- sapply(X = 1:nrow(train), FUN = function(i) {
+  #   if(sum(oob.obs[, i]>0)){
+  #     t1 <- table(pred.tr[[1]][oob.obs[, i] == TRUE, i])
+  #     as.numeric(names(t1)[which.max(t1)])
+  #   }else{
+  #     print("More trees are needed to get the oob predictions")
+  #   }
+  # })
+  mvote.oob <- mvoteoob(pred.tr[[1]], oob.obs)
+  oob.pred <- mvote.oob[,length(unique(clnum)) + 1]
   
-  
-  
-  oob.pred <- sapply(X = 1:nrow(train), FUN = function(i) {
-    if(sum(oob.obs[, i]>0)){
-      t1 <- table(pred.tr[[1]][oob.obs[, i] == TRUE, i])
-      as.numeric(names(t1)[which.max(t1)])
-    }else{
-      print("More trees are needed to get the oob predictions")
-    }
-  })
-  
-
-  aux <- data.frame(pred.tr[[1]]) %>% dplyr::mutate(id =  1:m) %>% 
-    tidyr::gather(tree, pred, -id) %>% 
-    dplyr::mutate(pred = factor(pred, labels = levels(train[, class]))) %>%
-    tidyr::spread(key = tree, value = pred)
-           
-  votes <- plyr::mdply( dplyr::data_frame( id = 1:nrow(train)) , function(id) {
-    x <- aux[oob.obs[, id] == TRUE, id]
-    table(factor(x, levels=levels(train[, class])))
-    })[,-1]
-  
-
-  
-  vote.matrix.prop <-votes/rowSums(votes)
-  
-  oob.error <- 1 - sum(diag(table(oob.pred, train[, class])))/length(train[, class])
-  
-  
-  m.pred.tr <- reshape2::melt(pred.tr[[1]])
-  m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
-  m.pred.tr$oob <- m.oob.obs$value
-  m.pred.tr$class <- rep(train[, class], each = m)
+  votes <- mvote.oob[ , -(length(unique(clnum) ) + 1)] 
+  colnames(votes) <- levels(train[ , class])  
+### relajo
+  # aux <- data.frame(pred.tr[[1]]) %>% dplyr::mutate(id =  1:m) %>% 
+  #   tidyr::gather(tree, pred, -id) %>% 
+  #   dplyr::mutate(pred = factor(pred, labels = levels(train[, class]))) %>%
+  #   tidyr::spread(key = tree, value = pred) %>% dplyr::select(-id)
+  #          
+  # votes <- plyr::mdply( dplyr::data_frame( id = 1:nrow(train)) , function(id) {
+  #   x <- aux[oob.obs[, id] == 1, id]
+  #   table(factor(x, levels=levels(train[, class])))
+  #   })[,-1]
   
 
-  oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
-    dd <- diag(table(x$value, x$class))
-    1 - sum(dd)/length(x$value)
-  }, .parallel = FALSE)$V1
   
+  vote.matrix.prop <- votes/rowSums(votes)
   
-  error.tr <- 1 - sum(train[, class] == pred.tr[[2]])/length(pred.tr[[2]])
+  oob.error <- 1 - sum( diag( table(oob.pred, train[, class] ) ) )/length(train[, class])
+  
+  ##arreglar ineficiente y con los cambios esto no funciona bien
+  # m.pred.tr <- reshape2::melt(pred.tr[[1]])
+  # m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
+  # m.pred.tr$oob <- m.oob.obs$value
+  # m.pred.tr$class <- rep(train[, class], each = m)
+  # 
+  # 
+  # oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
+  #   dd <- diag(table(x$value, x$class))
+  #   1 - sum(dd)/length(x$value)
+  # })$V1
+ 
+  oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(train[ , class])), m)
+  
+  error.tr <- 1 - sum(as.numeric(as.factor(train[, class])) == pred.tr[[2]])/length(pred.tr[[2]])
   test <- data[-tr.index,]%>%  
     dplyr::select(-get(class))%>%
     dplyr::filter_()
   
   if (dim(test)[1] != 0) {
-    pred.test <- tree_ppred2(xnew = test, output)
-    error.test <- 1 - sum(data[-tr.index, class] == pred.test[[3]])/length(pred.test[[3]])
-  } else {
+    pred.test <- tree_ppred2(xnew = test, outputaux, parallel, cores )
+    error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
+    pred.test = as.factor(pred.test[[2]])
+    levels(pred.test) <- levels(train[, class])
+    } else {
     pred.test <- NULL
     error.test <- NULL
     test <- NULL
@@ -129,16 +152,21 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
   oob.pred <- as.factor(oob.pred)
   levels(oob.pred) <- levels(train[, class])
   
+  prediction.training <- as.factor(pred.tr[[2]])
+   levels(prediction.training) <- levels(train[, class])
+   
+  
+   
   tab.tr <- table(Observed = train[, class], Predicted = oob.pred)
   
   class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
   confusion <- cbind(tab.tr, class.error = round(class.error, 2))
   
-  results <- list(prediction.training = pred.tr[[2]], training.error = error.tr, prediction.test = pred.test[[3]], 
+  results <- list(prediction.training , training.error = error.tr, prediction.test = pred.test, 
                   error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
                   output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
                   n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
-                  vote.mat = pred.tr[[1]],class.var=class, oob.obs = oob.obs)
+                  vote.mat = pred.tr[[1]], class.var = class, oob.obs = oob.obs)
   class(results) <- "PPforest"
   
   return(results)
