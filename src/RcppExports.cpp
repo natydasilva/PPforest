@@ -50,6 +50,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// roundme
+double roundme(double x);
+RcppExport SEXP PPforest2_roundme(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(roundme(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // LDAindex2
 arma::vec LDAindex2(arma::vec origclass, arma::mat origdata, arma::mat proj, bool weight);
 RcppExport SEXP PPforest2_LDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {

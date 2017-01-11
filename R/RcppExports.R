@@ -13,6 +13,10 @@ tableC <- function(x) {
     .Call('PPforest2_tableC', PACKAGE = 'PPforest2', x)
 }
 
+roundme <- function(x) {
+    .Call('PPforest2_roundme', PACKAGE = 'PPforest2', x)
+}
+
 LDAindex2 <- function(origclass, origdata, proj, weight = TRUE) {
     .Call('PPforest2_LDAindex2', PACKAGE = 'PPforest2', origclass, origdata, proj, weight)
 }

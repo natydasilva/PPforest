@@ -22,6 +22,14 @@ arma::vec tableC(arma::vec x) {
 }  
 
 
+// [[Rcpp::export]]
+double roundme(double x)
+{
+  if (x < 0.0)
+    return (int)(x - 0.5);
+  else
+    return (int)(x + 0.5);
+}
 
 // [[Rcpp::export]]
 arma::vec LDAindex2(arma::vec origclass, arma::mat origdata, 
@@ -420,7 +428,8 @@ List datanode(arma::mat origdata, double sizep){
   arma::uvec idx = find(sdcol.row(0) > 0);//find indices of non-zero elements, or elements satisfying a relational condition
   arma::mat redudata = origdata.cols(idx);//select the columns with 0 variance
   int p = redudata.n_cols;
-  int sp = std::round<int>(sizep*p);
+  //int sp = std::round<int>(sizep*p);
+  int sp = roundme(sizep*p);
   
   arma::uvec vrnd = varselect(p, sp);//variable selection for each node partition in Rcpp
   arma::mat datanode = redudata.cols(vrnd);//data with the selected variables for each node partition
@@ -975,7 +984,7 @@ arma::vec trainfn( arma::mat origclass, arma::mat origdata, double sizetr) {
   for (int k = 0; k < clval.size(); k++) {
     arma::uvec idx = find(origclass.col(0) == clval(k));//find indices of non-zero elements, or elements satisfying a relational condition
     arma::mat reduclass = origclass.rows(idx);
-    int nc = std::round<int>(reduclass.n_rows*sizetr);
+    int nc = roundme(reduclass.n_rows*sizetr);
     arma::vec samp = csample_num(reduclass.col(1), nc, false,  ones<vec>(reduclass.n_rows));
     trainsel = join_cols(trainsel,samp);
   }
