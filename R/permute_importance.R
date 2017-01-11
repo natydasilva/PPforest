@@ -28,7 +28,7 @@ for(i in 1:(ncol(ppf$train)-1)) {
     d[, i] <- aux[ permute[[j]], i]
     
     
-    pred.oob.per[[j]] <- PPtreeViz::PP.classify(test.data = d, Tree.result =  ppf[[8]][[2]][[j]], Rule = 1)[[2]]
+    pred.oob.per[[j]] <- PPclassify(test.data = d, Tree.result =  ppf[[8]][[2]][[j]], Rule = 1)[[2]]
     corr.oob.per[j,i] <-  sum(diag(table(pred.oob.per[[j]], ppf$train[ oob.id[[j]],ppf$class.var])))
   }
 }

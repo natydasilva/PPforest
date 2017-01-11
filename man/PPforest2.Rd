@@ -52,7 +52,7 @@ An object of class \code{PPforest} with components.
 \code{PPforest2} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 }
 \examples{
-#leukemia data set with all the observations used as training
+#leukemia example with all the observations used as training
 pprf.leukemia <- PPforest2(data = leukemia, class = "Type",
  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE )
 pprf.leukemia

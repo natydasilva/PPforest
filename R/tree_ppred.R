@@ -15,7 +15,7 @@
 tree_ppred <- function(xnew, output.tree, ...) {
     . <- NULL
     
-    votes <- output.tree %>% dplyr::do(tr = PPtreeViz::PP.classify(test.data = xnew, Tree.result = .$tr, Rule = 1))
+    votes <- output.tree %>% dplyr::do(tr = PPclassify(test.data = xnew, Tree.result = .$tr, Rule = 1))
     
     out <- votes %>% dplyr::do(pred = .$tr[[2]])
     

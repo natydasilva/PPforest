@@ -17,7 +17,6 @@ Imports:
      plyr,
     dplyr,
     doMC,
-    PPtreeViz,
     reshape2,
     plotly,
     stats

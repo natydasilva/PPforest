@@ -1124,4 +1124,3 @@ arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int 
   }
   return(err);
 }
- 
