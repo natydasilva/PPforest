@@ -1126,37 +1126,39 @@ arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int 
 }
 
  // [[Rcpp::export]]
-List PPclassindex(arma::vec classtemp,
+List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
                                 arma::mat testdata, arma::mat Treestruct, arma::mat AlphaKeep,
                                 arma::mat CKeep, int id, int Rule){
       int n = classtemp.size();
-  int tn;
+      int tn;
+      
       arma::uvec tindex(n, fill::zeros);
       arma::vec sele(n, fill::zeros);
       //arma::mat tclass(1, classtemp.n_cols, fill::zeros);
-      arma::mat testclassindex(1,n, fill::zeros);
+      
       arma::vec tclass(n, fill::zeros);
+      
        if(Treestruct(id, 1) == 0) {
          return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex,
                                    Rcpp::Named("classtemp") = classtemp);
        }else{
-       tclass = classtemp;
          
-if(sum(tclass==0)==0){
-     tn =0;    
-}else{
-  arma::uvec tnaux = find(tclass==0);
-  
-  
-  tn = tnaux.size();
-  }
-tindex = arma::sort_index(tclass); 
-
-          if(tn>0){
-           arma::uvec idx = arma::linspace<uvec>(0, tn-1,tn); //integer sequence from 0 to tn-1
-           arma::uvec condidx = find(tindex!=idx);
+         tclass = classtemp;
+         
+         
+         if(sum( tclass==0) ==0){
+           tn =0;    
+         }else{
+           arma::uvec tnaux = find(tclass==0);
+           tn = tnaux.size();
+         }
+         tindex = arma::sort_index(tclass); 
+          
+         
+         if(tn>0){
+           //arma::uvec idx = arma::linspace<uvec>(0, tn-1,tn); //integer sequence from 0 to tn-1
+           arma::uvec condidx = find(tclass==1);
            tindex = sort(tindex(condidx));
-           
          }
            arma::mat tdata = testdata.rows(tindex);
           int idproj = Treestruct(id, 3) -1;
@@ -1174,19 +1176,19 @@ tindex = arma::sort_index(tclass);
            }
 
          }
-        
-       
-         testclassindex.insert_rows(testclassindex.n_rows, classtemp.t());
-        Rcout<< testclassindex;
+
+          testclassindex.insert_rows(testclassindex.n_rows, classtemp.t());
+         
            //testclassindex = join_cols(testclassindex, classtemp);
            List a;
-           a = PPclassindex(classtemp,
-                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 1), Rule);
-           testclassindex = as<vec>(a["testclassindex"]);
+           a = PPclassindex(classtemp, testclassindex,
+                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 1)-1, Rule);
+           
+           testclassindex = as<mat>(a["testclassindex"]);
 
-           a = PPclassindex(1 - classtemp, 
-                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 2), Rule);
-           testclassindex = as<vec>(a["testclassindex"]);
+           a = PPclassindex(1 - classtemp,testclassindex,
+                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 2)-1, Rule);
+           testclassindex = as<mat>(a["testclassindex"]);
        }
      return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex, Rcpp::Named("classtemp") = classtemp);
     
