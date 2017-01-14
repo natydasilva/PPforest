@@ -1125,85 +1125,157 @@ arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int 
   return(err);
 }
 
-// [[Rcpp::export]]
-List PPclassify = function (List Treeresult, arma::mat testdata , int Rule = 1, arma::vec trueclass ) 
- {
- if (testdata.size() ==0){ 
-    testdata = Treeresult<mat>(["origdata"]);
- }
+ // [[Rcpp::export]]
+List PPclassindex(arma::vec classtemp,
+                                arma::mat testdata, arma::mat Treestruct, arma::mat AlphaKeep,
+                                arma::mat CKeep, int id, int Rule){
+      int n = classtemp.size();
+  int tn;
+      arma::uvec tindex(n, fill::zeros);
+      arma::vec sele(n, fill::zeros);
+      //arma::mat tclass(1, classtemp.n_cols, fill::zeros);
+      arma::mat testclassindex(1,n, fill::zeros);
+      arma::vec tclass(n, fill::zeros);
+       if(Treestruct(id, 1) == 0) {
+         return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex,
+                                   Rcpp::Named("classtemp") = classtemp);
+       }else{
+       tclass = classtemp;
+         
+if(sum(tclass==0)==0){
+     tn =0;    
+}else{
+  arma::uvec tnaux = find(tclass==0);
+  
+  
+  tn = tnaux.size();
+  }
+tindex = arma::sort_index(tclass); 
+
+          if(tn>0){
+           arma::uvec idx = arma::linspace<uvec>(0, tn-1,tn); //integer sequence from 0 to tn-1
+           arma::uvec condidx = find(tindex!=idx);
+           tindex = sort(tindex(condidx));
+           
+         }
+           arma::mat tdata = testdata.rows(tindex);
+          int idproj = Treestruct(id, 3) -1;
+         arma::vec projtest = testdata*AlphaKeep.row(idproj).t();
+         
+         
+         double ckcond = CKeep(idproj, Rule);
+        
+         
+         for(int i=0; i< classtemp.size(); i++){
+           if(projtest(i)<ckcond){
+             classtemp(i) = true;
+           }else{
+             classtemp(i)  = false;
+           }
+
+         }
+        
+       
+         testclassindex.insert_rows(testclassindex.n_rows, classtemp.t());
+        Rcout<< testclassindex;
+           //testclassindex = join_cols(testclassindex, classtemp);
+           List a;
+           a = PPclassindex(classtemp,
+                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 1), Rule);
+           testclassindex = as<vec>(a["testclassindex"]);
+
+           a = PPclassindex(1 - classtemp, 
+                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 2), Rule);
+           testclassindex = as<vec>(a["testclassindex"]);
+       }
+     return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex, Rcpp::Named("classtemp") = classtemp);
     
-   arma::vec  PPclassification = function(arma::mat Treestruct, arma::vec testclassindex, 
-                                  arma::vec IOindex, arma::vec testclass, int id, int rep) {
-      if(TreeStruct(id, 4) == 0) {
-        arma::vec iclass = testclass;
-        iclass(iclass > 0) = 1;
-        iclass - 1 - iclass;
-        testclass = testclass + IOindex * iclass * Treestruct(id,3);
-        return(list(testclass = testclass, rep = rep));
-      }
-      else {
-        IOindexL = IOindex * testclassindex(rep, ;
-        IOindexR = IOindex * (1 - testclassindex(rep, ));
-        rep = rep + 1;
-        a = PPclassification(Treestruct, testclassindex,
-                               IOindexL, testclass, Treetruct(id, 2), rep)
-        testclass = a<vec>(["testclass"]);
-        rep = a<int>(["rep"]);
-        a = PPclassification(Treestruct, testclassindex,
-                               IOindexR, testclass, Treestruct(id, 3), rep)
-        testclass = a<vec>(["testclass"]);
-        rep = a<int>(["rep"]);
-      }
-      
-      return Rcpp::List::create(Rcpp::Named("testclass") = testclass , Rcpp::Named("rep")=rep);
-    }
-    PPclassindex = function(arma::vec classtemp, arma::vec testclassindex,
-                               arma::mat testdata, arma::mar Treestruct, AlphaKeep, CKeep, id, Rule) {
-      classtemp = asinteger(classtemp)
-      if (Treestruct(id, 2) == 0) {
-        return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex,
-                                  Rcpp::Named("classtemp") = classtemp);
-      }
-      else {
-        tclass = classtemp;
-        tn = tclass(tclass == 0).size();
-        tindex = sortlist(tclass);
-        if (tn)
-          tindex = sort(tindex[-(1:tn)]);
-          tdata = testdata[tindex, ];
-        idproj = TreeStruct[id, 4];
-        projtest = as.matrix(testdata) %*% as.matrix(AlphaKeep[idproj,
-        ]);
-          projtest = as.double(projtest);
-          classtemp = t(projtest < CKeep[idproj, Rule]);
-          testclassindex = rbind(testclassindex, classtemp);
-          a = PPClassindex(classtemp, testclassindex,
-                              testdata, TreeStruct, AlphaKeep, CKeep, Treestruct(id, 2), Rule)
-          testclassindex = a<vec>(["testclassindex"]);
-          a = PPClassindex(1 - classtemp, testclassindex,
-                              testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 3), Rule)
-          testclassindex = a<vec>(["testclassindex"];
-      }
-      return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex, Rcpp::Named("classtemp") = classtemp)
-    }
-    int n =testdata.n_rows();
-      classtemp = rep(1, n);
-      testclassindex = NULL;
-    temp = PPClassindex(classtemp, testclassindex, testdata,
-                           Treeresult<mat>(["TreeStruct"]), Treeresult<vec>(["projbestnode"]),
-                           Treeresult<mat>(["splitCutoffnode"]),
-                           1,  Rule)
-      testclass = rep(0, n);
-      IOindex = rep(1, n);
-      temp = PPClassification(Treeresult<mat>(["TreeStruct"]), temp<vec>[("testclassindex")],
-                                IOindex, testclass, 1, 1)
-      if (!isnull(trueclass)) {
-        predicterror = sum(trueclass != temp<vec>[("testclass")]);
-      }
-      else {
-        predicterror = NA
-      }
-      classname = names(table(Treeresult<vec>[("origclass")]));
-        predictclass = classname[temp$testclass]
-      return Rcpp::List::create(Rcpp::Named("predicterror") = predicterror, Rcpp::Named("predictclass") = predictclass)
-}
+     }
+        // }
+        // return tindex;
+        // }
+
+
+
+
+// List PPclassify = function (List Treeresult, arma::mat testdata , int Rule = 1, arma::vec trueclass ) 
+//  {
+//  if (testdata.size() ==0){ 
+//     testdata = Treeresult<mat>(["origdata"]);
+//  }
+//     
+//    arma::vec  PPclassification = function(arma::mat Treestruct, arma::vec testclassindex, 
+//                                   arma::vec IOindex, arma::vec testclass, int id, int rep) {
+//       if(TreeStruct(id, 4) == 0) {
+//         arma::vec iclass = testclass;
+//         iclass(iclass > 0) = 1;
+//         iclass - 1 - iclass;
+//         testclass = testclass + IOindex * iclass * Treestruct(id,3);
+//         return(list(testclass = testclass, rep = rep));
+//       }
+//       else {
+//         IOindexL = IOindex * testclassindex(rep, ;
+//         IOindexR = IOindex * (1 - testclassindex(rep, ));
+//         rep = rep + 1;
+//         a = PPclassification(Treestruct, testclassindex,
+//                                IOindexL, testclass, Treetruct(id, 2), rep)
+//         testclass = a<vec>(["testclass"]);
+//         rep = a<int>(["rep"]);
+//         a = PPclassification(Treestruct, testclassindex,
+//                                IOindexR, testclass, Treestruct(id, 3), rep)
+//         testclass = a<vec>(["testclass"]);
+//         rep = a<int>(["rep"]);
+//       }
+//       
+//       return Rcpp::List::create(Rcpp::Named("testclass") = testclass , Rcpp::Named("rep")=rep);
+//     }
+//     PPclassindex = function(arma::vec classtemp, arma::vec testclassindex,
+//                                arma::mat testdata, arma::mar Treestruct, AlphaKeep, CKeep, id, Rule) {
+//       classtemp = asinteger(classtemp)
+//       if (Treestruct(id, 2) == 0) {
+//         return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex,
+//                                   Rcpp::Named("classtemp") = classtemp);
+//       }
+//       else {
+//         tclass = classtemp;
+//         tn = tclass(tclass == 0).size();
+//         tindex = sortlist(tclass);
+//         if (tn)
+//           tindex = sort(tindex[-(1:tn)]);
+//           tdata = testdata[tindex, ];
+//         idproj = TreeStruct[id, 4];
+//         projtest = as.matrix(testdata) %*% as.matrix(AlphaKeep[idproj,
+//         ]);
+//           projtest = as.double(projtest);
+//           classtemp = t(projtest < CKeep[idproj, Rule]);
+//           testclassindex = rbind(testclassindex, classtemp);
+//           a = PPClassindex(classtemp, testclassindex,
+//                               testdata, TreeStruct, AlphaKeep, CKeep, Treestruct(id, 2), Rule)
+//           testclassindex = a<vec>(["testclassindex"]);
+//           a = PPClassindex(1 - classtemp, testclassindex,
+//                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 3), Rule)
+//           testclassindex = a<vec>(["testclassindex"];
+//       }
+//       return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex, Rcpp::Named("classtemp") = classtemp)
+//     }
+//     int n =testdata.n_rows();
+//       classtemp = rep(1, n);
+//       testclassindex = NULL;
+//     temp = PPClassindex(classtemp, testclassindex, testdata,
+//                            Treeresult<mat>(["TreeStruct"]), Treeresult<vec>(["projbestnode"]),
+//                            Treeresult<mat>(["splitCutoffnode"]),
+//                            1,  Rule)
+//       testclass = rep(0, n);
+//       IOindex = rep(1, n);
+//       temp = PPClassification(Treeresult<mat>(["TreeStruct"]), temp<vec>[("testclassindex")],
+//                                 IOindex, testclass, 1, 1)
+//       if (!isnull(trueclass)) {
+//         predicterror = sum(trueclass != temp<vec>[("testclass")]);
+//       }
+//       else {
+//         predicterror = NA
+//       }
+//       classname = names(table(Treeresult<vec>[("origclass")]));
+//         predictclass = classname[temp$testclass]
+//       return Rcpp::List::create(Rcpp::Named("predicterror") = predicterror, Rcpp::Named("predictclass") = predictclass)
+// }
