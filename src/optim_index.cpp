@@ -1125,6 +1125,58 @@ arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int 
   return(err);
 }
 
+
+// [[Rcpp::export]]
+  List  PPclassification(arma::mat Treestruct, arma::mat testclassindex,
+                                  arma::vec IOindex, arma::vec testclass, int id, int rep) {
+  
+    arma::vec IOindexL(IOindex.size(), fill::zeros);
+    arma::vec IOindexR(IOindex.size(), fill::zeros);
+    
+      if(Treestruct(id, 3) == 0) {
+        arma::vec iclass = testclass;
+        
+        // arma::uvec condidx = find(iclass > 0);
+        
+        iclass.elem( find(iclass > 0) ).ones();
+        
+        //iclass(iclass > 0) = 1;
+        iclass = 1 - iclass;
+        for(int i = 0; i< iclass.size(); i++){
+        testclass(i) = testclass(i) + IOindex(i)*iclass(i)*Treestruct(id,2);
+        }
+        return Rcpp::List::create(Rcpp::Named("testclass") = testclass,
+                                  Rcpp::Named("rep") = rep);
+        
+      }else{
+        
+        for(int i=0; i< IOindex.size(); i++){
+          IOindexL(i) = IOindex(i)*testclassindex(rep,i);
+          IOindexR(i) = IOindex(i)*(1 - testclassindex(rep,i));
+        }
+        //IOindexL = dot(IOindex,testclassindex.row(rep)) ;
+       
+       // IOindexR = IOindex * (1 - testclassindex.row(rep));
+      
+       //Rcout << IOindexR;
+        rep = rep + 1;
+        List a;
+        a = PPclassification(Treestruct, testclassindex,
+                               IOindexL, testclass, Treestruct(id, 1) -1, rep);
+        
+        testclass = as<vec>(a["testclass"]);
+       
+        rep = as<int>(a["rep"]);
+        a = PPclassification(Treestruct, testclassindex,
+                               IOindexR, testclass, Treestruct(id, 2) - 1, rep);
+        testclass = as<vec>(a["testclass"]);
+        rep = as<int>(a["rep"]);
+      }
+
+      return Rcpp::List::create(Rcpp::Named("testclass") = testclass , Rcpp::Named("rep")=rep);
+    }
+
+
  // [[Rcpp::export]]
 List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
                                 arma::mat testdata, arma::mat Treestruct, arma::mat AlphaKeep,
@@ -1155,7 +1207,7 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
          tindex = arma::sort_index(tclass); 
           
          
-         if(tn>0){
+         if(tn >  0){
            //arma::uvec idx = arma::linspace<uvec>(0, tn-1,tn); //integer sequence from 0 to tn-1
            arma::uvec condidx = find(tclass==1);
            tindex = sort(tindex(condidx));
@@ -1193,9 +1245,7 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
      return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex, Rcpp::Named("classtemp") = classtemp);
     
      }
-        // }
-        // return tindex;
-        // }
+       
 
 
 
