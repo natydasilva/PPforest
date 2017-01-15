@@ -4,7 +4,7 @@
 \alias{PPclassify2}
 \title{Predict class for the test set and calculate prediction error}
 \usage{
-PPclassify2( Tree.result, test.data, Rule, true.class)
+PPclassify2( Tree.result, test.data = NULL, Rule = 1, true.class = NULL)
 }
 \arguments{
 \item{Tree.result}{the result of PP.Tree}

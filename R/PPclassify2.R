@@ -2,11 +2,11 @@
 #' Predict class for the test set and calculate prediction error
 #' 
 #' After finding tree structure, predict class for the test set and calculate prediction error.
-#' @usage PPclassify2( Tree.result, test.data, Rule, true.class)  
+#' @usage PPclassify2( Tree.result, test.data = NULL, Rule = 1, true.class = NULL)  
 #' @param Tree.result the result of PP.Tree
 #' @param test.data  the test dataset
-#' @param true.class true class of test dataset if available
 #' @param Rule split rule 1:mean of two group means, 2:weighted mean, 3: mean of max(left group) and min(right group), 4: weighted mean of max(left group) and min(right group)
+#' @param true.class true class of test dataset if available
 #' @return predict.class predicted class
 #' @return predict.error prediction error
 #' @references Lee, YD, Cook, D., Park JW, and Lee, EK(2013) 
@@ -15,8 +15,8 @@
 #' @export
 #' @keywords tree
 
-PPclassify2 <- function (Tree.result, test.data = NULL, Rule = 1, true.class = NULL, 
-                        ...) 
+PPclassify2 <- function (Tree.result, test.data = NULL, Rule = 1, true.class = NULL 
+                        ) 
 {
   if (is.null(test.data)) 
     test.data <- Tree.result$origdata
