@@ -1248,81 +1248,31 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
        
 
 
-
-
-// List PPclassify = function (List Treeresult, arma::mat testdata , int Rule = 1, arma::vec trueclass ) 
+// 
+// 
+// List PPclassify = function (List Treeresult, arma::mat testdata , int Rule , arma::vec trueclass )
 //  {
-//  if (testdata.size() ==0){ 
+//  if (testdata.size() ==0){
 //     testdata = Treeresult<mat>(["origdata"]);
 //  }
-//     
-//    arma::vec  PPclassification = function(arma::mat Treestruct, arma::vec testclassindex, 
-//                                   arma::vec IOindex, arma::vec testclass, int id, int rep) {
-//       if(TreeStruct(id, 4) == 0) {
-//         arma::vec iclass = testclass;
-//         iclass(iclass > 0) = 1;
-//         iclass - 1 - iclass;
-//         testclass = testclass + IOindex * iclass * Treestruct(id,3);
-//         return(list(testclass = testclass, rep = rep));
-//       }
-//       else {
-//         IOindexL = IOindex * testclassindex(rep, ;
-//         IOindexR = IOindex * (1 - testclassindex(rep, ));
-//         rep = rep + 1;
-//         a = PPclassification(Treestruct, testclassindex,
-//                                IOindexL, testclass, Treetruct(id, 2), rep)
-//         testclass = a<vec>(["testclass"]);
-//         rep = a<int>(["rep"]);
-//         a = PPclassification(Treestruct, testclassindex,
-//                                IOindexR, testclass, Treestruct(id, 3), rep)
-//         testclass = a<vec>(["testclass"]);
-//         rep = a<int>(["rep"]);
-//       }
-//       
-//       return Rcpp::List::create(Rcpp::Named("testclass") = testclass , Rcpp::Named("rep")=rep);
-//     }
-//     PPclassindex = function(arma::vec classtemp, arma::vec testclassindex,
-//                                arma::mat testdata, arma::mar Treestruct, AlphaKeep, CKeep, id, Rule) {
-//       classtemp = asinteger(classtemp)
-//       if (Treestruct(id, 2) == 0) {
-//         return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex,
-//                                   Rcpp::Named("classtemp") = classtemp);
-//       }
-//       else {
-//         tclass = classtemp;
-//         tn = tclass(tclass == 0).size();
-//         tindex = sortlist(tclass);
-//         if (tn)
-//           tindex = sort(tindex[-(1:tn)]);
-//           tdata = testdata[tindex, ];
-//         idproj = TreeStruct[id, 4];
-//         projtest = as.matrix(testdata) %*% as.matrix(AlphaKeep[idproj,
-//         ]);
-//           projtest = as.double(projtest);
-//           classtemp = t(projtest < CKeep[idproj, Rule]);
-//           testclassindex = rbind(testclassindex, classtemp);
-//           a = PPClassindex(classtemp, testclassindex,
-//                               testdata, TreeStruct, AlphaKeep, CKeep, Treestruct(id, 2), Rule)
-//           testclassindex = a<vec>(["testclassindex"]);
-//           a = PPClassindex(1 - classtemp, testclassindex,
-//                               testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 3), Rule)
-//           testclassindex = a<vec>(["testclassindex"];
-//       }
-//       return Rcpp::List::create(Rcpp::Named("testclassindex") = testclassindex, Rcpp::Named("classtemp") = classtemp)
-//     }
-//     int n =testdata.n_rows();
-//       classtemp = rep(1, n);
-//       testclassindex = NULL;
+// 
+// 
+//     int n = testdata.n_rows();
+//       arma::vec classtemp = classtemp.ones(n);
+//       arma::mat testclassindex = testclassindex.zeros(1,n);
 //     temp = PPClassindex(classtemp, testclassindex, testdata,
-//                            Treeresult<mat>(["TreeStruct"]), Treeresult<vec>(["projbestnode"]),
-//                            Treeresult<mat>(["splitCutoffnode"]),
-//                            1,  Rule)
-//       testclass = rep(0, n);
-//       IOindex = rep(1, n);
-//       temp = PPClassification(Treeresult<mat>(["TreeStruct"]), temp<vec>[("testclassindex")],
-//                                 IOindex, testclass, 1, 1)
-//       if (!isnull(trueclass)) {
-//         predicterror = sum(trueclass != temp<vec>[("testclass")]);
+//                            as<mat>(Treeresult["Treestruct"]), as<vec>(Treeresult["projbestnode"]),
+//                            as<mat>(Treeresult["splitCutoffnode"]),
+//                            0,  Rule)
+//       
+//      
+//     
+//       testclass = testclass.zeros(n);
+//       IOindex = IOindex.ones(n);
+//       temp = PPClassification(as<mat>(Treeresult["TreeStruct"]), as<vec>[temp("testclassindex")],
+//                                 IOindex, testclass, 0, 1)
+//       if (trueclass.size()!=0) {
+//         predicterror = sum(trueclass != as<vec>[temp("testclass")]);
 //       }
 //       else {
 //         predicterror = NA

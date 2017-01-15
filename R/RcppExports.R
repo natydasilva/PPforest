@@ -121,3 +121,11 @@ ooberrortree <- function(votes, oobobs, classe, m) {
     .Call('PPforest2_ooberrortree', PACKAGE = 'PPforest2', votes, oobobs, classe, m)
 }
 
+PPclassification <- function(Treestruct, testclassindex, IOindex, testclass, id, rep) {
+    .Call('PPforest2_PPclassification', PACKAGE = 'PPforest2', Treestruct, testclassindex, IOindex, testclass, id, rep)
+}
+
+PPclassindex <- function(classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule) {
+    .Call('PPforest2_PPclassindex', PACKAGE = 'PPforest2', classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule)
+}
+

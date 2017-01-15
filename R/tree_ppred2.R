@@ -16,8 +16,8 @@
 tree_ppred2 <- function(xnew, output.tree, parallel = FALSE, cores = 2) {
   
   doMC::registerDoMC(cores)
-  
-  votes <- plyr::ldply(output.tree, function(x) as.numeric(PPclassify(test.data = xnew, Tree.result = x[[1]], Rule = 1)[[2]]) ,  .parallel = parallel)
+                                                                     
+  votes <- plyr::ldply(output.tree, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]]) ,  .parallel = parallel)
   
  
   max.vote <- mvote(as.matrix((votes[ , -1])))

@@ -404,3 +404,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// PPclassification
+List PPclassification(arma::mat Treestruct, arma::mat testclassindex, arma::vec IOindex, arma::vec testclass, int id, int rep);
+RcppExport SEXP PPforest2_PPclassification(SEXP TreestructSEXP, SEXP testclassindexSEXP, SEXP IOindexSEXP, SEXP testclassSEXP, SEXP idSEXP, SEXP repSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type Treestruct(TreestructSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type testclassindex(testclassindexSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type IOindex(IOindexSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type testclass(testclassSEXP);
+    Rcpp::traits::input_parameter< int >::type id(idSEXP);
+    Rcpp::traits::input_parameter< int >::type rep(repSEXP);
+    rcpp_result_gen = Rcpp::wrap(PPclassification(Treestruct, testclassindex, IOindex, testclass, id, rep));
+    return rcpp_result_gen;
+END_RCPP
+}
+// PPclassindex
+List PPclassindex(arma::vec classtemp, arma::mat testclassindex, arma::mat testdata, arma::mat Treestruct, arma::mat AlphaKeep, arma::mat CKeep, int id, int Rule);
+RcppExport SEXP PPforest2_PPclassindex(SEXP classtempSEXP, SEXP testclassindexSEXP, SEXP testdataSEXP, SEXP TreestructSEXP, SEXP AlphaKeepSEXP, SEXP CKeepSEXP, SEXP idSEXP, SEXP RuleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type classtemp(classtempSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type testclassindex(testclassindexSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type testdata(testdataSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Treestruct(TreestructSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type AlphaKeep(AlphaKeepSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type CKeep(CKeepSEXP);
+    Rcpp::traits::input_parameter< int >::type id(idSEXP);
+    Rcpp::traits::input_parameter< int >::type Rule(RuleSEXP);
+    rcpp_result_gen = Rcpp::wrap(PPclassindex(classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule));
+    return rcpp_result_gen;
+END_RCPP
+}
