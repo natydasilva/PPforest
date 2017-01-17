@@ -4,24 +4,23 @@ Title: What the Package Does (Title Case)
 Version: 0.1.0
 Author: Who wrote it
 Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-LazyData: TRUE
+Description: Random forest build on projection pursuit classification tree
+    using.
+LazyData: yes
 Depends:
     R (>= 3.2.0)
 Imports:
-      Rcpp (>= 0.12.7),
-      RcppArmadillo,
+    Rcpp (>= 0.12.7),
+    RcppArmadillo,
     ggplot2,
     magrittr,
-     plyr,
+    plyr,
     dplyr,
     doMC,
     reshape2,
     plotly,
     stats
-Description: Random forest build on projection pursuit classification tree using.
 License: LGPL-2.1
-LazyData: yes
 Suggests:
     knitr,
     randomForest,
@@ -34,4 +33,4 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1

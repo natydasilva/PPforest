@@ -1205,20 +1205,21 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
            tn = tnaux.size();
          }
          tindex = arma::sort_index(tclass); 
-          
+         
          
          if(tn >  0){
             arma::uvec condidx = find(tclass==1);
            tindex = sort(tindex(condidx));
+           
          }
            arma::mat tdata = testdata.rows(tindex);
           int idproj = Treestruct(id, 3) -1;
          arma::vec projtest = testdata*AlphaKeep.row(idproj).t();
          
          
-         double ckcond = CKeep(idproj, Rule);
+         double ckcond = CKeep(idproj, Rule-1);
         
-         
+        
          for(int i=0; i< classtemp.size(); i++){
            if(projtest(i)<ckcond){
              classtemp(i) = true;
@@ -1229,12 +1230,12 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
          }
 
           testclassindex.insert_rows(testclassindex.n_rows, classtemp.t());
-         Rcout<< testclassindex;
+       
            
            List a;
            a = PPclassindex(classtemp, testclassindex,
                                testdata, Treestruct, AlphaKeep, CKeep, Treestruct(id, 1)-1, Rule);
-           
+
            testclassindex = as<mat>(a["testclassindex"]);
 
            a = PPclassindex(1 - classtemp,testclassindex,
