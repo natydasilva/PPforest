@@ -43,8 +43,13 @@ PPclassify2 <- function (Tree.result, test.data = NULL, Rule = 1, true.class = N
                        0, Rule)
   test.class <- rep(0, n)
   IOindex <- rep(1, n)
+  if(dim(as.matrix(temp$testclassindex[-1,]))[2]==1){
+    temp <- PPclassification(as.matrix(Tree.result$Tree.Struct), t(as.matrix(temp$testclassindex[-1,])), 
+                             as.vector(IOindex), as.vector(test.class), 0, 0)
+  }else{
   temp <- PPclassification(as.matrix(Tree.result$Tree.Struct), as.matrix(temp$testclassindex[-1,]), 
                            as.vector(IOindex), as.vector(test.class), 0, 0)
+  }
   if (!is.null(true.class)) {
     predict.error <- sum(true.class != temp$test.class)
   }else{

@@ -1136,11 +1136,11 @@ arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int 
       if(Treestruct(id, 3) == 0) {
         arma::vec iclass = testclass;
         
-        // arma::uvec condidx = find(iclass > 0);
+        
         
         iclass.elem( find(iclass > 0) ).ones();
         
-        //iclass(iclass > 0) = 1;
+       
         iclass = 1 - iclass;
         for(int i = 0; i< iclass.size(); i++){
         testclass(i) = testclass(i) + IOindex(i)*iclass(i)*Treestruct(id,2);
@@ -1150,22 +1150,26 @@ arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int 
         
       }else{
         
+        
+        
         for(int i=0; i< IOindex.size(); i++){
+       
+    
           IOindexL(i) = IOindex(i)*testclassindex(rep,i);
           IOindexR(i) = IOindex(i)*(1 - testclassindex(rep,i));
+        
+         
+          // Rcout<< "\n";
+          // Rcout<< IOindexR;
         }
-        //IOindexL = dot(IOindex,testclassindex.row(rep)) ;
        
-       // IOindexR = IOindex * (1 - testclassindex.row(rep));
-      
-       //Rcout << IOindexR;
         rep = rep + 1;
         List a;
         a = PPclassification(Treestruct, testclassindex,
                                IOindexL, testclass, Treestruct(id, 1) -1, rep);
-        
+
         testclass = as<vec>(a["testclass"]);
-       
+
         rep = as<int>(a["rep"]);
         a = PPclassification(Treestruct, testclassindex,
                                IOindexR, testclass, Treestruct(id, 2) - 1, rep);
