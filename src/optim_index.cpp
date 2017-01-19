@@ -213,26 +213,19 @@ double signC(double x) {
 
 
 
-
-
-
-
-
 // [[Rcpp::export]]
 double PDAindex2(arma::vec origclass, arma::mat origdata,
                 arma::mat proj,bool weight=true,
                 double lambda=0.1){
-  double index;
+
+  double index=0.0;
   int n=origdata.n_rows, p=origdata.n_cols; 
-  //arma::mat proj= proj.zeros(n,p);
+  
   int q=proj.n_cols, p1=proj.n_rows;
-  // Environment base("package:base");
-  // Function table=base["table"];
+  
   arma::vec gn=tableC(origclass);
   int g = gn.size();  
   
- 
- 
  arma::vec clval = arma::unique(origclass);
  //----
  arma::vec newclass(n, fill::zeros);
@@ -244,10 +237,10 @@ double PDAindex2(arma::vec origclass, arma::mat origdata,
    }
    
  }
- origclass=newclass;
+ origclass = newclass;
  
   arma::mat W(p,p,fill::zeros),WB(p,p,fill::zeros),gsum(p,g,fill::zeros);
-  arma::vec allmean(p);
+  arma::vec allmean(p,fill::zeros);
   
   if(p1!=p)
     q=p;
@@ -267,7 +260,8 @@ double PDAindex2(arma::vec origclass, arma::mat origdata,
     }
     for(int j1=0;j1<p;j1++){
       for(int j2=0; j2<=j1; j2++){
-        double temp1,temp2;
+        double temp1 = 0.0; 
+        double temp2 = 0.0;
         if(j1!=j2){
           temp1=(1-lambda)*((origdata(i,j1)-gsum(j1,l)/gn(l))*
             (origdata(i,j2)-gsum(j2,l)/gn(l)))/gn(l)*gn1;
@@ -292,8 +286,8 @@ double PDAindex2(arma::vec origclass, arma::mat origdata,
       }
     }      
   }
-  arma::mat Wt(q,p),WBt(q,p);    
-  arma::mat Wtt(q,q),WBtt(q,q); 
+  arma::mat Wt(q,p,fill::zeros),WBt(q,p,fill::zeros);    
+  arma::mat Wtt(q,q,fill::zeros),WBtt(q,q,fill::zeros); 
   if(p1!=p||p1==1){
     Wtt=W;
     WBtt=WB;
