@@ -33,10 +33,10 @@
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
 #' @export
 #' @examples
-#' #leukemia example with all the observations used as training
-#' pprf.leukemia <- PPforest2(data = leukemia, class = "Type",
-#'  size.tr = 1, m = 100, size.p = .2, PPmethod = 'PDA', strata = TRUE )
-#' pprf.leukemia
+#' #crab example with all the observations used as training
+#' pprf.crab <- PPforest2(data = crab, class = "Type",
+#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE )
+#' pprf.crab
 PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1, parallel = TRUE, cores = 2 ) {
   
   Var1 <- NULL
@@ -55,9 +55,10 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
   
   outputaux <- baggtree(train , class , m , PPmethod , lambda , size.p )
   
-  output <- plyr::llply(outputaux, function(x) x[[1]])
-  data.b <-  plyr::llply(outputaux, function(x) x[[2]])
-  
+ output <- lapply(outputaux,function(x) x[[1]])
+  #output <- plyr::llply(outputaux, function(x) x[[1]])
+  #data.b <-  plyr::llply(outputaux, function(x) x[[2]])
+ data.b <-  lapply(outputaux, function(x) x[[2]])
   pred.tr <- tree_ppred2( xnew = dplyr::select( train,-get( class ) ), outputaux, parallel, cores )
 
   expand.grid.ef <- function(seq1,seq2) {
@@ -169,6 +170,9 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
                   vote.mat = pred.tr[[1]], class.var = class, oob.obs = oob.obs)
   class(results) <- "PPforest"
   
+  
+  
+
   return(results)
   
 } 

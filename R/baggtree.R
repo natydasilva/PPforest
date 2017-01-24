@@ -13,10 +13,10 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
-#' #leukemia data set
-#' leukemia.trees <- baggtree(data = leukemia, class = "Type", 
-#'  m =  70, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
-#' str(leukemia.trees, max.level = 1)
+#' #crab data set
+#' crab.trees <- baggtree(data = crab, class = "Type", 
+#'  m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 ) 
+#' str(crab.trees, max.level = 1)
 
 baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1, cores = 2){
    bootsam <- NULL
@@ -40,8 +40,6 @@ baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, siz
 
 doMC::registerDoMC( cores )
 
-# getDoParWorkers()
-## [1] 4
 
     plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data , class, PPmethod , lambda , size.p ) ,  .parallel = TRUE)
 
