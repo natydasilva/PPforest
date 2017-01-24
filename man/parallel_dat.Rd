@@ -2,7 +2,7 @@
 % Please edit documentation in R/parallel_dat.R
 \name{parallel_dat}
 \alias{parallel_dat}
-\title{Parallel plot for the data set colored by class}
+\title{Parallel plot for the data set colored by class, the data are standarized in the function}
 \usage{
 parallel_dat(data, class)
 }
@@ -15,12 +15,12 @@ parallel_dat(data, class)
 A parallel coordinate plot with the data selt collored by class
 }
 \description{
-Parallel plot for the data set colored by class
+Parallel plot for the data set colored by class, the data are standarized in the function
 }
 \examples{
-#leukemia data set with all the observations used as training
-pprf.leukemia <- PPforest(data = leukemia, class = "Type",
- size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
-parallel_dat(leukemia,"Type")
+#crab data set with all the observations used as training
+pprf.crab <- PPforest2(data =crab, class = "Type",
+ size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+parallel_dat(crab,"Type")
 }
 

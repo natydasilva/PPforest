@@ -22,9 +22,8 @@ predicted values from PPforest
 Vector with predicted values from a PPforest.
 }
 \examples{
-training.id <- train_fn(data = leukemia, class = "Type", size.p = 0.9)
-leukemia.trees <- baggtree(data = leukemia[training.id$id,], class = "Type", 
+leukemia.trees <- baggtree(data = leukemia, class = "Type", 
 m =  70, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
-pr <- tree_ppred2( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
+pr <- tree_ppred2( xnew = leukemia[, -1] , leukemia.trees)
 }
 

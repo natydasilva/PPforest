@@ -21,9 +21,9 @@ Color by true observed class for each observation.
 Vote matrix visualization
 }
 \examples{
-#leukemia data set with all the observations used as training
-pprf.leukemia <- PPforest(data = leukemia, class = "Type",
- size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
-vote_viz1(leukemia,"Type",pprf.leukemia)
+#crab data set with all the observations used as training
+pprf.crab <- PPforest2(data = crab, class = "Type",
+ size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+vote_viz1(crab,"Type",pprf.crab)
 }
 

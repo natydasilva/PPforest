@@ -29,9 +29,9 @@ data frame with trees_pp output for all the bootstraps samples.
 For each bootstrap sample grow a projection persuit tree (PPtree object).
 }
 \examples{
-#leukemia data set
-leukemia.trees <- baggtree(data = leukemia, class = "Type", 
- m =  70, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
-str(leukemia.trees, max.level = 1)
+#crab data set
+crab.trees <- baggtree(data = crab, class = "Type", 
+ m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 ) 
+str(crab.trees, max.level = 1)
 }
 

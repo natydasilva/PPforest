@@ -6,39 +6,6 @@
 
 using namespace Rcpp;
 
-// PPpred
-NumericVector PPpred(NumericMatrix TRstr, NumericMatrix TRprnode, NumericMatrix TRspl, NumericMatrix testdata);
-RcppExport SEXP PPforest2_PPpred(SEXP TRstrSEXP, SEXP TRprnodeSEXP, SEXP TRsplSEXP, SEXP testdataSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type TRstr(TRstrSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type TRprnode(TRprnodeSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type TRspl(TRsplSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type testdata(testdataSEXP);
-    rcpp_result_gen = Rcpp::wrap(PPpred(TRstr, TRprnode, TRspl, testdata));
-    return rcpp_result_gen;
-END_RCPP
-}
-// imposoon
-NumericMatrix imposoon(NumericMatrix train, NumericVector classes, List oobid, List permute, List trees, IntegerVector noob, List TRstrL, List TRsplL, List TRprnodeL);
-RcppExport SEXP PPforest2_imposoon(SEXP trainSEXP, SEXP classesSEXP, SEXP oobidSEXP, SEXP permuteSEXP, SEXP treesSEXP, SEXP noobSEXP, SEXP TRstrLSEXP, SEXP TRsplLSEXP, SEXP TRprnodeLSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type train(trainSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type classes(classesSEXP);
-    Rcpp::traits::input_parameter< List >::type oobid(oobidSEXP);
-    Rcpp::traits::input_parameter< List >::type permute(permuteSEXP);
-    Rcpp::traits::input_parameter< List >::type trees(treesSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type noob(noobSEXP);
-    Rcpp::traits::input_parameter< List >::type TRstrL(TRstrLSEXP);
-    Rcpp::traits::input_parameter< List >::type TRsplL(TRsplLSEXP);
-    Rcpp::traits::input_parameter< List >::type TRprnodeL(TRprnodeLSEXP);
-    rcpp_result_gen = Rcpp::wrap(imposoon(train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL));
-    return rcpp_result_gen;
-END_RCPP
-}
 // tableC
 arma::vec tableC(arma::vec x);
 RcppExport SEXP PPforest2_tableC(SEXP xSEXP) {
@@ -435,6 +402,39 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type id(idSEXP);
     Rcpp::traits::input_parameter< int >::type Rule(RuleSEXP);
     rcpp_result_gen = Rcpp::wrap(PPclassindex(classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule));
+    return rcpp_result_gen;
+END_RCPP
+}
+// PPpred
+NumericVector PPpred(NumericMatrix TRstr, NumericMatrix TRprnode, NumericMatrix TRspl, NumericMatrix testdata);
+RcppExport SEXP PPforest2_PPpred(SEXP TRstrSEXP, SEXP TRprnodeSEXP, SEXP TRsplSEXP, SEXP testdataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type TRstr(TRstrSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type TRprnode(TRprnodeSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type TRspl(TRsplSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type testdata(testdataSEXP);
+    rcpp_result_gen = Rcpp::wrap(PPpred(TRstr, TRprnode, TRspl, testdata));
+    return rcpp_result_gen;
+END_RCPP
+}
+// imposoon
+NumericMatrix imposoon(NumericMatrix train, NumericVector classes, List oobid, List permute, List trees, IntegerVector noob, List TRstrL, List TRsplL, List TRprnodeL);
+RcppExport SEXP PPforest2_imposoon(SEXP trainSEXP, SEXP classesSEXP, SEXP oobidSEXP, SEXP permuteSEXP, SEXP treesSEXP, SEXP noobSEXP, SEXP TRstrLSEXP, SEXP TRsplLSEXP, SEXP TRprnodeLSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type train(trainSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type classes(classesSEXP);
+    Rcpp::traits::input_parameter< List >::type oobid(oobidSEXP);
+    Rcpp::traits::input_parameter< List >::type permute(permuteSEXP);
+    Rcpp::traits::input_parameter< List >::type trees(treesSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type noob(noobSEXP);
+    Rcpp::traits::input_parameter< List >::type TRstrL(TRstrLSEXP);
+    Rcpp::traits::input_parameter< List >::type TRsplL(TRsplLSEXP);
+    Rcpp::traits::input_parameter< List >::type TRprnodeL(TRprnodeLSEXP);
+    rcpp_result_gen = Rcpp::wrap(imposoon(train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -9,10 +9,9 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples 
-#' training.id <- train_fn(data = leukemia, class = "Type", size.p = 0.9)
-#' leukemia.trees <- baggtree(data = leukemia[training.id$id,], class = "Type", 
-#' m =  70, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
-#' pr <- tree_ppred2( xnew = leukemia[-training.id$id, -1] , leukemia.trees)
+#' crab.trees <- baggtree(data = crab, class = "Type", 
+#' m =  200, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
+#' pr <- tree_ppred2( xnew = crab[, -1] , crab.trees)
 tree_ppred2 <- function(xnew, output.tree, parallel = FALSE, cores = 2) {
   
   doMC::registerDoMC(cores)
