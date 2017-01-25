@@ -25,6 +25,7 @@ Importance variable visualization for each tree in the forest
 #crab data set with all the observations used as training
 pprf.crab <- PPforest2(data = crab, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+ 
 ppf_importance2(crab, "Type", pprf.crab, tree.id = 1)
 }
 
