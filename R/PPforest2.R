@@ -59,7 +59,7 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
   #output <- plyr::llply(outputaux, function(x) x[[1]])
   #data.b <-  plyr::llply(outputaux, function(x) x[[2]])
  data.b <-  lapply(outputaux, function(x) x[[2]])
-  pred.tr <- tree_ppred2( xnew = dplyr::select( train,-get( class ) ), outputaux, parallel, cores )
+  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train,-get( class ) ),  parallel, cores )
 
   expand.grid.ef <- function(seq1,seq2) {
     data.frame(a = rep.int(seq1, length(seq2)), 
@@ -140,7 +140,7 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
     dplyr::filter_()
   
   if (dim(test)[1] != 0) {
-    pred.test <- tree_ppred2(xnew = test, outputaux, parallel, cores )
+    pred.test <- trees_pred(outputaux, xnew = test, parallel, cores )
     error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
     pred.test = as.factor(pred.test[[2]])
     levels(pred.test) <- levels(train[, class])
@@ -168,7 +168,7 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
                   output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
                   n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
                   vote.mat = pred.tr[[1]], class.var = class, oob.obs = oob.obs)
-  class(results) <- "PPforest"
+  class(results) <- "PPforest2"
   
   
   
