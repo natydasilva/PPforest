@@ -24,9 +24,9 @@ A dotplot with a global measure of importance  variables in the PPforest.
 Importance variable visualization
 }
 \examples{
-#leukemia data set with all the observations used as training
-pprf.leukemia <- PPforest2(data = leukemia, class = "Type",
- size.tr = 1, m = 70, size.p = .4, PPmethod = 'PDA', strata = TRUE)
-ppf_importance(data = leukemia, class = "Type", pprf.leukemia, global = TRUE, weight = TRUE) 
+#crab data set with all the observations used as training
+pprf.crab <- PPforest2(data = crab, class = "Type",
+ size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE) 
 }
 
