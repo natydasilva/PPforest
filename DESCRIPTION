@@ -18,17 +18,16 @@ Imports:
     dplyr,
     doMC,
     reshape2,
-    plotly,
-    stats
+    plotly
 License: LGPL-2.1
 Suggests:
     knitr,
     randomForest,
     rpart,
     gridExtra,
-    RColorBrewer,
     tidyr,
     GGally,
+    RColorBrewer,
     roxygen2 (>= 3.0.0),
     rmarkdown
 VignetteBuilder: knitr
