@@ -5,7 +5,7 @@
 #' @return printed results for PPforest object
 #' @export
 #' 
-print.PPforest <- function(x, ...) {
+print.PPforest2 <- function(x, ...) {
     cat("\nCall:\n", deparse(x$call), "\n")
     cat("               Type of random forest: ", x$type, "\n", sep = "")
     cat("                     Number of trees: ", x$n.tree, "\n", sep = "")

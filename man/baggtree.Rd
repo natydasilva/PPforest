@@ -2,10 +2,10 @@
 % Please edit documentation in R/baggtree.R
 \name{baggtree}
 \alias{baggtree}
-\title{Grow a PPtree_split for each bootstrap sample}
+\title{For each bootstrap sample grow a projection persuit tree (PPtree object).}
 \usage{
 baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
-  size.p = 1, cores = 2)
+  size.p = 1, parallel = TRUE, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -19,6 +19,8 @@ baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
 \item{lambda}{a parameter for PDA index}
 
 \item{size.p}{proportion of random sample variables in each split.}
+
+\item{parallel}{logical to use parallelization or not, default is TRUE.}
 
 \item{cores}{The number of cores to use for parallel execution. By default is 2 cores.}
 }

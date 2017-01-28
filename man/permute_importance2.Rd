@@ -10,7 +10,7 @@ permute_importance2(ppf)
 \item{ppf}{is a PPforest object}
 }
 \value{
-permuted importance measure
+A data frame with permuted importance measure
 }
 \description{
 Obtain the importance variable measure based in permutation

@@ -1284,6 +1284,10 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
          return cl;
        }
        
+       
+       // return the prediction using permuted variables in the forest, used to compute the permuted inportance
+       //variable measure like in randomForest
+       
        // [[Rcpp::export]]
        NumericMatrix imposoon(NumericMatrix train,
                               NumericVector classes, List oobid, List permute, List trees , IntegerVector noob,

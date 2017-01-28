@@ -1,7 +1,7 @@
 #' Obtain the importance variable measure based in permutation
 #' 
 #' @param ppf is a PPforest object
-#' @return permuted importance measure
+#' @return A data frame with permuted importance measure
 #' @useDynLib PPforest2
 #' @importFrom Rcpp evalCpp
 #' @export
@@ -14,16 +14,20 @@ permute_importance2 <- function(ppf){
   sd <-NULL
   imp <- NULL
   imp2 <- NULL
+  sd.imp <- NULL
+  sd.imp2 <- NULL
   
-  train <- as.matrix(ppf$train[, -which.max(colnames(ppf$train) == ppf$class.var)])
-  classes <- as.integer(ppf$train[,which.max(colnames(ppf$train) == ppf$class.var)])
-  oobid <- apply(ppf$oob.obs, 1, function(x) which.max(x) - 1) 
-  permute <- plyr:: llply(oobid , function(x) sample(x,length(x))) 
-  trees <- ppf[[8]] #list of trees
+  train <- as.matrix(ppf$train[, -which(colnames(ppf$train) == ppf$class.var)])
+  classes <- as.integer(ppf$train[,which(colnames(ppf$train) == ppf$class.var)])
+  oobid <- apply(ppf$oob.obs, 1, function(x) which(x == 1) -1 ) 
+
+  permute <- oobid %>% lapply(  function(x) sample(x,length(x))) 
+  trees <- ppf[[8]] 
   noob <- as.integer( lapply(oobid,length) ) 
-  TRstrL <- plyr::llply(trees, function(x) as.matrix(x[[1]]))
-  TRsplL <- plyr::llply(trees, function(x) as.matrix(x[[3]]))
-  TRprnodeL <- plyr::llply(trees, function(x) as.matrix(x[[2]]))
+  TRstrL <- trees %>% lapply( function(x) as.matrix(x[[1]]))
+  
+  TRsplL <- trees %>% lapply( function(x) as.matrix(x[[3]]))
+  TRprnodeL <- trees %>% lapply( function(x) as.matrix(x[[2]]))
   
   
   corr.oob.per <- imposoon(train, classes, oobid, permute, trees, noob , TRstrL,TRsplL,TRprnodeL)
@@ -32,12 +36,15 @@ permute_importance2 <- function(ppf){
   corr.oob <- (1-ppf$oob.error.tree) * unlist(lapply(oobid, length))
   n.oob <-  unlist(lapply(permute, length))
   
+  #imp is the permuted importance using accuracy in the randomforest paper
+  #imp2 is teh permuted importance using the error like in randomForest package
   imp.pl <- data.frame( nm = colnames(ppf$train)[colnames(ppf$train)!= ppf$class.var], 
-                        imp = apply(corr.oob.per, 2, function(x) mean((corr.oob-x))), 
+                        imp = apply(corr.oob.per, 2, function(x) mean((corr.oob-x))),
+                        sd.imp = apply(corr.oob.per, 2, function(x) sd( corr.oob-x)),
                         imp2 = apply(corr.oob.per, 2, function(x) mean(((1-x/n.oob)-ppf$oob.error.tree))), 
-                        sd = apply(corr.oob.per, 2, function(x) sd( ((1-x/n.oob)-ppf$oob.error.tree)))) %>%
+                        sd.imp2 = apply(corr.oob.per, 2, function(x) sd( ((1-x/n.oob)-ppf$oob.error.tree)))) %>%
     
-    dplyr::mutate(imp.sd = imp2/sd)%>% dplyr::arrange(imp)
+    dplyr::mutate(imp2.std = imp2/sd.imp2, imp.std = imp/sd.imp) %>% dplyr::arrange(imp)
   imp.pl$nm <- factor(imp.pl$nm, levels= imp.pl[order( imp.pl$imp2), "nm"])
   
   imp.pl
