@@ -1,18 +1,17 @@
 #' OOB error visualization
 #' 
 #'\code{ppf_oob_error} Plot the cummulative oob error as a function of number of trees 
-#' @usage ppf_oob_error(ppf, nsplit1)
+#' @usage ppf_oob_error(ppf, nsplit1, interactive)
 #' @param ppf a PPforest object
 #' @param nsplit1 number, increment of the sequence where cumulative oob error rate is computed in the  1/3 trees
+#' @param interactive if is TRUE will use plotly to translate an static ggplot object
 #' @return a plot with the cumulative oob error rate
 #' @export
 #' @examples
 #' pprf.crab<- PPforest2(data = crab, class = "Type", 
 #' size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', strata = TRUE)
-#' ppf_oob_error(ppf = pprf.crab, nsplit1 = 15)
-
-
-ppf_oob_error <- function(ppf, nsplit1){
+#' ppf_oob_error(ppf = pprf.crab, nsplit1 = 15, interactive = TRUE)
+ppf_oob_error <- function(ppf, nsplit1,interactive){
   ntree <- NULL
   value <- NULL
   variable <- NULL
@@ -87,6 +86,15 @@ p1 <- oob.pl %>% ggplot2::ggplot(ggplot2::aes( x = tree.id, y = OOB.error , colo
     x = "Number of trees", title = "Cumulative OOB error") + ggplot2::ylim(c(0,1)) +
   ggplot2::theme(legend.position = "none", aspect.ratio = 1) + ggplot2::scale_color_manual(values = myColors)
 
-plotly::ggplotly(p1,tooltip = c("colour","y","x") )
+if(interactive){
+  plotly::ggplotly(p1,tooltip = c("colour","y","x") )
+  
+}else{
+  
+  print(p1)
+  
+}
+
+
 
 }

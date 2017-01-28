@@ -3,14 +3,15 @@
 #' @param ppf a PPforest object
 #' @param type is MDS or heat
 #' @param k number of dimensions of the MDS layout 
+#' @param interactive if is TRUE will use plotly to translate an static ggplot object
 #' @return proximity matrix plot, if type is MDS then a MDS plot using proximity matrix information is shown and if type is heat a heat map of the proximity matrix is shown
 #' @export
 #' @examples
 #' #crab data set with all the observations used as training
 #' pprf.crab <- PPforest2(data = crab, class = 'Type',
 #' size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-#' pproxy_plot(pprf.crab, type= "heat", k = 2)
-pproxy_plot <- function(ppf, type = "heat", k) {
+#' pproxy_plot(pprf.crab, type= "MDS", interactive = TRUE)
+pproxy_plot <- function(ppf, type = "heat", k = 2, interactive) {
   if (type == "heat") {
     value <- NULL
     Var1 <- NULL
@@ -28,8 +29,16 @@ pproxy_plot <- function(ppf, type = "heat", k) {
     
     a <- ggplot2::ggplot(m.prox, ggplot2::aes(Var1, Var2)) + ggplot2::xlab("") +
       ggplot2::ylab("") + ggplot2::geom_tile(ggplot2::aes(fill = value)) + ggplot2::scale_fill_gradient(high = "#132B43",
-                                                                                                        low = "#56B1F7", name = "Proximity") + ggplot2::theme(aspect.ratio = 1)
-    plotly::ggplotly(a)
+                                                                                                        low = "#56B1F7", name = "Proximity") 
+    if(interactive){
+     a<-  a + ggplot2::theme(aspect.ratio = 1, legend.position = "none")
+      plotly::ggplotly(a)
+      
+    }else{
+      a <- a + ggplot2::theme(aspect.ratio = 1)
+      print(a)
+      
+    }
     
   } else {
     value <- NULL
@@ -56,10 +65,18 @@ pproxy_plot <- function(ppf, type = "heat", k) {
       a <-
         ggplot2::ggplot(data = df) + ggplot2::geom_point(
           ggplot2::aes(x = MDS1, y = MDS2, color = Class),size = I(3),alpha = .5
-        ) + ggplot2::theme(aspect.ratio = 1) +
+        ) +
         ggplot2::scale_colour_brewer(type = "qual",palette = "Dark2",name = "Class")
       
-      plotly::ggplotly(a)
+      if(interactive){
+        a<-  a + ggplot2::theme(aspect.ratio = 1, legend.position = "none")
+        plotly::ggplotly(a)
+        
+      }else{
+        a <- a + ggplot2::theme(aspect.ratio = 1, legend.position = "bottom")
+        print(a)
+        
+      }
       
     } else {
       df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
@@ -97,7 +114,6 @@ pproxy_plot <- function(ppf, type = "heat", k) {
       
       a <-
         ggplot2::ggplot(mega_data, ggplot2::aes_string(x = "x", y = "y")) +  
-        ggplot2::theme(legend.position =  'bottom', aspect.ratio = 1) +
         ggplot2::facet_grid(xvar ~ yvar, scales = "free") +
         ggplot2::geom_point( ggplot2::aes(colour = Class), na.rm = TRUE, alpha = 0.5, size = I(3)) +
         ggplot2::stat_density( ggplot2::aes_string(x = "x", y = "..scaled.."),
@@ -106,7 +122,15 @@ pproxy_plot <- function(ppf, type = "heat", k) {
         ggplot2::scale_colour_brewer(type = "qual",palette = "Dark2", name =
                                        "Class")
       
-      plotly::ggplotly(a)
+      if(interactive){
+        a<-  a + ggplot2::theme(aspect.ratio = 1, legend.position = "none")
+        plotly::ggplotly(a)
+        
+      }else{
+        a <- a + ggplot2::theme(aspect.ratio = 1, legend.position = "bottom")
+        print(a)
+        
+      }
       
     }
     

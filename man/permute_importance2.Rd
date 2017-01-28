@@ -21,6 +21,5 @@ Obtain the permuted importance variable measure
 pprf.crab <- PPforest2(data = crab, class = "Type",
  size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA', strata = TRUE)
 permute_importance2(ppf = pprf.crab) 
-
 }
 

@@ -4,7 +4,7 @@
 \alias{pproxy_plot}
 \title{Proximity matrix visualization}
 \usage{
-pproxy_plot(ppf, type = "heat", k)
+pproxy_plot(ppf, type = "heat", k = 2, interactive)
 }
 \arguments{
 \item{ppf}{a PPforest object}
@@ -12,6 +12,8 @@ pproxy_plot(ppf, type = "heat", k)
 \item{type}{is MDS or heat}
 
 \item{k}{number of dimensions of the MDS layout}
+
+\item{interactive}{if is TRUE will use plotly to translate an static ggplot object}
 }
 \value{
 proximity matrix plot, if type is MDS then a MDS plot using proximity matrix information is shown and if type is heat a heat map of the proximity matrix is shown
@@ -23,6 +25,6 @@ Proximity matrix visualization
 #crab data set with all the observations used as training
 pprf.crab <- PPforest2(data = crab, class = 'Type',
 size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-pproxy_plot(pprf.crab, type= "heat", k = 2)
+pproxy_plot(pprf.crab, type= "MDS", interactive = TRUE)
 }
 

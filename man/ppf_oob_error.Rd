@@ -4,12 +4,14 @@
 \alias{ppf_oob_error}
 \title{OOB error visualization}
 \usage{
-ppf_oob_error(ppf, nsplit1)
+ppf_oob_error(ppf, nsplit1, interactive)
 }
 \arguments{
 \item{ppf}{a PPforest object}
 
 \item{nsplit1}{number, increment of the sequence where cumulative oob error rate is computed in the  1/3 trees}
+
+\item{interactive}{if is TRUE will use plotly to translate an static ggplot object}
 }
 \value{
 a plot with the cumulative oob error rate
@@ -20,6 +22,6 @@ a plot with the cumulative oob error rate
 \examples{
 pprf.crab<- PPforest2(data = crab, class = "Type", 
 size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', strata = TRUE)
-ppf_oob_error(ppf = pprf.crab, nsplit1 = 15)
+ppf_oob_error(ppf = pprf.crab, nsplit1 = 15, interactive = TRUE)
 }
 
