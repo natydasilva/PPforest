@@ -1,7 +1,9 @@
-#' Obtain the importance variable measure based in permutation
+#' Obtain the permuted importance variable measure
 #' 
 #' @param ppf is a PPforest object
-#' @return A data frame with permuted importance measure
+#' @return A data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper,
+#' imp2 is the prmuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the 
+#' also the stundardized mesure. 
 #' @useDynLib PPforest2
 #' @importFrom Rcpp evalCpp
 #' @export
@@ -37,7 +39,7 @@ permute_importance2 <- function(ppf){
   n.oob <-  unlist(lapply(permute, length))
   
   #imp is the permuted importance using accuracy in the randomforest paper
-  #imp2 is teh permuted importance using the error like in randomForest package
+  #imp2 is the permuted importance using the error like in randomForest package
   imp.pl <- data.frame( nm = colnames(ppf$train)[colnames(ppf$train)!= ppf$class.var], 
                         imp = apply(corr.oob.per, 2, function(x) mean((corr.oob-x))),
                         sd.imp = apply(corr.oob.per, 2, function(x) sd( corr.oob-x)),

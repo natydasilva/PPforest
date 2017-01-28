@@ -12,16 +12,16 @@
 #' #crab data set with all the observations used as training
 #' pprf.crab <- PPforest2(data = crab, class = "Type",
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-#' ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE) 
+#' ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = FALSE) 
 ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
   x <- data %>% dplyr::select(-get(class)) %>%
-    apply(2,FUN=scale)
+    apply(2, FUN = scale)
   y <- data %>% dplyr::select(get(class))
   value <- NULL
   variable <- NULL
   node <- NULL
   
-  mat.proj <- lapply(ppf[[8]], function(x) data.frame(node = 1:dim(x[[2]])[1], abs(x[[2]])))%>%dplyr::bind_rows()
+  mat.proj <- lapply(ppf[[8]], function(x) data.frame(node = 1:dim(x[[2]])[1], abs(x[[2]]))) %>% dplyr::bind_rows()
   colnames(mat.proj)[-1] <- colnames(dplyr::select(data,-get(class)))
   
   index.part <- lapply(ppf[[8]], function(x) data.frame(index = x$Tree.Struct[, 5][x$Tree.Struct[, 5] != 0]))%>%dplyr::bind_rows()
@@ -32,17 +32,19 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
   imp.weight <- mat.proj[, -1] * index.mat * (1 - oob.error.tree)
   
   
-  mmat.vi <- reshape2::melt(mat.proj, id.vars = "node")
+  #mmat.vi <- reshape2::melt(mat.proj, id.vars = "node")
+  mmat.vi <- mat.proj %>% tidyr::gather(variable, value, -node )
   mat.vi.w <- data.frame(node = mat.proj$node, imp.weight)
   colnames(mat.vi.w)[-1] <- colnames(x)
-  mmat.vi.w <- reshape2::melt(mat.vi.w, id.vars = "node")
+  mat.proj %>% tidyr::gather(variable, value, -node )
+  mmat.vi.w <- mat.vi.w %>% tidyr::gather(variable, value, -node )
   
   if(global ){
     if(weight){
       import.vi.wg <- mmat.vi.w %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
       import.vi.wg$variable <- with(import.vi.wg, reorder(variable, mean))
       
-      a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point()+ggplot2::theme(aspect.ratio=1)
+      a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::theme(aspect.ratio=1)
       print(import.vi.wg)
       
     }else{
@@ -70,14 +72,14 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
       import.vi$variable <- with(import.vi, reorder(variable, mean))
       
       a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + 
-        ggplot2::facet_grid(~node) +ggplot2::theme(aspect.ratio=1)
+        ggplot2::facet_grid(~node) + ggplot2::theme(aspect.ratio=1)
       print(import.vi) 
     }
   
   }
   
   plotly::ggplotly(a)
-  
+ 
 }
 
 
