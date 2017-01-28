@@ -3,6 +3,7 @@
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable. 
 #' @param ppf is a PPforest object
+#' @param interactive if is TRUE will use plotly to translate an static ggplot object
 #' @return A side-by-side jittered dotplot with the probability for each class to be classify in the corresponding class column.
 #' Color by true observed class for each observation.
 #' @export
@@ -11,8 +12,8 @@
 #' #crab data set with all the observations used as training
 #' pprf.crab <- PPforest2(data = crab, class = "Type",
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-#' vote_viz1(crab,"Type",pprf.crab)
-vote_viz1 <- function(data, class, ppf){
+#' vote_viz1(crab,"Type",pprf.crab, interactive = TRUE)
+vote_viz1 <- function(data, class, ppf, interactive){
   Class <- NULL
   Probability <- NULL
   Type <- NULL
@@ -25,11 +26,18 @@ vote_viz1 <- function(data, class, ppf){
   p <-
     ggplot2::ggplot(data = reddata, ggplot2::aes(Class, Probability, color = Type) )+ ggplot2::geom_jitter(height =
                                                                                           0,size = I(3), alpha = .5) +
-    ggplot2::theme(legend.position = "none",axis.text.x  = ggplot2::element_text(angle = 45, vjust = 0.5), aspect.ratio = 1) +
+
     ggplot2::labs(x = "Class", title = "Side by side plot") + ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2")
   
   
-  plotly::ggplotly(p,tooltip = c("x","y")) 
-  
+ 
+  if(interactive){
+    p <- p + ggplot2::theme(legend.position = "none", axis.text.x  = ggplot2::element_text(angle = 45, vjust = 0.5), aspect.ratio = 1)
+    plotly::ggplotly(p,tooltip = c("x","y")) 
+  }else{
+    p <- p + ggplot2::theme(legend.position = "bottom", axis.text.x  = ggplot2::element_text(angle = 45, vjust = 0.5), aspect.ratio = 1)
+    print(p)
+    
+  }
   
 }

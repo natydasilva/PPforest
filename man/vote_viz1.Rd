@@ -4,7 +4,7 @@
 \alias{vote_viz1}
 \title{Vote matrix visualization}
 \usage{
-vote_viz1(data, class, ppf)
+vote_viz1(data, class, ppf, interactive)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -12,6 +12,8 @@ vote_viz1(data, class, ppf)
 \item{class}{A character with the name of the class variable.}
 
 \item{ppf}{is a PPforest object}
+
+\item{interactive}{if is TRUE will use plotly to translate an static ggplot object}
 }
 \value{
 A side-by-side jittered dotplot with the probability for each class to be classify in the corresponding class column.
@@ -24,6 +26,6 @@ Vote matrix visualization
 #crab data set with all the observations used as training
 pprf.crab <- PPforest2(data = crab, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-vote_viz1(crab,"Type",pprf.crab)
+vote_viz1(crab,"Type",pprf.crab, interactive = TRUE)
 }
 
