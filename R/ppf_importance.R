@@ -6,14 +6,16 @@
 #' @param global is TRUE if we want to see the global importance of the forest
 #' @param weight is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors
 #' @return A dotplot with a global measure of importance  variables in the PPforest.
+#' @param interactive if is TRUE will use plotly to translate an static ggplot object
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
 #' pprf.crab <- PPforest2(data = crab, class = "Type",
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-#' ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = FALSE) 
-ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
+#' ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE,
+#'  weight = FALSE, interactive = TRUE) 
+ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE, interactive) {
   x <- data %>% dplyr::select(-get(class)) %>%
     apply(2, FUN = scale)
   y <- data %>% dplyr::select(get(class))
@@ -48,7 +50,7 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
       print(import.vi.wg)
       
     }else{
-      import.vi <- mmat.vi %>% dplyr::group_by(variable) %>% dplyr::summarise(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
+      import.vi <- mmat.vi %>% dplyr::group_by(variable) %>% dplyr::mutate(mean = mean(value)) %>% dplyr::arrange(dplyr::desc(mean))
       import.vi$variable <- with(import.vi, reorder(variable, mean))
       
       a <- ggplot2::ggplot(import.vi, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + 
@@ -78,7 +80,13 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE) {
   
   }
   
-  plotly::ggplotly(a)
+  if(interactive){
+    plotly::ggplotly(a)
+  }else{
+   
+    print(a)
+    
+    }
  
 }
 

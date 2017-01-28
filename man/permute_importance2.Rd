@@ -2,7 +2,7 @@
 % Please edit documentation in R/permute_imortance2.R
 \name{permute_importance2}
 \alias{permute_importance2}
-\title{Obtain the importance variable measure based in permutation}
+\title{Obtain the permuted importance variable measure}
 \usage{
 permute_importance2(ppf)
 }
@@ -10,10 +10,12 @@ permute_importance2(ppf)
 \item{ppf}{is a PPforest object}
 }
 \value{
-A data frame with permuted importance measure
+A data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper,
+imp2 is the prmuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the 
+also the stundardized mesure.
 }
 \description{
-Obtain the importance variable measure based in permutation
+Obtain the permuted importance variable measure
 }
 \examples{
 pprf.crab <- PPforest2(data = crab, class = "Type",

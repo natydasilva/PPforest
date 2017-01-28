@@ -4,7 +4,7 @@
 \alias{ppf_importance2}
 \title{Importance variable visualization for each tree in the forest}
 \usage{
-ppf_importance2(data, class, ppf, tree.id = 1)
+ppf_importance2(data, class, ppf, tree.id = 1, nnodes = NULL, interactive)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -14,6 +14,10 @@ ppf_importance2(data, class, ppf, tree.id = 1)
 \item{ppf}{is a PPforest object}
 
 \item{tree.id}{id number of the tree we want to see the specific importance measure will be in red}
+
+\item{nnodes}{number of nodes we want to plot, by default is null and will plot all the nodes in the tree}
+
+\item{interactive}{if is TRUE will use plotly to translate an static ggplot object}
 }
 \value{
 A side-by-side jittered dotplot with the absolute importance measure for each tree in the forest
@@ -25,7 +29,7 @@ Importance variable visualization for each tree in the forest
 #crab data set with all the observations used as training
 pprf.crab <- PPforest2(data = crab, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
- 
-ppf_importance2(crab, "Type", pprf.crab, tree.id = 1)
+ppf_importance2(crab, "Type", pprf.crab, tree.id = 10, nnodes=2,
+ interactive = FALSE)
 }
 

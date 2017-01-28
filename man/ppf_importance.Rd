@@ -4,7 +4,7 @@
 \alias{ppf_importance}
 \title{Importance variable visualization}
 \usage{
-ppf_importance(data, class, ppf, global = TRUE, weight = TRUE)
+ppf_importance(data, class, ppf, global = TRUE, weight = TRUE, interactive)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -16,6 +16,8 @@ ppf_importance(data, class, ppf, global = TRUE, weight = TRUE)
 \item{global}{is TRUE if we want to see the global importance of the forest}
 
 \item{weight}{is TRUE if we want to see a weighted mesure of the forest importance based on out of bag trees errors}
+
+\item{interactive}{if is TRUE will use plotly to translate an static ggplot object}
 }
 \value{
 A dotplot with a global measure of importance  variables in the PPforest.
@@ -27,6 +29,7 @@ Importance variable visualization
 #crab data set with all the observations used as training
 pprf.crab <- PPforest2(data = crab, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
-ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE) 
+ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE,
+ weight = FALSE, interactive = TRUE) 
 }
 
