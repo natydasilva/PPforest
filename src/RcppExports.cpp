@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // tableC
 arma::vec tableC(arma::vec x);
-RcppExport SEXP PPforest2_tableC(SEXP xSEXP) {
+RcppExport SEXP PPforest_tableC(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +19,7 @@ END_RCPP
 }
 // roundme
 double roundme(double x);
-RcppExport SEXP PPforest2_roundme(SEXP xSEXP) {
+RcppExport SEXP PPforest_roundme(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,7 +30,7 @@ END_RCPP
 }
 // LDAindex2
 arma::vec LDAindex2(arma::vec origclass, arma::mat origdata, arma::mat proj, bool weight);
-RcppExport SEXP PPforest2_LDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {
+RcppExport SEXP PPforest_LDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // signC
 double signC(double x);
-RcppExport SEXP PPforest2_signC(SEXP xSEXP) {
+RcppExport SEXP PPforest_signC(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,7 +55,7 @@ END_RCPP
 }
 // LDAopt
 arma::vec LDAopt(arma::vec origclass, arma::mat origdata, int q, std::string PPmethod, bool weight);
-RcppExport SEXP PPforest2_LDAopt(SEXP origclassSEXP, SEXP origdataSEXP, SEXP qSEXP, SEXP PPmethodSEXP, SEXP weightSEXP) {
+RcppExport SEXP PPforest_LDAopt(SEXP origclassSEXP, SEXP origdataSEXP, SEXP qSEXP, SEXP PPmethodSEXP, SEXP weightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -70,7 +70,7 @@ END_RCPP
 }
 // PDAindex2
 double PDAindex2(arma::vec origclass, arma::mat origdata, arma::mat proj, bool weight, double lambda);
-RcppExport SEXP PPforest2_PDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP PPforest_PDAindex2(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -85,7 +85,7 @@ END_RCPP
 }
 // PDAopt
 arma::vec PDAopt(arma::vec origclass, arma::mat origdata, int q, std::string PPmethod, bool weight, double lambda);
-RcppExport SEXP PPforest2_PDAopt(SEXP origclassSEXP, SEXP origdataSEXP, SEXP qSEXP, SEXP PPmethodSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP PPforest_PDAopt(SEXP origclassSEXP, SEXP origdataSEXP, SEXP qSEXP, SEXP PPmethodSEXP, SEXP weightSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -101,7 +101,7 @@ END_RCPP
 }
 // varselect
 arma::uvec varselect(int p, int s);
-RcppExport SEXP PPforest2_varselect(SEXP pSEXP, SEXP sSEXP) {
+RcppExport SEXP PPforest_varselect(SEXP pSEXP, SEXP sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -113,7 +113,7 @@ END_RCPP
 }
 // datanode
 List datanode(arma::mat origdata, double sizep);
-RcppExport SEXP PPforest2_datanode(SEXP origdataSEXP, SEXP sizepSEXP) {
+RcppExport SEXP PPforest_datanode(SEXP origdataSEXP, SEXP sizepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,7 +125,7 @@ END_RCPP
 }
 // split_rel
 arma::vec split_rel(arma::vec origclass, arma::mat origdata, arma::colvec projdata);
-RcppExport SEXP PPforest2_split_rel(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projdataSEXP) {
+RcppExport SEXP PPforest_split_rel(SEXP origclassSEXP, SEXP origdataSEXP, SEXP projdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -138,7 +138,7 @@ END_RCPP
 }
 // findproj
 List findproj(arma::vec origclass, arma::mat origdata, std::string PPmethod, double lambda);
-RcppExport SEXP PPforest2_findproj(SEXP origclassSEXP, SEXP origdataSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP PPforest_findproj(SEXP origclassSEXP, SEXP origdataSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -152,7 +152,7 @@ END_RCPP
 }
 // findprojPDA
 List findprojPDA(arma::vec origclass, arma::mat origdata, double lambda);
-RcppExport SEXP PPforest2_findprojPDA(SEXP origclassSEXP, SEXP origdataSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP PPforest_findprojPDA(SEXP origclassSEXP, SEXP origdataSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -165,7 +165,7 @@ END_RCPP
 }
 // findprojLDA
 arma::vec findprojLDA(arma::vec origclass, arma::mat origdata);
-RcppExport SEXP PPforest2_findprojLDA(SEXP origclassSEXP, SEXP origdataSEXP) {
+RcppExport SEXP PPforest_findprojLDA(SEXP origclassSEXP, SEXP origdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -177,7 +177,7 @@ END_RCPP
 }
 // arma_sub_cond
 arma::uvec arma_sub_cond(arma::vec x, int val);
-RcppExport SEXP PPforest2_arma_sub_cond(SEXP xSEXP, SEXP valSEXP) {
+RcppExport SEXP PPforest_arma_sub_cond(SEXP xSEXP, SEXP valSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -189,7 +189,7 @@ END_RCPP
 }
 // quantileCpp
 double quantileCpp(arma::vec x, double probs);
-RcppExport SEXP PPforest2_quantileCpp(SEXP xSEXP, SEXP probsSEXP) {
+RcppExport SEXP PPforest_quantileCpp(SEXP xSEXP, SEXP probsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -201,7 +201,7 @@ END_RCPP
 }
 // quant
 NumericVector quant(NumericVector x, NumericVector q);
-RcppExport SEXP PPforest2_quant(SEXP xSEXP, SEXP qSEXP) {
+RcppExport SEXP PPforest_quant(SEXP xSEXP, SEXP qSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -213,7 +213,7 @@ END_RCPP
 }
 // nodestr
 arma::vec nodestr(arma::vec classe, arma::vec projdata);
-RcppExport SEXP PPforest2_nodestr(SEXP classeSEXP, SEXP projdataSEXP) {
+RcppExport SEXP PPforest_nodestr(SEXP classeSEXP, SEXP projdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -225,7 +225,7 @@ END_RCPP
 }
 // findprojwrap
 List findprojwrap(arma::vec origclass, arma::mat origdata, std::string PPmethod, double sizep, double lambda);
-RcppExport SEXP PPforest2_findprojwrap(SEXP origclassSEXP, SEXP origdataSEXP, SEXP PPmethodSEXP, SEXP sizepSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP PPforest_findprojwrap(SEXP origclassSEXP, SEXP origdataSEXP, SEXP PPmethodSEXP, SEXP sizepSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -240,7 +240,7 @@ END_RCPP
 }
 // treeconstruct
 List treeconstruct(arma::vec origclass, arma::mat origdata, arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat splitCutoffnode, std::string PPmethod, double lambda, double sizep);
-RcppExport SEXP PPforest2_treeconstruct(SEXP origclassSEXP, SEXP origdataSEXP, SEXP TreestructSEXP, SEXP idSEXP, SEXP repSEXP, SEXP rep1SEXP, SEXP rep2SEXP, SEXP projbestnodeSEXP, SEXP splitCutoffnodeSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP, SEXP sizepSEXP) {
+RcppExport SEXP PPforest_treeconstruct(SEXP origclassSEXP, SEXP origdataSEXP, SEXP TreestructSEXP, SEXP idSEXP, SEXP repSEXP, SEXP rep1SEXP, SEXP rep2SEXP, SEXP projbestnodeSEXP, SEXP splitCutoffnodeSEXP, SEXP PPmethodSEXP, SEXP lambdaSEXP, SEXP sizepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -262,7 +262,7 @@ END_RCPP
 }
 // csample_num
 arma::vec csample_num(arma::vec x, int size, bool replace, arma::vec prob);
-RcppExport SEXP PPforest2_csample_num(SEXP xSEXP, SEXP sizeSEXP, SEXP replaceSEXP, SEXP probSEXP) {
+RcppExport SEXP PPforest_csample_num(SEXP xSEXP, SEXP sizeSEXP, SEXP replaceSEXP, SEXP probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -276,7 +276,7 @@ END_RCPP
 }
 // boot
 arma::vec boot(arma::mat origclass, arma::mat origdata);
-RcppExport SEXP PPforest2_boot(SEXP origclassSEXP, SEXP origdataSEXP) {
+RcppExport SEXP PPforest_boot(SEXP origclassSEXP, SEXP origdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -288,7 +288,7 @@ END_RCPP
 }
 // trainfn
 arma::vec trainfn(arma::mat origclass, arma::mat origdata, double sizetr);
-RcppExport SEXP PPforest2_trainfn(SEXP origclassSEXP, SEXP origdataSEXP, SEXP sizetrSEXP) {
+RcppExport SEXP PPforest_trainfn(SEXP origclassSEXP, SEXP origdataSEXP, SEXP sizetrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -301,7 +301,7 @@ END_RCPP
 }
 // proximi
 arma::mat proximi(arma::mat predtrnt, int m);
-RcppExport SEXP PPforest2_proximi(SEXP predtrntSEXP, SEXP mSEXP) {
+RcppExport SEXP PPforest_proximi(SEXP predtrntSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -313,7 +313,7 @@ END_RCPP
 }
 // mvote
 arma::vec mvote(arma::mat votes);
-RcppExport SEXP PPforest2_mvote(SEXP votesSEXP) {
+RcppExport SEXP PPforest_mvote(SEXP votesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -324,7 +324,7 @@ END_RCPP
 }
 // oobindex
 NumericMatrix oobindex(List datab, int m);
-RcppExport SEXP PPforest2_oobindex(SEXP databSEXP, SEXP mSEXP) {
+RcppExport SEXP PPforest_oobindex(SEXP databSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -336,7 +336,7 @@ END_RCPP
 }
 // oobobs
 arma::mat oobobs(arma::mat index);
-RcppExport SEXP PPforest2_oobobs(SEXP indexSEXP) {
+RcppExport SEXP PPforest_oobobs(SEXP indexSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -347,7 +347,7 @@ END_RCPP
 }
 // mvoteoob
 arma::mat mvoteoob(arma::mat votes, arma::mat oobobs);
-RcppExport SEXP PPforest2_mvoteoob(SEXP votesSEXP, SEXP oobobsSEXP) {
+RcppExport SEXP PPforest_mvoteoob(SEXP votesSEXP, SEXP oobobsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -359,7 +359,7 @@ END_RCPP
 }
 // ooberrortree
 arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int m);
-RcppExport SEXP PPforest2_ooberrortree(SEXP votesSEXP, SEXP oobobsSEXP, SEXP classeSEXP, SEXP mSEXP) {
+RcppExport SEXP PPforest_ooberrortree(SEXP votesSEXP, SEXP oobobsSEXP, SEXP classeSEXP, SEXP mSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -373,7 +373,7 @@ END_RCPP
 }
 // PPclassification
 List PPclassification(arma::mat Treestruct, arma::mat testclassindex, arma::vec IOindex, arma::vec testclass, int id, int rep);
-RcppExport SEXP PPforest2_PPclassification(SEXP TreestructSEXP, SEXP testclassindexSEXP, SEXP IOindexSEXP, SEXP testclassSEXP, SEXP idSEXP, SEXP repSEXP) {
+RcppExport SEXP PPforest_PPclassification(SEXP TreestructSEXP, SEXP testclassindexSEXP, SEXP IOindexSEXP, SEXP testclassSEXP, SEXP idSEXP, SEXP repSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -389,7 +389,7 @@ END_RCPP
 }
 // PPclassindex
 List PPclassindex(arma::vec classtemp, arma::mat testclassindex, arma::mat testdata, arma::mat Treestruct, arma::mat AlphaKeep, arma::mat CKeep, int id, int Rule);
-RcppExport SEXP PPforest2_PPclassindex(SEXP classtempSEXP, SEXP testclassindexSEXP, SEXP testdataSEXP, SEXP TreestructSEXP, SEXP AlphaKeepSEXP, SEXP CKeepSEXP, SEXP idSEXP, SEXP RuleSEXP) {
+RcppExport SEXP PPforest_PPclassindex(SEXP classtempSEXP, SEXP testclassindexSEXP, SEXP testdataSEXP, SEXP TreestructSEXP, SEXP AlphaKeepSEXP, SEXP CKeepSEXP, SEXP idSEXP, SEXP RuleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -407,7 +407,7 @@ END_RCPP
 }
 // PPpred
 NumericVector PPpred(NumericMatrix TRstr, NumericMatrix TRprnode, NumericMatrix TRspl, NumericMatrix testdata);
-RcppExport SEXP PPforest2_PPpred(SEXP TRstrSEXP, SEXP TRprnodeSEXP, SEXP TRsplSEXP, SEXP testdataSEXP) {
+RcppExport SEXP PPforest_PPpred(SEXP TRstrSEXP, SEXP TRprnodeSEXP, SEXP TRsplSEXP, SEXP testdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -421,7 +421,7 @@ END_RCPP
 }
 // imposoon
 NumericMatrix imposoon(NumericMatrix train, NumericVector classes, List oobid, List permute, List trees, IntegerVector noob, List TRstrL, List TRsplL, List TRprnodeL);
-RcppExport SEXP PPforest2_imposoon(SEXP trainSEXP, SEXP classesSEXP, SEXP oobidSEXP, SEXP permuteSEXP, SEXP treesSEXP, SEXP noobSEXP, SEXP TRstrLSEXP, SEXP TRsplLSEXP, SEXP TRprnodeLSEXP) {
+RcppExport SEXP PPforest_imposoon(SEXP trainSEXP, SEXP classesSEXP, SEXP oobidSEXP, SEXP permuteSEXP, SEXP treesSEXP, SEXP noobSEXP, SEXP TRstrLSEXP, SEXP TRsplLSEXP, SEXP TRprnodeLSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;

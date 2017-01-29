@@ -19,8 +19,8 @@ Parallel plot for the data set colored by class, the data are standarized in the
 }
 \examples{
 #crab data set with all the observations used as training
-pprf.crab <- PPforest2(data =crab, class = "Type",
- size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+pprf.crab <- PPforest(data =crab, class = "Type",
+ size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 parallel_dat(crab,"Type")
 }
 

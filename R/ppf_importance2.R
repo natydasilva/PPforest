@@ -11,8 +11,8 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
-#' pprf.crab <- PPforest2(data = crab, class = "Type",
-#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab <- PPforest(data = crab, class = "Type",
+#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 #' ppf_importance2(crab, "Type", pprf.crab, tree.id = 10, nnodes=2,
 #'  interactive = FALSE)
 ppf_importance2 <- function(data, class, ppf, tree.id = 1, nnodes = NULL, interactive) {

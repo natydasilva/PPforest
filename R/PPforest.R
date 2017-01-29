@@ -1,7 +1,7 @@
 #' Projection Pursuit Random Forest
 #'
-#'\code{PPforest2} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest2(data, class, size.tr, m, PPmethod, size.p, strata = TRUE,
+#'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
+#' @usage PPforest(data, class, size.tr, m, PPmethod, size.p,
 #'  lambda = .1,  parallel = TRUE, cores = 2)
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable. 
@@ -9,7 +9,6 @@
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
-#' @param strata if set \code{TRUE} then the bootrap samples are stratifyed by class variable.
 #' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
 #' @param parallel if TRUE, apply function in parallel
 #' @param cores The number of cores to use for parallel execution. By default is 2 cores.
@@ -34,10 +33,10 @@
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
-#' pprf.crab <- PPforest2(data = crab, class = "Type",
-#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE )
+#' pprf.crab <- PPforest(data = crab, class = "Type",
+#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' )
 #' pprf.crab
-PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, strata = TRUE, lambda = 0.1, parallel = TRUE, cores = 2 ) {
+PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallel = TRUE, cores = 2 ) {
   
   Var1 <- NULL
   tree <- NULL
@@ -168,7 +167,7 @@ PPforest2 <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, st
                   output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
                   n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
                   vote.mat = pred.tr[[1]], class.var = class, oob.obs = oob.obs)
-  class(results) <- "PPforest2"
+  class(results) <- "PPforest"
   
   
   

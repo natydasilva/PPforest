@@ -18,7 +18,7 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 \item{...}{arguments to be passed to methods}
 }
 \value{
-predicted values form PPforest2
+predicted values form PPforest
 }
 \description{
 Vector with predicted values from a PPforest.

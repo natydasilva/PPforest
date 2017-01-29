@@ -8,8 +8,8 @@
 #' @return a plot with the cumulative oob error rate
 #' @export
 #' @examples
-#' pprf.crab<- PPforest2(data = crab, class = "Type", 
-#' size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab<- PPforest(data = crab, class = "Type", 
+#' size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA')
 #' ppf_oob_error(ppf = pprf.crab, nsplit1 = 15, interactive = TRUE)
 ppf_oob_error <- function(ppf, nsplit1,interactive){
   ntree <- NULL

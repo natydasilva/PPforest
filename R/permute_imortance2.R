@@ -4,12 +4,12 @@
 #' @return A data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper,
 #' imp2 is the prmuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the 
 #' also the stundardized mesure. 
-#' @useDynLib PPforest2
+#' @useDynLib PPforest
 #' @importFrom Rcpp evalCpp
 #' @export
 #' @examples
-#' pprf.crab <- PPforest2(data = crab, class = "Type",
-#'  size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab <- PPforest(data = crab, class = "Type",
+#'  size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA')
 #' permute_importance2(ppf = pprf.crab) 
 permute_importance2 <- function(ppf){
   sd <-NULL

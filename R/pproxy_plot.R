@@ -8,8 +8,8 @@
 #' @export
 #' @examples
 #' #crab data set with all the observations used as training
-#' pprf.crab <- PPforest2(data = crab, class = 'Type',
-#' size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab <- PPforest(data = crab, class = 'Type',
+#' size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 #' pproxy_plot(pprf.crab, type= "MDS", interactive = TRUE)
 pproxy_plot <- function(ppf, type = "heat", k = 2, interactive) {
   if (type == "heat") {

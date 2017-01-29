@@ -10,8 +10,8 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
-#' pprf.crab <- PPforest2(data = crab, class = "Type",
-#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', strata = TRUE)
+#' pprf.crab <- PPforest(data = crab, class = "Type",
+#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 #' vote_viz1(crab,"Type",pprf.crab, interactive = TRUE)
 vote_viz1 <- function(data, class, ppf, interactive){
   Class <- NULL

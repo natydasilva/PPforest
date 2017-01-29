@@ -6,7 +6,7 @@
 #' @param parallel if TRUE, apply function in parallel
 #' @param cores The number of cores to use for parallel execution. By default is 2 cores.
 #' @param ... arguments to be passed to methods
-#' @return predicted values form PPforest2 
+#' @return predicted values form PPforest
 #' @export
 #' @importFrom magrittr %>%
 #' @examples 

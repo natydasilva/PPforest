@@ -18,7 +18,7 @@
 #' @references Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 
 #' PPtree: Projection pursuit classification tree, 
 #' Electronic Journal of Statistics, 7:1369-1386.
-#' @useDynLib PPforest2
+#' @useDynLib PPforest
 #' @importFrom Rcpp evalCpp
 #' @export
 #' @keywords tree
