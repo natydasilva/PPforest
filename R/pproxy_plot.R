@@ -35,7 +35,9 @@ pproxy_plot <- function(ppf, type = "heat", k = 2, interactive) {
       ggplot2::ylab("") + ggplot2::geom_tile(ggplot2::aes(fill = value)) + ggplot2::scale_fill_gradient(high = "#132B43",
                                                                                                         low = "#56B1F7", name = "Proximity") 
     if(interactive){
-     a<-  a + ggplot2::theme(aspect.ratio = 1, legend.position = "none")
+     a<-  a + ggplot2::theme(aspect.ratio = 1, legend.position = "none", axis.text.x = element_blank(),
+                             axis.text.y = element_blank(),
+                             axis.ticks = element_blank())
       plotly::ggplotly(a)
       
     }else{
