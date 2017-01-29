@@ -16,12 +16,16 @@ pproxy_plot <- function(ppf, type = "heat", k = 2, interactive) {
     value <- NULL
     Var1 <- NULL
     Var2 <- NULL
+    aux <- NULL
     
     id <- diag(dim(ppf$train)[1])
     #id[lower.tri(id, diag = TRUE)] <- ppf[[9]]$proxi
     id<- id + ppf$proximity
     id[upper.tri(id)] <- t(id)[upper.tri(id)]
-    m.prox <- reshape2::melt(id)
+  
+    m.prox <- tidyr::gather( data.frame(Var1 = 1:nrow(id), id), aux, value, -Var1) %>% 
+      tidyr::separate(aux, into = c("X","Var2"), sep = 1)
+    
     m.prox$Var2 <- as.factor(m.prox$Var2)
     m.prox$Var2 <-
       factor(m.prox$Var2, levels = rev(levels(m.prox$Var2)))
@@ -54,7 +58,6 @@ pproxy_plot <- function(ppf, type = "heat", k = 2, interactive) {
     
     id <- diag(dim(ppf$train)[1])
     id<- id + 1- ppf$proximity
-   # id[lower.tri(id, diag = TRUE)] <- 1 - ppf[[9]]$proxi
     rf.mds <-
       stats::cmdscale(d = stats::as.dist(id), eig = TRUE, k = k)
     colnames(rf.mds$points) <- paste("MDS", 1:k, sep = "")

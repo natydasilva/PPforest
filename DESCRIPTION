@@ -17,7 +17,6 @@ Imports:
     plyr,
     dplyr,
     doMC,
-    reshape2,
     plotly
 License: LGPL-2.1
 Suggests:

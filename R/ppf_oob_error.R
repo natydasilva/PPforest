@@ -68,7 +68,8 @@ ppf_oob_error <- function(ppf, nsplit1,interactive){
   
   names(oob.err.sp)[1:2] <- c("tree.id", "All")
   
-  oob.pl <- reshape2::melt(oob.err.sp, id.vars = "tree.id")
+  #oob.pl <- reshape2::melt(oob.err.sp, id.vars = "tree.id")
+  oob.pl <- oob.err.sp %>% tidyr::gather(variable, value, -tree.id)
   colnames(oob.pl)[2:3] <- c("Class", "OOB.error")
   oob.pl
 }

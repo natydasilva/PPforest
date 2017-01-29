@@ -34,7 +34,7 @@ ppf_importance <- function(data , class, ppf, global = TRUE, weight = TRUE, inte
   imp.weight <- mat.proj[, -1] * index.mat * (1 - oob.error.tree)
   
   
-  #mmat.vi <- reshape2::melt(mat.proj, id.vars = "node")
+
   mmat.vi <- mat.proj %>% tidyr::gather(variable, value, -node )
   mat.vi.w <- data.frame(node = mat.proj$node, imp.weight)
   colnames(mat.vi.w)[-1] <- colnames(x)
