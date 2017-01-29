@@ -37,7 +37,7 @@ Australian crab data set contains measurements on rock crabs of the genus Leptog
 To visualize this data set we use a scatterplot matrix.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-library(PPforest)
+#library(PPforest)
 library(RColorBrewer)
 library(GGally)
 #library(rpart.plot)
@@ -216,7 +216,7 @@ The variable importance for the group separation can be measured by the projecti
 Using the `ppf_importance` function we can plot the weighted global importance measure in `PPforest`.
 
 ```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
-ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE, interactive = TRUE)
+PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE, interactive = TRUE)
 ```
 
 We can see that the most important variable in this example is RW while the less important is BD.

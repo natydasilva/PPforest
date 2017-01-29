@@ -28,7 +28,8 @@ Suggests:
     GGally,
     RColorBrewer,
     roxygen2 (>= 3.0.0),
-    rmarkdown
+    rmarkdown,
+    PPtreeViz
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
 RoxygenNote: 5.0.1
