@@ -1,11 +1,10 @@
 Package: PPforest
 Type: Package
-Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: Random forest build on projection pursuit classification tree
-    using.
+Title: Projection Pursuit Classification Forest
+Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
+Maintainer: Natalia da Silva <ndasilva@iastate.edu>
+Description: Random forest build on projection pursuit classification tree.
 LazyData: yes
 Depends:
     R (>= 3.2.0)
