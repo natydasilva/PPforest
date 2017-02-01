@@ -45,14 +45,6 @@ findproj <- function(origclass, origdata, PPmethod, lambda = 0.1) {
     .Call('PPforest_findproj', PACKAGE = 'PPforest', origclass, origdata, PPmethod, lambda)
 }
 
-findprojPDA <- function(origclass, origdata, lambda = 0.1) {
-    .Call('PPforest_findprojPDA', PACKAGE = 'PPforest', origclass, origdata, lambda)
-}
-
-findprojLDA <- function(origclass, origdata) {
-    .Call('PPforest_findprojLDA', PACKAGE = 'PPforest', origclass, origdata)
-}
-
 arma_sub_cond <- function(x, val) {
     .Call('PPforest_arma_sub_cond', PACKAGE = 'PPforest', x, val)
 }

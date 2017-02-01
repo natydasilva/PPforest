@@ -13,16 +13,22 @@ vignette: >
 
 ## Abstract
 
-A random forest is an ensemble learning method, built on bagged trees. The bagging provides power for classification because it yields information about variable importance, predictive error and proximity of observations. This research adapts the random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest (`PPforest`). In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
+The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each the tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
 
 ##Introduction
 
-The most common random forest implementations uses univariate decision trees like CART or C4.5.
-These kinds of trees uses only one variable in each split and then define hyperplanes that are orthogonal to the axis. Sometimes we have data where the class can be separated by linear combinations and in these cases use a classifier which define hyperplanes that are oblique to the axis maybe do a better job.
-
 `PPforest` package implements a random forest to utilize combinations of variables in the tree construction, which we call the projection pursuit classification random forest. For each split a random sample of variables is selected and a linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes.
 
-The classification method presented here `PPforest` uses the `PPtree` algorithm implemented in R  was  which fits a single tree to the data. To improve the speed performance of the forest, `PPtree` algorithm was translate to Rcpp. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occur on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
+The classification method presented here `PPforest` uses the `PPtree` algorithm implemented in R  was  which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occur on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
+To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
+The `PPforest` package (short for projection pursuit forest) contains functions to run a projection pursuit random forest for classification problems. The package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up1.
+Install PPforest from github using:
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE,eval=FALSE}
+library(devtools)
+install_github("natydasilva/PPforest")
+library(PPforest)
+```
 
 
 ###Motivation Example
@@ -34,67 +40,44 @@ Australian crab data set contains measurements on rock crabs of the genus Leptog
 4. CW maximum width of carapace, in mm
 5. BD depth of the body; for females, measured after displacement of the abdomen, in mm
 
-To visualize this data set we use a scatterplot matrix.
+To visualize this data set we use a scatterplot matrix from the package `GGally` 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-#library(PPforest)
-library(RColorBrewer)
-library(GGally)
-#library(rpart.plot)
-library(gridExtra)
-library(PPtreeViz)
-library(plotly)
+require(PPforest)
+require(RColorBrewer)
+require(GGally)
+require(gridExtra)
+require(PPtreeViz)
+require(plotly)
 ```
 
 ```{r,fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
- load("../data/crab.rda")
-a <- ggpairs(PPforest::crab,
+# load("../data/crab.rda")
+a <- GGally::ggpairs(PPforest::crab,
     columns= 2:6,
     ggplot2::aes(colour=Type,alpha=.3),
     lower=list(continuous='points'),
     axisLabels='none',
     upper=list(continuous='blank')
-     )
+     , legend = NULL)
+
+a
 ```
 
-In this figure we can see a strong, positive and linear association between the different variables and the different classes look like can be separated by linear combinations of variables.
+In this figure we can see a strong, positive and linear association between the different variables. Also look like the classes can be separated by linear combinations.
 
-
-```{r, fig.show='hold',fig.width = 7 ,fig.height = 7, echo=FALSE, message=FALSE, warning=FALSE}
-
-
-crab2 <- base::subset(crab, select=c(Type,RW,BD))
-grilla <- base::expand.grid(RW=seq(6,21,,50), BD=seq(6,22,,50))
-
-pptree <- PPtreeViz::PP.Tree.class(crab2[,1],crab2[,-1],"LDA")
-
-ppred.crab <- PPtreeViz::PP.classify( pptree, test.data=grilla)
-grilla$ppred <- ppred.crab[[2]]
-
-rpart.crab <- rpart::rpart(Type ~ RW + BD, data=crab)
-rpart.pred <- predict(rpart.crab, newdata = grilla, type="class")
-```
 
 
 ##Projection pursuit classification forest
- `PPforest` implements a projection pursuit classification random forest. Projection pursuit classification trees  are used to build the forest, ( from `PPtreeViz` package ). `PPforest` adapts random forest to utilize combinations of variables in the tree construction.
-
-`PPforest` is generated from `PPtree` algorithm. `PPtree` combines tree structure methods with projection pursuit dimensional reduction.
+ in `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithn is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to imporove the speed performance in to run the forest.  
 
 One important characteristic of PPtree is that treats the data always as a two-class system,  when the classes are more than two the algorithm uses a two step  projection pursuits optimization in every node split.
 Let  $(X_i,y_i)$ the data set, $X_i$ is a  p-dimensional vector of explanatory variables and  $y_i\in {1,2,\ldots G}$ represents class information with $i=1,\ldots n$.
 
 In the first step optimize a projection pursuit index to find an optimal one-dimension projection $\alpha^*$ for separating all classes in the current data. With the projected data redefine the problem in a two class problem by comparing means, and assign a new label $G1$ or $G2$ to each observation, a new variable $y_i^*$ is created.  The new groups $G1$ and $G2$ can contain more than one original classes. Next step is to find an optimal one-dimensional projection $\alpha$, using $(X_i,y_i^*)$ to separate the two class problem $G1$ and $G2$. The best separation of $G1$ and $G2$ is determine in this step and the decision rule is defined for the current node, if $\sum_{i=1}^p \alpha_i M1< c$ then assign $G1$ to the left node else assign $G2$ to the right node, where $M1$ is the mean of $G1$.
-For each groups we can repeat all the previous steps until $G1$ and $G2$ have only one class from the original classes. Base on this process to grow the tree, the depth of PPtree is at most the number of classes.
+For each groups we can repeat all the previous steps until $G1$ and $G2$ have only one class from the original classes. Base on this process to grow the tree, the depth of PPtree is at most the number of classes because one class is assigned only to one final node.
 
 Trees from `PPtree` algorithm are simple, they use the association between variables to find separation. If a linear boundary exists, `PPtree` produces a tree without misclassification.
-One class is assigned only to one final node, depth of the tree is at most the number of classes.
-Finally the projection coefficient of the node represents the variable importance.
-
-
-
-
-The PPforest uses the PPtree algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occur on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for PPforest.
 
 Projection pursuit random forest algorithm description
 
@@ -125,13 +108,13 @@ Projection pursuit random forest algorithm description
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
-The main function of our packages is `PPforest` which implements a projection pursuit random forest.
+The main function of the package is `PPforest` which implements a projection pursuit random forest.
 `parallel_dat`, `ppf_importance`, `ppf_oob_error`, `proxy_plot` and `vote_viz` are funcions to visuzlize some of the main diagnostics in `PPforest`. The main diagnostics are; vote matrix, proximity matrix, importance variable measure and error rat.
 
-`PPtree_split` this function implements a projection pursuit classification tree with random variable selection in each split. This function returns a `PPtreeclass` object.
+`PPtree_split` this function implements a projection pursuit classification tree with random variable selection in each split, based on the original PPtreeViz algorithm. This function returns a `PPtreeclass` object.
 To use this function we need to specify a formula describing the model to be fitted response\~predictors (`form`),
 `data` is a data frame with the complete data set. Also we need to specify the method `PPmethod`, it is the index to use for projection pursuit: 'LDA' or 'PDA', 
-`size.p` is the proportion of variables randomly sampled in each split.
+`size.p` is the proportion of variables randomly sampled in each split. If size.p = 1 a classic `PPtreeclass` object will be fitted using all the variables in each node partition instead of a subset of them.
 `lambda` penalty parameter in PDA index and is between 0 to 1 .
 he following example fits a projection pursuit classification tree constructed using 0.6 of the variables (3 out of 5) in each node split. We selected `LDA` method.
 ```{r}
@@ -139,23 +122,35 @@ Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", siz
  Tree.crab
 ```
 
-`baggtree` this function grow a `PPtree_split` for each bootstrap sample.
+`baggtree` this function grow a `PPtreeclass` using `PPtree_split` for each bootstrap sample.
 This function returns a data frame with the results from `PPtree_split` for each bootsrap samples.
+`m` is th number of trees here is a small example.
+```{r tidy=FALSE}
+crab.trees <- baggtree(data = crab, class = "Type", 
+ m =  10, PPmethod = 'LDA', size.p = 0.6 ) 
+str(crab.trees, max.level = 1)
 
-```PPforest``` function runs a projection pursuit random forest. This function also has a data argument and class argument. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the size proportion of the training then the test proportion will be 1- `size.tr`.
-The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized there are two options LDA and PDA. The bootrap samples in a `PPforest`
+#selecting first PPtree object, 
+crab.trees[[1]][[1]]
+```
+
+```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training, Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
+The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available. 
 ```{r tidy=FALSE}
 set.seed(146)
 pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
                                 size.p =  .5,  PPmethod = 'LDA')
 
+pprf.crab 
 ```
 
-`PPforest` function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
+`PPforest` print a summary result from the model with the consfusion matrix information and the oob-error rate in a similar way randomForest packages does.
+
+function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
 
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 ```{r}
- pprf.crab
+str(pprf.crab,max.level=1 )
 ```
 If we compare the results with the `randomForest` function for this data set the results are the following:
 

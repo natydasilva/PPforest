@@ -198,16 +198,7 @@ double signC(double x) {
   int mm = eigval.index_max();
   
    arma::vec bestproj = real(eigvec.col(mm));
-//   NumericMatrix proj(p,1);  
-//   for (int i=0; i < p; i++)  proj(i,1) =  temp_proj[i];
-   // PAra poder usar LDAindex, hay que transformar de rcpp a rcpp armadillo
-   //proj = origdata * proj;
-//   double index = LDAindex(origclass, origdata, proj, weight);
-   // Rcpp::Named("indexbest")=index,
-
-   // return Rcpp::List::create( Rcpp::Named("projbest")= temp_proj,
-   //                            Rcpp::Named("projdata") = origdata*temp_proj
-   //                           );    
+ 
    return bestproj;
 }
 
@@ -539,81 +530,6 @@ List findproj(arma::vec origclass,
 }
 
 
-
-// [[Rcpp::export]]
-List findprojPDA(arma::vec origclass,
-              arma::mat origdata, 
-              double lambda=0.1){
-  
-  arma::vec a = PDAopt(origclass, origdata, lambda);
-  arma::vec classe = split_rel(origclass, origdata,  origdata*a );
-  
-  arma::vec ng = tableC(origclass);
-  int g = ng.size();
-   
-   int  index = arma::index_max(arma::abs(a));
-   double sign = signC(a(index));
-
-  arma::vec  out;
-  
-  if (g > 2) {
-    arma::vec a2 = PDAopt(classe, origdata, lambda);
-    double sign2 = signC(a2(index));
-    if (sign != sign2) {
-       out  = (-1)*a2;
-    } else {
-      out = a2;
-    }
-  } else {
-    out = a;
-  }
-
-    arma::vec projdata = origdata*a;
-    return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
-                              Rcpp::Named("projbest") = out,
-                              Rcpp::Named("class")= classe);
-}
-  
-
-
-  // [[Rcpp::export]]
-  arma::vec findprojLDA(arma::vec origclass,
-                   arma::mat origdata){
-    
-    arma::vec a = LDAopt(origclass, origdata,  1, "LDA", true);
-    return a;
-  }
-
-  //   arma::vec classe = split_rel(origclass, origdata,  origdata*a );
-  //   
-  //   arma::vec ng = tableC(origclass);
-  //   int g = ng.size();
-  //   
-  //   int  index = arma::index_max(arma::abs(a));
-  //   double sign = signC(a(index));
-  //   
-  //   arma::vec  out;
-  //   
-  //   if (g > 2) {
-  //     arma::vec a2 = LDAopt(classe, origdata);
-  //     double sign2 = signC(a2(index));
-  //     if (sign != sign2) {
-  //       out  = (-1)*a2;
-  //     } else {
-  //       out = a2;
-  //     }
-  //   } else {
-  //     out = a;
-  //   }
-  //   
-  //   arma::vec projdata = origdata*a;
-  //   return Rcpp::List::create(Rcpp::Named("projdata") = projdata,
-  //                             Rcpp::Named("projbest") = out,
-  //                             Rcpp::Named("class")= classe);
-  // }
-
-
-
 //subseting a vector based on a condition == val
 // [[Rcpp::export]]
 arma::uvec arma_sub_cond(arma::vec x, int val) {
@@ -801,10 +717,7 @@ if(PPmethod.compare("LDA")==0){
          arma::vec IOindexL(classe.size(), fill::zeros);
          arma::vec IOindexR(classe.size(),fill::zeros);
 
-         
-
-         
-         
+        
          for(int i=0; i<classe.size(); i++){
            if(classe(i)==(clval(sortLR(0)))){
            IOindexL(i) = true;
@@ -1251,11 +1164,6 @@ List PPclassindex(arma::vec classtemp,arma::mat testclassindex,
        double innerProduct(NumericVector x, NumericVector y) {
          return std::inner_product(x.begin(), x.end(), y.begin(), 0.0);
        }
-       
-       // NumericVector PPpred( List tree, NumericMatrix testdata ) {
-       //   NumericMatrix TRstr = tree[1];
-       //   NumericMatrix TRprnode = tree[2];
-       //   NumericMatrix TRspl = tree[3];
        
        // [[Rcpp::export]]
        NumericVector PPpred( NumericMatrix TRstr, NumericMatrix TRprnode, NumericMatrix TRspl, NumericMatrix testdata) {

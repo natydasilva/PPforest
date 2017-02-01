@@ -150,31 +150,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// findprojPDA
-List findprojPDA(arma::vec origclass, arma::mat origdata, double lambda);
-RcppExport SEXP PPforest_findprojPDA(SEXP origclassSEXP, SEXP origdataSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(findprojPDA(origclass, origdata, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
-// findprojLDA
-arma::vec findprojLDA(arma::vec origclass, arma::mat origdata);
-RcppExport SEXP PPforest_findprojLDA(SEXP origclassSEXP, SEXP origdataSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type origclass(origclassSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type origdata(origdataSEXP);
-    rcpp_result_gen = Rcpp::wrap(findprojLDA(origclass, origdata));
-    return rcpp_result_gen;
-END_RCPP
-}
 // arma_sub_cond
 arma::uvec arma_sub_cond(arma::vec x, int val);
 RcppExport SEXP PPforest_arma_sub_cond(SEXP xSEXP, SEXP valSEXP) {
