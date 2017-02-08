@@ -27,9 +27,10 @@ Importance variable visualization
 }
 \examples{
 #crab data set with all the observations used as training
-pprf.crab <- PPforest(data = crab, class = "Type",
+pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
+ 
 ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE,
- weight = FALSE, interactive = TRUE) 
+ weight = TRUE, interactive = TRUE) 
 }
 

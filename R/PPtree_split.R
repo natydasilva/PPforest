@@ -68,6 +68,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.
     treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
                     splitCutoff.node = splitCutoff.node, origclass = origclass, 
                     origdata = origdata)
+    
     class(treeobj) <- append(class(treeobj), "PPtreeclass")
     
     return(treeobj)

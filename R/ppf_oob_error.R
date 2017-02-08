@@ -25,12 +25,9 @@ ppf_oob_error <- function(ppf, nsplit1,interactive){
     index2 <- lapply(as.numeric(attributes(ppf$boot.samp)$names[1:m]), function(x)
         x + 1)
     
-    
     oob.obs <- index2 %>%  lapply(function(x)
       data.frame(obs=!l.train %in% x)) %>% dplyr::bind_cols() %>%t()
     pred.mtree <- ppf$vote.mat[1:m,]
-    
-    
     
     oob.pred <-
       sapply(
@@ -39,7 +36,6 @@ ppf_oob_error <- function(ppf, nsplit1,interactive){
           names(t1)[which.max(t1)]
         }
       )
-    
     
     oob.mat <- sapply(
       X = 1:nrow(ppf$train), FUN = function(i) {
@@ -76,11 +72,8 @@ ppf_oob_error <- function(ppf, nsplit1,interactive){
 
 oob.pl <- ppf_oob_aux(ppf, nsplit1 = round(nrow(ppf$train)/13) )
 
-
-
 myColors <- c("#000000", RColorBrewer::brewer.pal(length(unique(ppf$train[, ppf$class.var])),"Dark2"))
 names(myColors) <- levels(oob.pl$Class)
-
 
 p1 <- oob.pl %>% ggplot2::ggplot(ggplot2::aes( x = tree.id, y = OOB.error , colour = Class)) + 
   ggplot2::geom_point(alpha = .5) + ggplot2::geom_line(size = I(0.5), alpha = .5) + ggplot2::labs(y = "OOB error rate", 

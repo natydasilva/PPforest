@@ -4,13 +4,15 @@
 \alias{PPforest}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest(data, class, size.tr, m, PPmethod, size.p,
+PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
  lambda = .1,  parallel = TRUE, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
 
 \item{class}{A character with the name of the class variable.}
+
+\item{std}{if TRUE standardize the data set, needed to compute global importance measure.}
 
 \item{size.tr}{is the size proportion of the training if we want to split the data in training and test.}
 
@@ -52,7 +54,7 @@ An object of class \code{PPforest} with components.
 \examples{
 #crab example with all the observations used as training
 pprf.crab <- PPforest(data = crab, class = "Type",
- size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' )
+ std = TRUE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' )
 pprf.crab
 }
 

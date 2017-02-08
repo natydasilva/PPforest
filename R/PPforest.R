@@ -1,10 +1,11 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(data, class, size.tr, m, PPmethod, size.p,
+#' @usage PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
 #'  lambda = .1,  parallel = TRUE, cores = 2)
 #' @param data Data frame with the complete data set.
-#' @param class A character with the name of the class variable. 
+#' @param class A character with the name of the class variable.
+#' @param std if TRUE standardize the data set, needed to compute global importance measure. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
@@ -34,14 +35,20 @@
 #' @examples
 #' #crab example with all the observations used as training
 #' pprf.crab <- PPforest(data = crab, class = "Type",
-#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' )
+#'  std = TRUE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' )
 #' pprf.crab
-PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallel = TRUE, cores = 2 ) {
+PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallel = TRUE, cores = 2 ) {
   
   Var1 <- NULL
   tree <- NULL
   pred <- NULL
   id <- NULL
+  if(std){
+   dataux <- data %>% dplyr::select(-get(class)) %>%
+   apply(2, FUN = scale) %>% dplyr::as_data_frame()
+  data <- data.frame( data[,class], dataux)
+  colnames(data)[1] <- class 
+  }
   
   clnum <- as.numeric( as.factor(data[, class] ) )
   tr.index <- trainfn(as.matrix(clnum), as.matrix(data[ , setdiff(colnames(data), class)]),
@@ -150,11 +157,18 @@ PPforest <- function(data, class,  size.tr = 2/3, m = 500, PPmethod, size.p, lam
   }
   
   oob.pred <- as.factor(oob.pred)
+  if(is.factor(train[, class])){
   levels(oob.pred) <- levels(train[, class])
+  }else{
+    levels(oob.pred) <- levels(as.factor(train[, class]))
+  }
   
   prediction.training <- as.factor(pred.tr[[2]])
+  if(is.factor(train[, class])){
    levels(prediction.training) <- levels(train[, class])
-   
+  }else{
+    levels(prediction.training) <- levels(as.factor(train[, class]))
+  }
   
    
   tab.tr <- table(Observed = train[, class], Predicted = oob.pred)
