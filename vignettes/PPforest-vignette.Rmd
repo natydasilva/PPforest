@@ -10,11 +10,6 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-
-
-
-
-
 ##Introduction
 
 The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each the tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
@@ -28,8 +23,6 @@ library(devtools)
 install_github("natydasilva/PPforest")
 library(PPforest)
 ```
-
-
 ###Motivation Example
 Australian crab data set contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
 
@@ -50,7 +43,6 @@ require(PPtreeViz)
 require(plotly)
 ```
 
-
 ```{r,fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
 
 a <- GGally::ggpairs(PPforest::crab,
@@ -66,8 +58,6 @@ a
 
 
 In this figure we can see a strong, positive and linear association between the different variables. Also look like the classes can be separated by linear combinations.
-
-
 
 ##Projection pursuit classification forest
 In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance in to run the forest.  
@@ -97,7 +87,6 @@ Projection pursuit random forest algorithm description
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
 |parallel_dat|Parallel plot for the data set colored by class, the data are standardized in the function|
 |permute_importance2|Obtain the permuted importance variable measure|
-|ppf_importance| Plot a global measure of importance in PPforest.|
 |ppf_oob_error| OOB error visualization|
 |predict.PPforest|Vector with predicted values from a PPforest object|
 |pproxy_plot| Proximity matrix visualization|
@@ -110,7 +99,7 @@ Projection pursuit random forest algorithm description
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
 The main function of the package is `PPforest` which implements a projection pursuit random forest.
-`parallel_dat`, `ppf_importance`, `ppf_oob_error`, `proxy_plot` and `vote_viz` are functions to visualize some of the main diagnostics in `PPforest`. The main diagnostics are; vote matrix, proximity matrix, importance variable measure and error rat.
+`parallel_dat`, `ppf_oob_error`, `proxy_plot` and `vote_viz` are functions to visualize some of the main diagnostics in `PPforest`. The main diagnostics are; vote matrix, proximity matrix, importance variable measure and error rat.
 
 `PPtree_split` this function implements a projection pursuit classification tree with random variable selection in each split, based on the original PPtreeViz algorithm. This function returns a `PPtreeclass` object.
 To use this function we need to specify a formula describing the model to be fitted response\~predictors (`form`),
@@ -178,11 +167,11 @@ If the plot is a MDS plot the argument `k` defines the number of MDS layouts.
 This function return an interactive plot based on `plotly` package if `interactive = TRUE`.
 
 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+<!-- ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE} -->
 
-PPforest::pproxy_plot(pprf.crab, type = "heat", interactive = FALSE)
+<!-- PPforest::pproxy_plot(pprf.crab, type = "heat", interactive = FALSE) -->
 
-```
+<!-- ``` -->
 
 In this plot we can see a heat map for the proximity matrix, we can observe that strong red color indicates that the observations are more similar.
 The data are ordered by class (BlueFemale, BlueMale, OrangeFemale and OrangeMale), in the heat map we can observe a colored block diagonal structure, this means that the observations from the same class are similar here the same class were classified most of the time in the correct class, but also we can observe that observations from BlueMale and BlueFemale are similar too then some data were classified in the incorrect class.
@@ -192,9 +181,9 @@ Additionally `pproxy_plot` can be used to plot the MDS using proximity matrix in
 
 If we select k =2 the output plot is as follows:
 
-```{r,fig.show='hold',fig.width = 6 ,fig.height = 4, warning = FALSE}
-PPforest::pproxy_plot(pprf.crab, type="MDS", k =2, interactive = FALSE )
-```
+<!-- ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4, warning = FALSE} -->
+<!-- PPforest::pproxy_plot(pprf.crab, type="MDS", k =2, interactive = FALSE ) -->
+<!-- ``` -->
 
 
 We can observe a spatial separation between classes. Orange (male and female) are more separated than Blue (male and female).
@@ -202,9 +191,10 @@ We can observe a spatial separation between classes. Orange (male and female) ar
 If we select k>2,  we can observe that using two dimensions is enough to see the spatial separation.
 
 
-```{r,fig.show='hold',fig.width = 6 ,fig.height = 6, warning=FALSE}
-PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3, interactive = TRUE)
-```
+<!-- ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6, warning=FALSE} -->
+<!-- PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3, interactive = TRUE) -->
+<!-- ``` -->
+
 Another possible visualization in `PPforest` package is for the importance measure.
 
 The variable importance for the group separation can be measured by the projection coefficients in each individual tree. Based on these coefficients we can examine how the classes are separated and which variables are more relevant for the separation.
@@ -216,25 +206,27 @@ The variable importance for the group separation can be measured by the projecti
 
 Using the `ppf_importance` function we can plot the weighted global importance measure in `PPforest`.
 
-```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
-PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE, interactive = FALSE)
-```
+<!-- ```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE} -->
+<!-- PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE, interactive = FALSE) -->
+<!-- ``` -->
 
 We can see that the most important variable in this example is RW while the less important is BD.
 An importance measure for each node also is available.
 
-```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
-PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = FALSE, weight = TRUE, interactive = FALSE)
-```
+
+<!-- ```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE} -->
+<!-- PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = FALSE, weight = TRUE, interactive = FALSE) -->
+<!-- ``` -->
+
 The importance variable order is the same for node 1 and node 2 but different in node 3.
 
 Finally a cumulative out of error plot can be done using `ppf_oob_error`
 This function has three arguments, ppf (`PPforest` object), nsplit1 (number, increment of the sequence where cumulative oob error rate is computed in the  1/3 trees) and interactive if we want a interactive plot.
 
 
-```{r, fig.show='hold',fig.width = 6 ,fig.height = 4, warning=FALSE}
- PPforest::ppf_oob_error(pprf.crab, nsplit1 = 15, interactive = FALSE)
-```
+<!-- ```{r, fig.show='hold',fig.width = 6 ,fig.height = 4, warning=FALSE} -->
+<!--  PPforest::ppf_oob_error(pprf.crab, nsplit1 = 15, interactive = FALSE) -->
+<!-- ``` -->
 
 The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 70 trees.
 

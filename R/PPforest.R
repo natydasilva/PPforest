@@ -62,8 +62,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   outputaux <- baggtree(train , class , m , PPmethod , lambda , size.p )
   
  output <- lapply(outputaux,function(x) x[[1]])
-  #output <- plyr::llply(outputaux, function(x) x[[1]])
-  #data.b <-  plyr::llply(outputaux, function(x) x[[2]])
+
  data.b <-  lapply(outputaux, function(x) x[[2]])
   pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train,-get( class ) ),  parallel, cores )
 
@@ -73,37 +72,16 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   }
   pos <-  expand.grid.ef( 1:dim(train)[1],  1:dim(train)[1])
   
-  # prox <- proximi(pred.tr[[1]], m)
-  # proximity <- pos %>% dplyr::filter(pos[,1] > pos[, 2]) %>%
-  #   dplyr::mutate(prox = prox[lower.tri(prox)]/dim((pred.tr[[1]]))[1] )
 
-  #proximity <- proximi(t(pred.tr[[1]]))/m
   proximity <- proximi( (pred.tr[[1]]), m)
   
-  
-  #l.train <- 1:nrow(train)
- 
-  #index <- lapply(data.b, function(x) x + 1)
 
-
-
-  #index <- as.matrix(plyr::ldply(data.b, function(x) c(pp=(x )))[,-1])
-
- 
   index <- oobindex(data.b,m)
     
- 
-  #oob.obs <- plyr::ldply(index, function(x) (!l.train %in% x))[,-1]
+
   oob.obs <- oobobs(index)
   
-  # oob.pred <- sapply(X = 1:nrow(train), FUN = function(i) {
-  #   if(sum(oob.obs[, i]>0)){
-  #     t1 <- table(pred.tr[[1]][oob.obs[, i] == TRUE, i])
-  #     as.numeric(names(t1)[which.max(t1)])
-  #   }else{
-  #     print("More trees are needed to get the oob predictions")
-  #   }
-  # })
+
   mvote.oob <- mvoteoob(pred.tr[[1]], oob.obs)
   oob.pred <- mvote.oob[,length(unique(clnum)) + 1]
   
@@ -181,10 +159,8 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
                   output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
                   n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
                   vote.mat = pred.tr[[1]], class.var = class, oob.obs = oob.obs)
+  
   class(results) <- "PPforest"
-  
-  
-  
 
   return(results)
   
