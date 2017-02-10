@@ -20,7 +20,7 @@ variable <-NULL
 value<-NULL
 tr<-NULL
 
-  nn <- data.frame(nn = 1:sum(ppf[["output.trees"]][[1]]$Tree.Struct[, 4]!=0))
+  nn <- data.frame(nn = as.list(1:sum(ppf[["output.trees"]][[1]]$Tree.Struct[, 4]!=0)))
   nodecl <- function(x) {
    aux <- node_data(ppf = ppf, x ) 
    aux$node.id <- as.factor( aux$node.id)
@@ -34,12 +34,9 @@ tr<-NULL
     data.frame( node = 1:sum(x$Tree.Struct[, 4]!=0), abs(x[[2]]))
   }) %>% dplyr::bind_rows() 
   
-  info <- apply(data.frame(1:ppf$n.tree),1, function(x) nodecl(x))
-  # lapply(info, function(x) {
-  #   if(node.id%in%nn){
-  #   node.id)!=nn
-  # }
-  #mat.proj%>% group_by()lapply(info, function(x), merge())
+  lapply(as.list(1:ppf$n.tree), function(x) nodecl(x))
+  info <- apply(data.frame(1:ppf$n.tree),1, function(x) nodecl(x)) #info to weight importance
+
   colnames(mat.proj)[-1] <- colnames(dplyr::select(data,-get(class)))
   
   mat.proj %>% dplyr::mutate(tr = rep(1:nrow(ppf$train), each = length(nn[,1]))) %>% 
@@ -49,5 +46,5 @@ tr<-NULL
     dplyr::group_by(variable) %>% 
     dplyr::summarise(mean = mean(mean)) %>%
     dplyr::arrange(dplyr::desc(mean) ) 
-  #weight for the number of classes'
+  #weight for the number of classes not use here
   }

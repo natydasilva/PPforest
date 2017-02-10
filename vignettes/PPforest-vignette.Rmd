@@ -12,7 +12,7 @@ vignette: >
 
 ##Introduction
 
-The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each the tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
+The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
 
 To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
@@ -85,21 +85,21 @@ Projection pursuit random forest algorithm description
 | ----------------- | --------------------------------------------------------------  | 
 |PPforest|Runs a Projection pursuit random forest|
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
-|parallel_dat|Parallel plot for the data set colored by class, the data are standardized in the function|
-|permute_importance2|Obtain the permuted importance variable measure|
-|ppf_oob_error| OOB error visualization|
+|permute_importance|Obtain the permuted importance variable measure|
 |predict.PPforest|Vector with predicted values from a PPforest object|
-|pproxy_plot| Proximity matrix visualization|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
+|ppf_global_imp| Computes a global importance measure for a PPforest object|
+|ppf_avg_pptree_imp| Computes a global importancce measure for a PPforest object, average importance measure for a pptree over all the trees.|
+|node_data|To get the node level data for visualize individual trees|
 |tree_ppred|Vector with predicted values from a PPtree object.|
 |predict.PPforest|Predict class for the test set and calculate prediction error|
 |print.PPforest| Print PPforest object|
-|vote_viz1|Vote matrix visualization|
+
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
 The main function of the package is `PPforest` which implements a projection pursuit random forest.
-`parallel_dat`, `ppf_oob_error`, `proxy_plot` and `vote_viz` are functions to visualize some of the main diagnostics in `PPforest`. The main diagnostics are; vote matrix, proximity matrix, importance variable measure and error rat.
+<!-- `parallel_dat`, `ppf_oob_error`, `proxy_plot` and `vote_viz` are functions to visualize some of the main diagnostics in `PPforest`. The main diagnostics are; vote matrix, proximity matrix, importance variable measure and error rate. -->
 
 `PPtree_split` this function implements a projection pursuit classification tree with random variable selection in each split, based on the original PPtreeViz algorithm. This function returns a `PPtreeclass` object.
 To use this function we need to specify a formula describing the model to be fitted response\~predictors (`form`),
@@ -155,16 +155,92 @@ We can see that for this data set the `PPforest` performance is much better than
 This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis.
 
 
-Some visualizations are possible in `PPforest`, because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
-Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix.
+Some  axiliary function are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
+Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be posible to explore the individual model level.
 
 With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
 To visualize the proximity matrix we use a heat map plot and an a scatter plot with information from multidimensional scaling method.
 
-From `PPforest` object we can plot a heat map of the proximity matrix using the function `pproxy_plot`.
-This function has tree arguments, `ppf` is a`PPforest` object, `type` an argument that specify if the plot is a heatmap or a MDS plot.
-If the plot is a MDS plot the argument `k` defines the number of MDS layouts.
-This function return an interactive plot based on `plotly` package if `interactive = TRUE`.
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+parallel <- function(ppf){
+myscale <- function(x) (x - mean(x)) / sd(x)
+
+scale.dat <- ppf$train %>% dplyr::mutate_each(dplyr::funs(myscale),-dplyr::matches(ppf$class.var))
+scale.dat.melt <- scale.dat %>%  dplyr::mutate(ids = 1:nrow(ppf$train)) %>% tidyr::gather(var,Value,-Type,-ids)
+scale.dat.melt$Variables <- as.numeric(as.factor(scale.dat.melt$var))
+colnames(scale.dat.melt)[1] <- "Class"
+
+ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
+                           group = ids, key = ids, colour = Class, var = var)) +
+  ggplot2::geom_line(alpha = 0.3) + ggplot2::scale_x_discrete(limits = levels(as.factor(scale.dat.melt$var)), expand = c(0.01,0.01)) +
+  ggplot2::ggtitle("Data parallel plot ") + ggplot2::theme(legend.position = "none", axis.text.x  = element_text(angle = 90, vjust = 0.5)) +
+  ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2")
+
+
+}
+
+parallel(pprf.crab)
+```
+
+
+With the information available in the forest additional visualization can be done.
+
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning = FALSE}
+side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
+                  ttl = "Side by side dotplot") {
+  voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1],
+                      ppf$votes, pred = ppf$prediction.oob ) %>%
+  tidyr::gather(Class, Probability, -pred, -ids, -Type)
+
+  ggplot2::ggplot(data = voteinf, ggplot2::aes(Class, Probability, color = Type)) +
+    ggplot2::geom_jitter(height = 0, size = I(siz), alpha = .5) +
+    ggtitle(ttl) +
+    ylab("Proportion") +
+    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") +
+    ggplot2::theme(legend.position = lege, legend.text = ggplot2::element_text(angle = ang)) +
+    ggplot2::labs(colour = "Class")
+}
+
+side(pprf.crab)
+```
+```
+
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+
+mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
+  
+  d <- diag(nrow(ppf$train))
+  d <- as.dist(d + 1 - ppf$proximity)
+  rf.mds <- stats::cmdscale(d, eig = TRUE,  k = k)
+  colnames(rf.mds$points) <- paste("MDS", 1:k, sep = "")
+
+
+  df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
+
+  mds <- ggplot2::ggplot(data = df) +
+   geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Class),
+              size = I(siz), alpha = .5) +
+   ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2", name = "Class") +
+   ggplot2::theme(legend.position = lege, aspect.ratio = 1)
+
+  mds
+}
+mdspl2d(pprf.crab)
+```
+
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+
+
+
+```
+
+
+
+
+<!-- From `PPforest` object we can plot a heat map of the proximity matrix using the function `pproxy_plot`. -->
+<!-- This function has tree arguments, `ppf` is a`PPforest` object, `type` an argument that specify if the plot is a heatmap or a MDS plot. -->
+<!-- If the plot is a MDS plot the argument `k` defines the number of MDS layouts. -->
+<!-- This function return an interactive plot based on `plotly` package if `interactive = TRUE`. -->
 
 
 <!-- ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE} -->
@@ -173,22 +249,22 @@ This function return an interactive plot based on `plotly` package if `interacti
 
 <!-- ``` -->
 
-In this plot we can see a heat map for the proximity matrix, we can observe that strong red color indicates that the observations are more similar.
-The data are ordered by class (BlueFemale, BlueMale, OrangeFemale and OrangeMale), in the heat map we can observe a colored block diagonal structure, this means that the observations from the same class are similar here the same class were classified most of the time in the correct class, but also we can observe that observations from BlueMale and BlueFemale are similar too then some data were classified in the incorrect class.
+<!-- In this plot we can see a heat map for the proximity matrix, we can observe that strong red color indicates that the observations are more similar. -->
+<!-- The data are ordered by class (BlueFemale, BlueMale, OrangeFemale and OrangeMale), in the heat map we can observe a colored block diagonal structure, this means that the observations from the same class are similar here the same class were classified most of the time in the correct class, but also we can observe that observations from BlueMale and BlueFemale are similar too then some data were classified in the incorrect class. -->
 
 
-Additionally `pproxy_plot` can be used to plot the MDS using proximity matrix information.
+<!-- Additionally `pproxy_plot` can be used to plot the MDS using proximity matrix information. -->
 
-If we select k =2 the output plot is as follows:
+<!-- If we select k =2 the output plot is as follows: -->
 
 <!-- ```{r,fig.show='hold',fig.width = 6 ,fig.height = 4, warning = FALSE} -->
 <!-- PPforest::pproxy_plot(pprf.crab, type="MDS", k =2, interactive = FALSE ) -->
 <!-- ``` -->
 
 
-We can observe a spatial separation between classes. Orange (male and female) are more separated than Blue (male and female).
+<!-- We can observe a spatial separation between classes. Orange (male and female) are more separated than Blue (male and female). -->
 
-If we select k>2,  we can observe that using two dimensions is enough to see the spatial separation.
+<!-- If we select k>2,  we can observe that using two dimensions is enough to see the spatial separation. -->
 
 
 <!-- ```{r,fig.show='hold',fig.width = 6 ,fig.height = 6, warning=FALSE} -->
@@ -230,4 +306,29 @@ This function has three arguments, ppf (`PPforest` object), nsplit1 (number, inc
 
 The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 70 trees.
 
+
+<!-- dat <- ternary_str(ppf=ppf, id = c(1, 2, 3), sp = 3, dx = 1, dy = 3) -->
+
+<!-- pl_ter <- function(dat,dx,dy){ -->
+
+<!-- p1  <- dat[[1]] %>% filter(pair %in% paste(dx, dy, sep = "-") ) %>% -->
+<!--   select(Class, x, y) %>% -->
+<!--   ggplot(aes(x, y, color = Class)) + -->
+<!--   geom_segment(data = dat[[2]], aes(x = x1, xend = x2, -->
+<!--                                y = y1, yend = y2), color = "black" ) + -->
+<!--   geom_point(size = I(3), alpha = .5) + -->
+<!--   labs(y = " ",  x = " ") + -->
+<!--   theme(legend.position = "none", aspect.ratio = 1) + -->
+<!--   scale_colour_brewer(type = "qual", palette = "Dark2") + -->
+<!--   labs(x = paste0("T", dx, ""), y = paste0("T", dy, " ")) + -->
+<!--   theme(aspect.ratio = 1) -->
+
+<!-- p1 -->
+<!-- } -->
+
+<!-- p1 <- pl_ter(ternary_str(ppf, id = c(1,2,3), sp =3, dx=1, dy=2),1,2 ) -->
+<!-- p2 <-  pl_ter(ternary_str(ppf, id = c(1, 2, 3), sp =3, dx=1, dy=3), 1,3) -->
+<!-- p3 <-  pl_ter(ternary_str(ppf, id = c(1, 2, 3), sp =3, dx=2, dy=3), 2,3) -->
+
+<!-- grid.arrange(p1, p2, p3, ncol = 3) -->
 

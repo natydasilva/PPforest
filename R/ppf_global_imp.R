@@ -1,4 +1,4 @@
-#' Gobal importance measure
+#' Gobal importance measure for a PPforest object
 #' 
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable. 
