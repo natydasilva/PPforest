@@ -18,7 +18,7 @@ ppf_global_imp <- function(data , class, ppf){
   variable <- NULL
   node <- NULL
   
-  y <- data %>% dplyr::select(get(class))
+  y <- data %>% dplyr::select( get(class) )
   
   mat.proj <- lapply(ppf[["output.trees"]], function(x){
     data.frame(node = 1:nrow(x[[2]]), abs(x[[2]]))
@@ -44,11 +44,7 @@ ppf_global_imp <- function(data , class, ppf){
         dplyr::filter(value!=0) %>% dplyr::summarise(mean = mean(value)) %>%
         dplyr::arrange(dplyr::desc(mean) ) %>% 
         dplyr::mutate(variable = stats::reorder(variable, mean) )
-      
-    #   a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::theme(aspect.ratio=1)
-    #   print(import.vi.wg)
-    #  
-    # plotly::ggplotly(a)
+
       
       import.vi.wg
 }

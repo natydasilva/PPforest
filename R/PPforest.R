@@ -154,7 +154,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
   confusion <- cbind(tab.tr, class.error = round(class.error, 2))
   
-  results <- list(prediction.training , training.error = error.tr, prediction.test = pred.test, 
+  results <- list(predicting.training = prediction.training , training.error = error.tr, prediction.test = pred.test, 
                   error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
                   output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
                   n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
