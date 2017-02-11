@@ -124,7 +124,7 @@ str(crab.trees, max.level = 1)
 crab.trees[[1]][[1]]
 ```
 
-```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training, Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
+```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
 The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available. 
 
 ```{r }
@@ -137,7 +137,7 @@ pprf.crab
 
 `PPforest` print a summary result from the model with the confusion matrix information and the oob-error rate in a similar way randomForest packages does.
 
-function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from trees_pp function, proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
+This function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from , proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
 
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 
@@ -154,14 +154,11 @@ If we compare the results with the `randomForest` function for this data set the
 We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables.
 This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis.
 
+Using the information available in the PPforest object, some visualization can be done. I will include some useful examplos to viusalize the data and some of the most important diagnostics in a forest structure.
 
-Some  axiliary function are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
-Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be posible to explore the individual model level.
+To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the classs variable. 
 
-With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
-To visualize the proximity matrix we use a heat map plot and an a scatter plot with information from multidimensional scaling method.
-
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE}
 parallel <- function(ppf){
 myscale <- function(x) (x - mean(x)) / sd(x)
 
@@ -182,28 +179,11 @@ ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
 parallel(pprf.crab)
 ```
 
+Some  axiliary functions are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
+Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be posible to explore the individual model level.
 
-With the information available in the forest additional visualization can be done.
-
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning = FALSE}
-side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
-                  ttl = "Side by side dotplot") {
-  voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1],
-                      ppf$votes, pred = ppf$prediction.oob ) %>%
-  tidyr::gather(Class, Probability, -pred, -ids, -Type)
-
-  ggplot2::ggplot(data = voteinf, ggplot2::aes(Class, Probability, color = Type)) +
-    ggplot2::geom_jitter(height = 0, size = I(siz), alpha = .5) +
-    ggtitle(ttl) +
-    ylab("Proportion") +
-    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") +
-    ggplot2::theme(legend.position = lege, legend.text = ggplot2::element_text(angle = ang)) +
-    ggplot2::labs(colour = "Class")
-}
-
-side(pprf.crab)
-```
-```
+With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
+To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences. 
 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
 
@@ -227,8 +207,34 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 }
 mdspl2d(pprf.crab)
 ```
+Vote matrix information can be visualized in different ways. The vote matrix has information of the proportion of time an observation was classified in each class. This matrix contains one row for each input data and one column for each class, giving the fraction of oob votes from the PPforest.
+Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot of with ternary plots.
 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE}
+side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
+                  ttl = "Side by side dotplot") {
+  voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1],
+                      ppf$votes, pred = ppf$prediction.oob ) %>%
+  tidyr::gather(Class, Probability, -pred, -ids, -Type)
+
+  ggplot2::ggplot(data = voteinf, ggplot2::aes(Class, Probability, color = Type)) +
+    ggplot2::geom_jitter(height = 0, size = I(siz), alpha = .5) +
+    ggtitle(ttl) +
+    ylab("Proportion") +
+    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") +
+    ggplot2::theme(legend.position = lege, legend.text = ggplot2::element_text(angle = ang)) +
+    ggplot2::labs(colour = "Class")
+}
+
+side(pprf.crab)
+```
+```
+
+A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space.
+One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown.
+When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized. \cite{sutherland2000orca} suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information.
+
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE}
 
 pl_ter <- function(dat, dx, dy ){
 p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>%
@@ -254,90 +260,81 @@ gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 ```
 
-```{r, fig.show = 'hold',fig.width = 5 ,fig.height = 4, warning = FALSE}
+To see a complete description about how to visualize a PPforest object read Interactive Graphics for Visually Diagnosing Forest Classifiers in R.
 
-impotree <- function(data,ppf, nodes = c(1, 2, 3), tree ){
+<!-- ```{r, fig.show = 'hold',fig.width = 5 ,fig.height = 4, warning = FALSE} -->
 
-bnf <- function(x) {
-  bn <- abs(x$projbest.node)
-  bn[bn == 0] <- NA
-  data.frame(node = 1:dim(x$projbest.node)[1], bn)
-}
+<!-- impotree <- function(data,ppf, nodes = c(1, 2, 3), tree ){ -->
 
-bestnode <- ppf[["output.trees"]] %>%  lapply(bnf) %>% dplyr::bind_rows()
+<!-- bnf <- function(x) { -->
+<!--   bn <- abs(x$projbest.node) -->
+<!--   bn[bn == 0] <- NA -->
+<!--   data.frame(node = 1:dim(x$projbest.node)[1], bn) -->
+<!-- } -->
 
-colnames(bestnode)[-1] <- colnames(data[, -1])
-bestnode$node <- as.factor(bestnode$node)
+<!-- bestnode <- ppf[["output.trees"]] %>%  lapply(bnf) %>% dplyr::bind_rows() -->
 
-aux <- bestnode %>% dplyr::filter(node %in% nodes) %>% dplyr::mutate(ids = rep(1:ppf$n.tree, each = length(nodes))) %>% tidyr::gather(var, value, -ids, -node)
+<!-- colnames(bestnode)[-1] <- colnames(data[, -1]) -->
+<!-- bestnode$node <- as.factor(bestnode$node) -->
 
-aux$Variables <- as.numeric(as.factor(aux$var) )
-aux$Abs.importance <- round( aux$value, 2)
+<!-- aux <- bestnode %>% dplyr::filter(node %in% nodes) %>% dplyr::mutate(ids = rep(1:ppf$n.tree, each = length(nodes))) %>% tidyr::gather(var, value, -ids, -node) -->
 
-p <- ggplot2::ggplot(dplyr::filter(aux, !ids %in% tree),
-      ggplot2::aes(x = Variables , y = Abs.importance , group = ids)) +    ggplot2::geom_jitter(height = 0, size = I(3), alpha = 0.3) +
-  ggplot2::facet_grid(node ~ .) + ggplot2::scale_x_discrete(limits = levels(as.factor(aux$var)) ) + ggplot2::theme(legend.position = "none")
+<!-- aux$Variables <- as.numeric(as.factor(aux$var) ) -->
+<!-- aux$Abs.importance <- round( aux$value, 2) -->
 
-
-   p + ggplot2::geom_jitter(
-  data = dplyr::filter(aux, ids %in% tree),
-   ggplot2::aes(
-    x = Variables ,
-    y = Abs.importance ,
-    group = ids,
-    colour = "red"
-  ),
-  height = 0,
-  size = I(3)
-) + ggplot2::facet_grid(node ~ .)  +
-  ggplot2::theme(legend.position = "none") + ggplot2::labs(y = "Absolute coefficient")
-}
-
-impotree(crab, pprf.crab, tree =1 )
-```
-
-```{r, fig.show = 'hold', fig.width = 5 ,fig.height = 4, warning = FALSE}
-
-dat_pl <- PPforest::node_data(ppf = pprf.crab, tr = 1)
-nodes <- c(1,2,3)
-  myColors <- RColorBrewer::brewer.pal( dim( unique(pprf.crab$train[pprf.crab$class.var]))[1], "Dark2")
-  names(myColors) <- levels(pprf.crab$train[pprf.crab$class.var][, 1])
-  dat_pl$Class <- as.factor(dat_pl$Class)
-
-  levels(dat_pl$Class) <-  levels(pprf.crab$train[pprf.crab$class.var][, 1])
+<!-- p <- ggplot2::ggplot(dplyr::filter(aux, !ids %in% tree), -->
+<!--       ggplot2::aes(x = Variables , y = Abs.importance , group = ids)) +    ggplot2::geom_jitter(height = 0, size = I(3), alpha = 0.3) + -->
+<!--   ggplot2::facet_grid(node ~ .) + ggplot2::scale_x_discrete(limits = levels(as.factor(aux$var)) ) + ggplot2::theme(legend.position = "none") -->
 
 
-    dat_pl %>%
-         dplyr::filter(node.id %in% unique(node.id)[nodes]) %>%
-       ggplot2::ggplot(aes(  x = proj.data, group = Class, fill = Class )) +
-         ggplot2::geom_density(alpha = .5) +
-         ggplot2::facet_grid(~ node.id, scales = 'free') +
-         ggplot2::scale_fill_manual("", values = myColors) +
-         ggplot2::geom_vline(ggplot2::aes(xintercept = cut),
-                 linetype = "dashed",
-                 color = 2) + ggplot2::xlab("") + ggplot2::theme(legend.position = "bottom")
+<!--    p + ggplot2::geom_jitter( -->
+<!--   data = dplyr::filter(aux, ids %in% tree), -->
+<!--    ggplot2::aes( -->
+<!--     x = Variables , -->
+<!--     y = Abs.importance , -->
+<!--     group = ids, -->
+<!--     colour = "red" -->
+<!--   ), -->
+<!--   height = 0, -->
+<!--   size = I(3) -->
+<!-- ) + ggplot2::facet_grid(node ~ .)  + -->
+<!--   ggplot2::theme(legend.position = "none") + ggplot2::labs(y = "Absolute coefficient") -->
+<!-- } -->
 
-```
+<!-- impotree(crab, pprf.crab, tree =1 ) -->
+<!-- ``` -->
 
 <!-- ```{r, fig.show = 'hold', fig.width = 5 ,fig.height = 4, warning = FALSE} -->
 
 <!-- dat_pl <- PPforest::node_data(ppf = pprf.crab, tr = 1) -->
 <!-- nodes <- c(1,2,3) -->
-
-<!-- levels(dat_pl$Dir) <- c("Left", "Right") -->
-
-<!--   myColors <- RColorBrewer::brewer.pal(dim(unique(pprf.crab$train[pprf.crab$class.var]))[1], "Dark2") -->
+<!--   myColors <- RColorBrewer::brewer.pal( dim( unique(pprf.crab$train[pprf.crab$class.var]))[1], "Dark2") -->
 <!--   names(myColors) <- levels(pprf.crab$train[pprf.crab$class.var][, 1]) -->
 <!--   dat_pl$Class <- as.factor(dat_pl$Class) -->
 
 <!--   levels(dat_pl$Class) <-  levels(pprf.crab$train[pprf.crab$class.var][, 1]) -->
+
+
+<!--     dat_pl %>% -->
+<!--          dplyr::filter(node.id %in% unique(node.id)[nodes]) %>% -->
+<!--        ggplot2::ggplot(aes(  x = proj.data, group = Class, fill = Class )) + -->
+<!--          ggplot2::geom_density(alpha = .5) + -->
+<!--          ggplot2::facet_grid(~ node.id, scales = 'free') + -->
+<!--          ggplot2::scale_fill_manual("", values = myColors) + -->
+<!--          ggplot2::geom_vline(ggplot2::aes(xintercept = cut), -->
+<!--                  linetype = "dashed", -->
+<!--                  color = 2) + ggplot2::xlab("") + ggplot2::theme(legend.position = "bottom") -->
+
+<!-- ``` -->
+
+<!-- ```{r,fig.show = 'hold', fig.width = 5 ,fig.height = 4, warning = FALSE} -->
 
 <!--   dat_mosaic <- -->
 <!--     data.frame(with(dat_pl, table(Class, Dir, node.id))) -->
 
 
 <!--     p1 <- dat_mosaic %>% dplyr::filter(node.id %in% unique(node.id)[nodes]) %>% -->
-<!--       ggplot2::ggplot() + ggmosaic::geom_mosaic(aes( -->
+<!--       ggplot2::ggplot() + ggmosaic::geom_mosaic(ggplot2::aes( -->
 <!--         weight = Freq, -->
 <!--         x = ggmosaic::product(Class, Dir), -->
 <!--         fill = Class -->
@@ -386,44 +383,44 @@ nodes <- c(1,2,3)
 <!-- PPforest::pproxy_plot(pprf.crab, type="MDS",k = 3, interactive = TRUE) -->
 <!-- ``` -->
 
-Another possible visualization in `PPforest` package is for the importance measure.
+<!-- Another possible visualization in `PPforest` package is for the importance measure. -->
 
-The variable importance for the group separation can be measured by the projection coefficients in each individual tree. Based on these coefficients we can examine how the classes are separated and which variables are more relevant for the separation.
+<!-- The variable importance for the group separation can be measured by the projection coefficients in each individual tree. Based on these coefficients we can examine how the classes are separated and which variables are more relevant for the separation. -->
 
- In `PPtree` the projection coefficient of each node represent the importance of variables to class separation in each node. Since in `PPforest` we have `m` trees we can define a global importance measure.  For this global importance measure we need to take into account the importance in each node and combine the results for all the trees in the forest. The importance measure of `PPforest` is a  weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are  the projection pursuit index in each node, and 1-the out of bag error of each tree.
+<!--  In `PPtree` the projection coefficient of each node represent the importance of variables to class separation in each node. Since in `PPforest` we have `m` trees we can define a global importance measure.  For this global importance measure we need to take into account the importance in each node and combine the results for all the trees in the forest. The importance measure of `PPforest` is a  weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are  the projection pursuit index in each node, and 1-the out of bag error of each tree. -->
 
-`ppf_importance` has four arguments, data (data frame with the complete data set), class (a character with the name of the class variable), global ( logical that indicate is the importance measure is global or not) and weight (logical argument that indicates if the importance measure is weighted or not).
+<!-- `ppf_importance` has four arguments, data (data frame with the complete data set), class (a character with the name of the class variable), global ( logical that indicate is the importance measure is global or not) and weight (logical argument that indicates if the importance measure is weighted or not). -->
 
 
-Using the `ppf_importance` function we can plot the weighted global importance measure in `PPforest`.
+<!-- Using the `ppf_importance` function we can plot the weighted global importance measure in `PPforest`. -->
 
 <!-- ```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE} -->
 <!-- PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = TRUE, weight = TRUE, interactive = FALSE) -->
 <!-- ``` -->
 
-We can see that the most important variable in this example is RW while the less important is BD.
-An importance measure for each node also is available.
+<!-- We can see that the most important variable in this example is RW while the less important is BD. -->
+<!-- An importance measure for each node also is available. -->
 
 
 <!-- ```{r, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE} -->
 <!-- PPforest::ppf_importance(data = crab, class = "Type", pprf.crab, global = FALSE, weight = TRUE, interactive = FALSE) -->
 <!-- ``` -->
 
-The importance variable order is the same for node 1 and node 2 but different in node 3.
+<!-- The importance variable order is the same for node 1 and node 2 but different in node 3. -->
 
-Finally a cumulative out of error plot can be done using `ppf_oob_error`
-This function has three arguments, ppf (`PPforest` object), nsplit1 (number, increment of the sequence where cumulative oob error rate is computed in the  1/3 trees) and interactive if we want a interactive plot.
+<!-- Finally a cumulative out of error plot can be done using `ppf_oob_error` -->
+<!-- This function has three arguments, ppf (`PPforest` object), nsplit1 (number, increment of the sequence where cumulative oob error rate is computed in the  1/3 trees) and interactive if we want a interactive plot. -->
 
 
 <!-- ```{r, fig.show='hold',fig.width = 6 ,fig.height = 4, warning=FALSE} -->
 <!--  PPforest::ppf_oob_error(pprf.crab, nsplit1 = 15, interactive = FALSE) -->
 <!-- ``` -->
 
-The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 70 trees.
+<!-- The oob-error rate decrease when we increase the numbers of trees but gets constant with less than 70 trees. -->
 
 
-      
-     <!--   a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::theme(aspect.ratio=1) -->
-     <!--   print(import.vi.wg) -->
 
-     <!-- plotly::ggplotly(a) -->
+<!--        a <- ggplot2::ggplot(import.vi.wg, ggplot2::aes(x = mean, y = variable)) + ggplot2::geom_point() + ggplot2::theme(aspect.ratio=1) -->
+<!--        print(import.vi.wg) -->
+
+<!--      plotly::ggplotly(a) -->
