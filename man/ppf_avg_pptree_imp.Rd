@@ -9,6 +9,8 @@ ppf_avg_pptree_imp(ppf, class)
 }
 \arguments{
 \item{ppf}{is a PPforest object}
+
+\item{class}{A character with the name of the class variable.}
 }
 \value{
 Data frame with the global importance measure

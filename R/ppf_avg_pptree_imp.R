@@ -2,6 +2,7 @@
 #' in the forest
 #' 
 #' @param ppf is a PPforest object
+#' @param class A character with the name of the class variable. 
 #' @return Data frame with the global importance measure
 #' @export
 #' @importFrom magrittr %>%
@@ -13,8 +14,9 @@
 ppf_avg_pptree_imp <- function(ppf,class) {
 node.id <- NULL
 nodecl <- NULL
-data <- NULL
 node <- NULL
+clnd <- NULL
+impaux<- NULL
 Class <- NULL
 variable <-NULL
 value <- NULL
@@ -40,13 +42,14 @@ tr <- NULL
   info <- data.frame(clnd =matrix(infond,ncol = 1, nrow = ppf$n.tree*nrow(infond),byrow=T))
   colnames(mat.proj)[-1] <- colnames(dplyr::select(ppf$train,-get(class)))
   
-  mat.proj %>% dplyr::bind_cols(clnd = info) %>% dplyr::mutate(tr = rep(1:nrow(ppf$train),  dim(nn)[1])) %>% 
+  mat.proj %>% dplyr::bind_cols(clnd = info) %>% dplyr::mutate(tr = rep(1:ppf$n.tree,  dim(nn)[1])) %>% 
     tidyr::gather(variable, value, -node, -tr ,-clnd) %>%
     dplyr::mutate(impaux = value/clnd) %>%
     dplyr::group_by(variable, tr) %>% 
     dplyr::summarise(mean = sum(impaux)) %>% 
     dplyr::group_by(variable) %>% 
     dplyr::summarise(mean = mean(mean)) %>%
-    dplyr::arrange(dplyr::desc(mean) ) 
+    dplyr::arrange(dplyr::desc(mean) ) %>%
+    dplyr::mutate(variable = stats::reorder(variable, mean) )
 
   }
