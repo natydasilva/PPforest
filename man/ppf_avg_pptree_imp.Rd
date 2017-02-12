@@ -5,7 +5,7 @@
 \title{Gobal importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
 in the forest}
 \usage{
-ppf_avg_pptree_imp(ppf)
+ppf_avg_pptree_imp(ppf, class)
 }
 \arguments{
 \item{ppf}{is a PPforest object}
@@ -21,6 +21,6 @@ in the forest
 #crab data set with all the observations used as training
 pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
- #ppf_avg_pptree_imp(pprf.crab) 
+ ppf_avg_pptree_imp(pprf.crab, "Type") 
 }
 

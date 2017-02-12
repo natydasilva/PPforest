@@ -93,14 +93,15 @@ ind_node <- function(PPclassOBJ,
   }
 }
 
-  nn <- data.frame(nn = as.list( 1:sum(ppf[["output.trees"]][[tr]]$Tree.Struct[, 4] != 0) ) )
-  densf <- function(x) {
+  #nn <- data.frame(nn = as.list( 1:sum(ppf[["output.trees"]][[tr]]$Tree.Struct[, 4] != 0) ) )
+nn <-   data.frame(nn = ppf[["output.trees"]][[tr]]$Tree.Struct[ppf[["output.trees"]][[tr]]$Tree.Struct[, 4] != 0,1])  
+densf <- function(x) {
     ind_node(PPclassOBJ = ppf[["output.trees"]][[tr]],
              node.id = x,
              Rule = 1)
   }
   
-  dat_pl <- lapply(nn, densf) %>% 
+  dat_pl <- lapply(nn[,1], densf) %>% 
     lapply(data.frame) %>% 
     dplyr::bind_rows()
   

@@ -9,42 +9,44 @@
 #' #crab data set with all the observations used as training
 #' pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
-#'  #ppf_avg_pptree_imp(pprf.crab) 
-ppf_avg_pptree_imp <- function(ppf) {
+#'  ppf_avg_pptree_imp(pprf.crab, "Type") 
+ppf_avg_pptree_imp <- function(ppf,class) {
 node.id <- NULL
 nodecl <- NULL
-data<-NULL
-node<- NULL
-Class<- NULL
+data <- NULL
+node <- NULL
+Class <- NULL
 variable <-NULL
-value<-NULL
-tr<-NULL
+value <- NULL
+tr <- NULL
 
-  nn <- data.frame(nn = as.list(1:sum(ppf[["output.trees"]][[1]]$Tree.Struct[, 4]!=0)))
+  nn <- data.frame(nn = 1:sum(ppf[["output.trees"]][[1]]$Tree.Struct[, 4]!=0))
   nodecl <- function(x) {
    aux <- node_data(ppf = ppf, x ) 
    aux$node.id <- as.factor( aux$node.id)
      aux %>% dplyr::group_by(node.id) %>% 
-      dplyr::summarise(clt=length(unique(Class)))  
+      dplyr::summarise(clt = length(unique(Class)))  
   }
   
+
   #dat_pl <- apply(nn, 1,  nodecl) %>% lapply(data.frame) %>% dplyr::bind_rows()
 
   mat.proj <- lapply(ppf[["output.trees"]], function(x){
-    data.frame( node = 1:sum(x$Tree.Struct[, 4]!=0), abs(x[[2]]))
+    data.frame( node = 1:sum(x$Tree.Struct[, 4] != 0), abs(x[[2]]))
   }) %>% dplyr::bind_rows() 
   
-  lapply(as.list(1:ppf$n.tree), function(x) nodecl(x))
-  info <- apply(data.frame(1:ppf$n.tree),1, function(x) nodecl(x)) #info to weight importance
 
-  colnames(mat.proj)[-1] <- colnames(dplyr::select(data,-get(class)))
+  infond <- apply(data.frame(1:ppf$n.tree),1, function(x) nodecl(x)$clt) #info to weight importance
+  info <- data.frame(clnd =matrix(infond,ncol = 1, nrow = ppf$n.tree*nrow(infond),byrow=T))
+  colnames(mat.proj)[-1] <- colnames(dplyr::select(ppf$train,-get(class)))
   
-  mat.proj %>% dplyr::mutate(tr = rep(1:nrow(ppf$train), each = length(nn[,1]))) %>% 
-    tidyr::gather(variable, value, -node, -tr ) %>% 
+  mat.proj %>% dplyr::bind_cols(clnd = info) %>% dplyr::mutate(tr = rep(1:nrow(ppf$train),  dim(nn)[1])) %>% 
+    tidyr::gather(variable, value, -node, -tr ,-clnd) %>%
+    dplyr::mutate(impaux = value/clnd) %>%
     dplyr::group_by(variable, tr) %>% 
-    dplyr::summarise(mean = sum(value)) %>%
+    dplyr::summarise(mean = sum(impaux)) %>% 
     dplyr::group_by(variable) %>% 
     dplyr::summarise(mean = mean(mean)) %>%
     dplyr::arrange(dplyr::desc(mean) ) 
-  #weight for the number of classes not use here
+
   }
