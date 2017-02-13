@@ -145,20 +145,20 @@ The printed version of a `PPforest` object follows the `randomForest` printed ve
 str(pprf.crab,max.level=1 )
 ```
 
-If we compare the results with the `randomForest` function for this data set the results are the following:
+<!-- If we compare the results with the `randomForest` function for this data set the results are the following: -->
 
-```{r}
-  rf.crab <- randomForest::randomForest(Type~., data = crab, proximity = TRUE, ntree = 100)
-  rf.crab
-```
-We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables.
-This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis.
+<!-- ```{r} -->
+<!--   rf.crab <- randomForest::randomForest(Type~., data = crab, proximity = TRUE, ntree = 100) -->
+<!--   rf.crab -->
+<!-- ``` -->
+<!-- We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables. -->
+<!-- This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis. -->
 
 Using the information available in the PPforest object, some visualization can be done. I will include some useful examplos to viusalize the data and some of the most important diagnostics in a forest structure.
 
 To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the classs variable. 
 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE}
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
 parallel <- function(ppf){
 myscale <- function(x) (x - mean(x)) / sd(x)
 
@@ -185,7 +185,7 @@ Some of the diagnostics of interest are: variable importance, OOB error rate, vo
 With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
 To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences. 
 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE}
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE}
 
 mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
   
@@ -210,7 +210,7 @@ mdspl2d(pprf.crab)
 Vote matrix information can be visualized in different ways. The vote matrix has information of the proportion of time an observation was classified in each class. This matrix contains one row for each input data and one column for each class, giving the fraction of oob votes from the PPforest.
 Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot of with ternary plots.
 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE}
+```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE, echo=FALSE}
 side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
                   ttl = "Side by side dotplot") {
   voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1],
@@ -234,7 +234,7 @@ A ternary plot is a triangular diagram that shows the proportion of three variab
 One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown.
 When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized. \cite{sutherland2000orca} suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information.
 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE}
+```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
 
 pl_ter <- function(dat, dx, dy ){
 p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>%
