@@ -1,6 +1,6 @@
 ---
 title: "Projection pursuit classification random forest "
-author: "N. da Silva, E. Lee & D. Cook"
+author: "N. da Silva,D. Cook & E. Lee & "
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 fig_caption: true
@@ -16,7 +16,7 @@ The `PPforest` package (projection pursuit random forest) contains functions to 
 
 To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
-Install PPforest from github using:
+Install `PPforest` from github using:
 
 ```{r,echo=FALSE, message=FALSE, warning=FALSE,eval=FALSE}
 library(devtools)
@@ -43,11 +43,11 @@ require(PPtreeViz)
 require(plotly)
 ```
 
-```{r,fig.show='hold', fig.width = 6, fig.height = 6, echo=FALSE}
+```{r,fig.show='hold', fig.width = 5, fig.height = 5, echo=FALSE}
 
 a <- GGally::ggpairs(PPforest::crab,
     columns = 2:6,
-    ggplot2::aes(colour = Type,alpha=.3),
+    ggplot2::aes(colour = Type, alpha=.1),
     lower = list(continuous = 'points'),
     axisLabels='none',
     upper=list(continuous='blank')
@@ -60,7 +60,7 @@ a
 In this figure we can see a strong, positive and linear association between the different variables. Also look like the classes can be separated by linear combinations.
 
 ##Projection pursuit classification forest
-In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance in to run the forest.  
+In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance to run the forest.  
 
 One important characteristic of PPtree is that treats the data always as a two-class system,  when the classes are more than two the algorithm uses a two step  projection pursuits optimization in every node split.
 Let  $(X_i,y_i)$ the data set, $X_i$ is a  p-dimensional vector of explanatory variables and  $y_i\in {1,2,\ldots G}$ represents class information with $i=1,\ldots n$.
@@ -72,8 +72,9 @@ Trees from `PPtree` algorithm are simple, they use the association between varia
 
 Projection pursuit random forest algorithm description
 
-1. Let N the number of cases in the training set $\Theta=(X,Y)$, $B$ bootstrap samples from the training set are taking (samples of size N with replacement)
-2. For each bootstrap sample a `PPtree`  is grown to the largest extent possible $h(x, {\Theta_k})$. No pruning. This tree is grown using step 3 modification.
+
+1.Let N the number of cases in the training set $\Theta=(X,Y)$, $B$ bootstrap samples from the training set are taking (samples of size N with replacement)
+2. For each bootstrap sample a \verb PPtree  is grown to the largest extent possible $h(x, {\Theta_k})$. No pruning. This tree is grown using step 3 modification.
 3. Let M the number of input variables, a number of $m<<M$ variables are selected at random at each node and the best split based on a linear combination of these randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes.
 4.  Predict the classes of each case not included in the bootstrap sample and compute oob error.
 5.  Based on majority vote predict the class for new data.
@@ -86,15 +87,17 @@ Projection pursuit random forest algorithm description
 |PPforest|Runs a Projection pursuit random forest|
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
 |permute_importance|Obtain the permuted importance variable measure|
+|ppf_avg_pptree_imp|Gobal importance measure for a PPforest object as the average IMP PPtree measure over all the trees  in the forest|
 |predict.PPforest|Vector with predicted values from a PPforest object|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |ppf_global_imp| Computes a global importance measure for a PPforest object|
 |ppf_avg_pptree_imp| Computes a global importancce measure for a PPforest object, average importance measure for a pptree over all the trees.|
 |node_data|To get the node level data for visualize individual trees|
-|tree_ppred|Vector with predicted values from a PPtree object.|
+|tree_pred|Obtain predicted class for new data using PPforest t.|
 |predict.PPforest|Predict class for the test set and calculate prediction error|
 |print.PPforest| Print PPforest object|
-
+|node_data|Data structure with the  projected and boundary by node and class|
+|ternary_str|Data structure with the  projected and boundary by node and class|
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
