@@ -23,8 +23,8 @@ library(devtools)
 install_github("natydasilva/PPforest")
 library(PPforest)
 ```
-###Motivation Example
-Australian crab data set contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
+### Example
+Australian crab data set will be used as example. This data contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
 
 1. FL the size of the frontal lobe length, in mm
 2. RW rear width, in mm
@@ -73,10 +73,14 @@ Trees from `PPtree` algorithm are simple, they use the association between varia
 Projection pursuit random forest algorithm description
 
 
-1.Let N the number of cases in the training set $\Theta=(X,Y)$, $B$ bootstrap samples from the training set are taking (samples of size N with replacement)
+1. Let N the number of cases in the training set $\Theta=(X,Y)$, $B$ bootstrap samples from the training set are taking (samples of size N with replacement).
+
 2. For each bootstrap sample a \verb PPtree  is grown to the largest extent possible $h(x, {\Theta_k})$. No pruning. This tree is grown using step 3 modification.
+
 3. Let M the number of input variables, a number of $m<<M$ variables are selected at random at each node and the best split based on a linear combination of these randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes.
+
 4.  Predict the classes of each case not included in the bootstrap sample and compute oob error.
+
 5.  Based on majority vote predict the class for new data.
 
 ###Overview PPforest package
@@ -84,20 +88,17 @@ Projection pursuit random forest algorithm description
 
 | Function |Description |
 | ----------------- | --------------------------------------------------------------  | 
-|PPforest|Runs a Projection pursuit random forest|
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
-|permute_importance|Obtain the permuted importance variable measure|
-|ppf_avg_pptree_imp|Gobal importance measure for a PPforest object as the average IMP PPtree measure over all the trees  in the forest|
-|predict.PPforest|Vector with predicted values from a PPforest object|
-|PPtree_split|Projection pursuit classification tree with random variable selection in each split|
-|ppf_global_imp| Computes a global importance measure for a PPforest object|
-|ppf_avg_pptree_imp| Computes a global importancce measure for a PPforest object, average importance measure for a pptree over all the trees.|
-|node_data|To get the node level data for visualize individual trees|
-|tree_pred|Obtain predicted class for new data using PPforest t.|
-|predict.PPforest|Predict class for the test set and calculate prediction error|
-|print.PPforest| Print PPforest object|
 |node_data|Data structure with the  projected and boundary by node and class|
+|permute_importance|Obtain the permuted importance variable measure|
+|ppf_avg_pptree_imp| Computes a global importancce measure for a PPforest object, average importance measure for a pptree over all the trees.| 
+|ppf_global_imp| Computes a global importance measure for a PPforest object|
+|PPforest|Runs a Projection pursuit random forest|
+|PPtree_split|Projection pursuit classification tree with random variable selection in each split|
+|print.PPforest| Print PPforest object|
+|predict.PPforest|Predict class for the test set and calculate prediction error|
 |ternary_str|Data structure with the  projected and boundary by node and class|
+|tree_pred|Obtain predicted class for new data using PPforest t.|
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
@@ -210,9 +211,10 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 }
 mdspl2d(pprf.crab)
 ```
-Vote matrix information can be visualized in different ways. The vote matrix has information of the proportion of time an observation was classified in each class. This matrix contains one row for each input data and one column for each class, giving the fraction of oob votes from the PPforest.
-Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot of with ternary plots.
 
+The vote matrix ($n \times p$) contains the proportion of times each observation was classified to each class, whole oob. Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot or with ternary plots.
+ A side-by-side jittered dotplot is used for the display, where class is displayed on one axis and proportion is displayed on the other. For each dotplot, the ideal arrangement is that points of observations in that class have values bigger than 0.5, and all other observations have less. This data is close to the ideal but not perfect, e.g. there are a few blue male crabs (orange) that are frequently predicted to be blue females (green), and a few blue female crabs predicted to be another class.
+ 
 ```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE, echo=FALSE}
 side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
                   ttl = "Side by side dotplot") {
@@ -231,14 +233,14 @@ side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
 
 side(pprf.crab)
 ```
-```
 
-A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space.
-One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown.
-When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized. \cite{sutherland2000orca} suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information.
+<!-- A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space. -->
+<!-- One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown. -->
+<!-- When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized. \cite{sutherland2000orca} suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information. -->
+
+A ternary plot is a triangular diagram used to display compositional data with three components. More generally, compositional data can have any number of components, say $p$, and hence is contrained to a $(p-1)$-D simplex in $p$-space. The vote matrix is an example of compositional data, with $G$ components.
 
 ```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
-
 pl_ter <- function(dat, dx, dy ){
 p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>%
   dplyr::select(Class, x, y) %>%

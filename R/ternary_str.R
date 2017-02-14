@@ -12,7 +12,7 @@
 #' #crab data set with all the observations used as training
 #' pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
-#'  
+#'  require(dplyr)
 #' pl_ter <- function(dat, dx, dy ){
 #'   p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>%
 #'     dplyr::select(Class, x, y) %>%
