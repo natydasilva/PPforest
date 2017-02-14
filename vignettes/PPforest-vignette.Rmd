@@ -1,6 +1,6 @@
 ---
 title: "Projection pursuit classification random forest "
-author: "N. da Silva,D. Cook & E. Lee & "
+author: "N. da Silva, D. Cook & E. Lee & "
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 fig_caption: true
@@ -91,7 +91,7 @@ Projection pursuit random forest algorithm description
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
 |node_data|Data structure with the  projected and boundary by node and class|
 |permute_importance|Obtain the permuted importance variable measure|
-|ppf_avg_pptree_imp| Computes a global importancce measure for a PPforest object, average importance measure for a pptree over all the trees.| 
+|ppf_avg_pptree_imp| Computes a global importance measure for a PPforest object, average importance measure for a pptree over all the trees.| 
 |ppf_global_imp| Computes a global importance measure for a PPforest object|
 |PPforest|Runs a Projection pursuit random forest|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
@@ -149,6 +149,67 @@ The printed version of a `PPforest` object follows the `randomForest` printed ve
 str(pprf.crab,max.level=1 )
 ```
 
+The PPforest algorithm calculates variable importance in two ways: (1) permuted importance using accuracy,  and (2) importance based on projection coefficients on standardized variables.
+
+The permuted variable importance is comparable with the measure defined in the classical random forest algorithm. It is computed using the out of bag (oob) sample for the tree $k\;\;(B^{(k)})$ for each $X_j$ predictor variable.  Then the
+permuted importance of the variable $X_j$ in the tree $k$ can be defined as:
+
+\[
+IMP^{(k)}(X_j) = \frac{\sum_{i \in B^{(k)} } I(y_i=\hat y_i^{(k)})-I(y_i=\hat y_{i,P_j}^{(k)})}{|B^{(k)}|}
+\]
+
+\noindent where $\hat y_i^{(k)}$
+is the predicted class for the observation $i$ in the tree $k$ and $y_{i,P_j}^{(k)}$ is the predicted class for the observation $i$ in the tree $k$ after permuting the values for variable $X_j$. The global permuted importance measure is the average importance over all the trees in the forest.
+This measure is based on comparing the accuracy of classifying out-of-bag observations, using the true class with permuted (nonsense) class.
+To compute this measure you should use permute_importance function.
+
+```{r}
+impo1 <- permute_importance(pprf.crab)
+impo1
+
+ggplot(impo1, aes(x = imp, y = nm)) + geom_point()
+```
+This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure.
+
+
+For the second importance measure, the coefficients of each projection are examined. The magnitude of these values indicates importance, if the variables have been standardized. The variable importance for a single tree is computed by a weighted sum of the absolute values of the coefficients across nodes. The weights takes the number of classes in each node into account~\citep{lee2013pptree}.
+Then the importance of the variable $X_j$ in the PPtree $k$ can be defined as:
+
+\[
+  IMP_{pptree}^{(k)}(X_j)=\sum_{nd = 1}^{nn}\frac{|\alpha_{nd}^{(k)}|}{cl_{nd} }
+\]
+
+Where $\alpha_{nd}^{(k)}$ is the projected coefficient for node $ns$ and variable $k$ and $nn$ the total number of node partitions in the tree $k$.
+
+The global variable importance in a PPforest then can be defined in different ways. The most intuitive is the average variable importance from each PPtree across all the trees in the forest.
+
+
+\[
+IMP_{ppforest1}(X_j)=\frac{\sum_{k=1}^K IMP_{pptree}^{(k)}(X_j)}{K}
+\]
+Alternatively we have defined a global importance measure for the forest as a weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are based on the projection pursuit indexes in each node ($Ix_{nd}$), and 1-(OOB-error of each tree)($acc_k$).
+
+\[IMP_{ppforest2}(X_j)=\frac{\sum_{k=1}^K acc_k \sum_{nd = 1}^{nn}\frac{Ix_{nd}|\alpha_{nd}^{(k)}|}{nn }}{K}
+\]
+
+(INCLUDE REF TO VIZ PAPER)
+
+```{r}
+
+impo2 <-  ppf_avg_pptree_imp(pprf.crab, "Type") 
+impo2 
+
+ggplot(impo2, aes(x = mean, y = variable) ) +geom_point()
+```
+
+Finally you can get the last importance measure we have proposed for the PPforest using `ppf_global_imp' function.
+
+```{r}
+impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab) 
+impo3
+
+ggplot(impo3, aes(x = mean, y = variable) ) + geom_point()
+```
 <!-- If we compare the results with the `randomForest` function for this data set the results are the following: -->
 
 <!-- ```{r} -->
@@ -158,9 +219,9 @@ str(pprf.crab,max.level=1 )
 <!-- We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables. -->
 <!-- This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis. -->
 
-Using the information available in the PPforest object, some visualization can be done. I will include some useful examplos to viusalize the data and some of the most important diagnostics in a forest structure.
+Using the information available in the PPforest object, some visualization can be done. I will include some useful examples to visualize the data and some of the most important diagnostics in a forest structure.
 
-To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the classs variable. 
+To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the class variable. 
 
 ```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
 parallel <- function(ppf){
@@ -183,8 +244,8 @@ ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
 parallel(pprf.crab)
 ```
 
-Some  axiliary functions are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
-Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be posible to explore the individual model level.
+Some  auxiliary functions are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
+Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be possible to explore the individual model level.
 
 With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
 To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences. 
