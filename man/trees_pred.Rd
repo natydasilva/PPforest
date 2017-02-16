@@ -2,7 +2,7 @@
 % Please edit documentation in R/trees_pred.R
 \name{trees_pred}
 \alias{trees_pred}
-\title{Obtain predicted class for new data using PPforest}
+\title{Obtain predicted class for new data from baggtree function}
 \usage{
 trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 }
@@ -21,11 +21,19 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 predicted values form PPforest
 }
 \description{
-Vector with predicted values from a PPforest.
+Vector with predicted values from a baggtree function.
 }
 \examples{
 crab.trees <- baggtree(data = crab, class = "Type", 
-m =  200, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
+m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
+ 
 pr <- trees_pred(  crab.trees,xnew = crab[, -1] )
+
+#no funciona
+pprf.crab <- PPforest(data = crab, class = "Type",
+ std = TRUE, size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA' )
+ 
+trees_pred(pprf.crab, xnew = crab[, -1])
+
 }
 

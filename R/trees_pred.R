@@ -1,6 +1,6 @@
-#' Obtain predicted class for new data using PPforest 
+#' Obtain predicted class for new data from baggtree function 
 #' 
-#' Vector with predicted values from a PPforest.
+#' Vector with predicted values from a baggtree function.
 #' @param object trees classifiers from trees_pp function or PPforest object
 #' @param xnew data frame with explicative variables used to get new predicted values.
 #' @param parallel if TRUE, apply function in parallel
@@ -11,15 +11,26 @@
 #' @importFrom magrittr %>%
 #' @examples 
 #' crab.trees <- baggtree(data = crab, class = "Type", 
-#' m =  200, PPmethod = 'PDA', lambda = .1, size.p = 0.4 ) 
+#' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
+#'  
 #' pr <- trees_pred(  crab.trees,xnew = crab[, -1] )
+#' 
+#' #no funciona
+#' pprf.crab <- PPforest(data = crab, class = "Type",
+#'  std = TRUE, size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA' )
+#'  
+#' trees_pred(pprf.crab, xnew = crab[, -1])
+#' 
 trees_pred <- function( object, xnew, parallel = FALSE, cores = 2, ...) {
   
   doMC::registerDoMC(cores)
-                                                                     
+       if(class(object) == "PPforest"){
+         votes <- plyr::ldply(object[[8]], function(x) as.numeric(PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]]) ,  .parallel = parallel)
+         
+       }else{
   votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]]) ,  .parallel = parallel)
   
- 
+       }
   max.vote <- mvote(as.matrix((votes[ , -1])))
   
   colnames(votes) <- NULL
