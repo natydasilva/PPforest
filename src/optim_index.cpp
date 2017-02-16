@@ -880,7 +880,7 @@ arma::vec boot( arma::mat origclass, arma::mat origdata) {
 
 //stratified training sample
 // [[Rcpp::export]]
-arma::vec trainfn( arma::mat origclass, arma::mat origdata, double sizetr) {
+arma::vec trainfn( arma::mat origclass, arma::mat origdata, double sizetr){
 
   int n = origdata.n_rows;
   arma::vec id = arma::linspace<vec>( 0, n-1, n ); //integer sequence from 0 to n-1
