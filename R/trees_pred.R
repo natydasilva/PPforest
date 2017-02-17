@@ -19,7 +19,7 @@
 #' pprf.crab <- PPforest(data = crab, class = "Type",
 #'  std = TRUE, size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA' )
 #'  
-#' trees_pred(pprf.crab, xnew = crab[, -1])
+#' trees_pred(pprf.crab, xnew = pprf.crab$train[, -1] )
 #' 
 trees_pred <- function( object, xnew, parallel = FALSE, cores = 2, ...) {
   
@@ -36,7 +36,6 @@ trees_pred <- function( object, xnew, parallel = FALSE, cores = 2, ...) {
   colnames(votes) <- NULL
   vote.mat <- as.matrix(votes[,-1], ncol = dim(xnew)[[1]], byrow = T)
   
-
   return(list(vote.mat, max.vote))
 } 
 
