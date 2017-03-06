@@ -49,4 +49,3 @@ p3 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 2, dy = 3), 2
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 
 }
-

@@ -40,4 +40,3 @@ A data set containing 195 observations from 2 parkinson types.
 }
 }
 \keyword{datasets}
-

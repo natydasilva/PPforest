@@ -24,4 +24,3 @@ contains  572 observations and 10 variables
 }
 }
 \keyword{datasets}
-

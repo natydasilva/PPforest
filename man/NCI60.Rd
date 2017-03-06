@@ -19,4 +19,3 @@ cDNA microarrays were used to examine the variation in gene expression among the
 }
 }
 \keyword{datasets}
-

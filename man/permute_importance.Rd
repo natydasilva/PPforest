@@ -22,4 +22,3 @@ pprf.crab <- PPforest(data = crab, class = "Type",
 std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA')
 permute_importance(ppf = pprf.crab) 
 }
-

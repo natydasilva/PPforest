@@ -24,4 +24,3 @@ Contains measurements 214 observations of 6 types of glass; defined in terms of 
 }
 }
 \keyword{datasets}
-

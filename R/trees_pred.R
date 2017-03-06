@@ -3,8 +3,6 @@
 #' Vector with predicted values from a baggtree function.
 #' @param object trees classifiers from trees_pp function or PPforest object
 #' @param xnew data frame with explicative variables used to get new predicted values.
-#' @param parallel if TRUE, apply function in parallel
-#' @param cores The number of cores to use for parallel execution. By default is 2 cores.
 #' @param ... arguments to be passed to methods
 #' @return predicted values form PPforest
 #' @export
@@ -15,21 +13,27 @@
 #'  
 #' pr <- trees_pred(  crab.trees,xnew = crab[, -1] )
 #' 
-#' #no funciona
+#' 
 #' pprf.crab <- PPforest(data = crab, class = "Type",
-#'  std = TRUE, size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA' )
+#'  std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA' )
 #'  
 #' trees_pred(pprf.crab, xnew = pprf.crab$train[, -1] )
 #' 
 trees_pred <- function( object, xnew, parallel = FALSE, cores = 2, ...) {
-  
-  doMC::registerDoMC(cores)
+
        if(class(object) == "PPforest"){
-         votes <- plyr::ldply(object[[8]], function(x) as.numeric(PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]]) ,  .parallel = parallel)
-         
-       }else{
-  votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]]) ,  .parallel = parallel)
-  
+         # votes <- plyr::ldply(object[[8]], function(x) 
+         #   as.numeric(PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]]) )
+         # 
+         votes <- object[[8]] %>% purrr::map_df(.f = function(x) 
+           as.numeric(PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]])) %>%t()
+       
+        }else{
+ # votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]]) )
+          votes <- object %>% purrr::map_df(.f = function(x) 
+            as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]])) %>%t()
+          
+          
        }
   max.vote <- mvote(as.matrix((votes[ , -1])))
   

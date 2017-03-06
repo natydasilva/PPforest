@@ -13,7 +13,7 @@ Imports:
     RcppArmadillo,
     ggplot2,
     magrittr,
-    plyr,
+    purrr,
     dplyr,
     doMC,
     plotly
@@ -31,4 +31,4 @@ Suggests:
     PPtreeViz
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

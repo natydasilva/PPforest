@@ -17,4 +17,3 @@ printed results for PPforest object
 \description{
 Print PPforest object
 }
-

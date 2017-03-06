@@ -25,4 +25,3 @@ pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 node_data(ppf = pprf.crab, tr = 1) 
 }
-

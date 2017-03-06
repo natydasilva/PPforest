@@ -42,4 +42,3 @@ PPtree: Projection pursuit classification tree,
 Electronic Journal of Statistics, 7:1369-1386.
 }
 \keyword{tree}
-

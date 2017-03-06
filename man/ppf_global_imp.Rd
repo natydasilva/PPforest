@@ -26,4 +26,3 @@ pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
  
 ppf_global_imp(data = crab, class = "Type", pprf.crab) 
 }
-

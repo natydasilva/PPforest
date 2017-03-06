@@ -11,10 +11,6 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 
 \item{xnew}{data frame with explicative variables used to get new predicted values.}
 
-\item{parallel}{if TRUE, apply function in parallel}
-
-\item{cores}{The number of cores to use for parallel execution. By default is 2 cores.}
-
 \item{...}{arguments to be passed to methods}
 }
 \value{
@@ -29,11 +25,10 @@ m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
  
 pr <- trees_pred(  crab.trees,xnew = crab[, -1] )
 
-#no funciona
+
 pprf.crab <- PPforest(data = crab, class = "Type",
- std = TRUE, size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA' )
+ std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA' )
  
-trees_pred(pprf.crab, xnew = crab[, -1])
+trees_pred(pprf.crab, xnew = pprf.crab$train[, -1] )
 
 }
-

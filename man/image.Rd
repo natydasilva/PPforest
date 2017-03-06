@@ -33,4 +33,3 @@ contains  2310 observations of instances from 7 outdoor images
 }
 }
 \keyword{datasets}
-

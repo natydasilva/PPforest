@@ -25,4 +25,3 @@ Measurements on rock crabs of the genus Leptograpsus. The data set contains 200 
 }
 }
 \keyword{datasets}
-

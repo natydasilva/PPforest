@@ -27,4 +27,3 @@ This dataset comes from a study of gene expression in two types of acute leukemi
 }
 }
 \keyword{datasets}
-

@@ -18,4 +18,3 @@ A data set containing 178 observations from 3 wine grown cultivares in Italy.
 }
 }
 \keyword{datasets}
-
