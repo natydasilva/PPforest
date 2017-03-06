@@ -15,6 +15,7 @@ Imports:
     magrittr,
     purrr,
     dplyr,
+    tidyr,
     doMC,
     plotly
 License: LGPL-2.1
@@ -23,7 +24,6 @@ Suggests:
     randomForest,
     rpart,
     gridExtra,
-    tidyr,
     GGally,
     RColorBrewer,
     roxygen2 (>= 3.0.0),
