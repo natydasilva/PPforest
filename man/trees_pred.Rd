@@ -4,7 +4,7 @@
 \alias{trees_pred}
 \title{Obtain predicted class for new data from baggtree function}
 \usage{
-trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
+trees_pred(object, xnew, ...)
 }
 \arguments{
 \item{object}{trees classifiers from trees_pp function or PPforest object}

@@ -19,19 +19,21 @@
 #'  
 #' trees_pred(pprf.crab, xnew = pprf.crab$train[, -1] )
 #' 
-trees_pred <- function( object, xnew, parallel = FALSE, cores = 2, ...) {
+trees_pred <- function( object, xnew,...) {
 
        if(class(object) == "PPforest"){
           # votes <- plyr::ldply(object[[8]], function(x)
           #   as.numeric(PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]]) )
 
          votes <- object[[8]] %>% purrr::map_df(.f = function(x)
-           as.numeric(PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]])) %>%t() 
+           PPclassify2(Tree.result = x, test.data = xnew, Rule = 1)[[2]][,1] %>%
+             t() %>% data.frame() ) 
 
         }else{
  #votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]]) )
-          votes <- object %>% purrr::map_df(.f = function(x)
-            as.numeric(PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]])) %>%t()
+          votes <- object %>% purrr::map_df(.f = function(x) 
+            PPclassify2(Tree.result = x[[1]], test.data = xnew, Rule = 1)[[2]][,1] %>%
+              t() %>% data.frame() )
 
           
        }

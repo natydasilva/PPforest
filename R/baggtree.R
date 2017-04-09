@@ -8,8 +8,6 @@
 #' @param size.p proportion of random sample variables in each split.
 #' @param PPmethod is the projection pursuit index to be optimized, options LDA or PDA, by default it is LDA.
 #' @param lambda a parameter for PDA index
-#' @param parallel logical to use parallelization or not, default is TRUE.
-#' @param cores The number of cores to use for parallel execution. By default is 2 cores.
 #' @return data frame with trees_pp output for all the bootstraps samples.
 #' @export
 #' @importFrom magrittr %>%
@@ -19,7 +17,7 @@
 #'  m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 ) 
 #' str(crab.trees, max.level = 1)
 
-baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1, parallel = TRUE, cores = 2){
+baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1){
    bootsam <- NULL
    . <- NULL
    
@@ -39,13 +37,20 @@ baggtree <- function(data , class , m = 500, PPmethod = "LDA", lambda = 0.1, siz
    
 }
 
-doMC::registerDoMC( cores )
+#doMC::registerDoMC( cores )
 
+# plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
+#                function(x) boottree(data , class, PPmethod , lambda , size.p ) )
 
-    plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data , class, PPmethod , lambda , size.p ) ,  .parallel = parallel)
+# a<-dplyr::data_frame(bootsam = 1:m) %>% dplyr::group_by(bootsam) %>%
+#        tidyr::nest() %>% head()
+#       mutate(tree = purrr::map( function(x)
+#         boottree(data , class, PPmethod , lambda , size.p ) ) )
 
-
-}
+ purrr::map(1:m,function(x)
+   boottree(data , class, PPmethod , lambda , size.p ))
+ # 
+ }
 
 
 
