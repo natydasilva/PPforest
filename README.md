@@ -1,3 +1,7 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
+
 # PPforest
 A random forest is an ensemble learning method, build on bagged trees with random feature selection. 
 The bagging provides power for classification because it yields information about variable importance,
