@@ -1,6 +1,5 @@
 #' For each bootstrap sample grow a projection persuit tree (PPtree object).
 #' 
-#' 
 #' @importFrom magrittr %>%
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable.
