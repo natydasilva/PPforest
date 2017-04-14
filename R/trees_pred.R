@@ -15,9 +15,9 @@
 #' 
 #' 
 #' pprf.crab <- PPforest(data = crab, class = "Type",
-#'  std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA' )
+#'  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA' )
 #'  
-#' trees_pred(pprf.crab, xnew = pprf.crab$train[, -1] )
+#' trees_pred(pprf.crab, xnew = pprf.crab$test )
 #' 
 trees_pred <- function( object, xnew,...) {
 
