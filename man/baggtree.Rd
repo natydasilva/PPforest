@@ -5,7 +5,7 @@
 \title{For each bootstrap sample grow a projection persuit tree (PPtree object).}
 \usage{
 baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
-  size.p = 1)
+  size.p = 1, parallelcond = FALSE, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -19,6 +19,10 @@ baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
 \item{lambda}{a parameter for PDA index}
 
 \item{size.p}{proportion of random sample variables in each split.}
+
+\item{parallelcond}{logical condition, if it is TRUE then  parallelize the function}
+
+\item{cores}{number of cores used in the parallelization}
 }
 \value{
 data frame with trees_pp output for all the bootstraps samples.
@@ -29,6 +33,6 @@ For each bootstrap sample grow a projection persuit tree (PPtree object).
 \examples{
 #crab data set
 crab.trees <- baggtree(data = crab, class = "Type", 
- m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 ) 
+ m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallelcond = TRUE, cores = 2) 
 str(crab.trees, max.level = 1)
 }
