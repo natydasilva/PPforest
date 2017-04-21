@@ -2,7 +2,7 @@
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
 #' @usage PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
-#'  lambda = .1, parallelcond = FALSE, cores = 2)
+#'  lambda = .1, parallel = FALSE, cores = 2)
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable.
 #' @param std if TRUE standardize the data set, needed to compute global importance measure. 
@@ -11,7 +11,7 @@
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
-#' @param parallelcond logical condition, if it is TRUE then  parallelize the function
+#' @param parallel logical condition, if it is TRUE then  parallelize the function
 #' @param cores number of cores used in the parallelization
 #' @return An object of class \code{PPforest} with components.
 #' \item{prediction.training}{predicted values for training data set.}
@@ -34,10 +34,10 @@
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
-#'pprf.crab <- PPforest(data = crab, class = "Type",
-#'  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallelcond = FALSE, cores = 2)
+#'pprf.crab <- profvis({PPforest(data = crab, class = "Type",
+#'  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = FALSE, cores = 2) })
 #' pprf.crab
-PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallelcond = FALSE, cores = 2) {
+PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallel = FALSE, cores = 2) {
   
   Var1 <- NULL
   tree <- NULL
@@ -59,12 +59,12 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   type = "Classification"
   var.sel <- round( (ncol(train ) - 1) * size.p )
   
-  outputaux <- baggtree(train , class , m , PPmethod , lambda , size.p, parallelcond,cores  )
+  outputaux <- baggtree(train , class , m , PPmethod , lambda , size.p, parallel,cores  )
   
  output <- lapply(outputaux,function(x) x[[1]])
 
  data.b <-  lapply(outputaux, function(x) x[[2]])
-  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train,-get( class ) ))
+  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train,-get( class ) ), parallel,cores  )
 
   expand.grid.ef <- function(seq1,seq2) {
     data.frame(a = rep.int(seq1, length(seq2)), 
@@ -121,7 +121,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     dplyr::filter_()
   
   if (dim(test)[1] != 0) {
-    pred.test <- trees_pred(outputaux, xnew = test)
+    pred.test <- trees_pred(outputaux, xnew = test, parallel,cores  )
     error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
     pred.test = as.factor(pred.test[[2]])
     levels(pred.test) <- levels(train[, class])

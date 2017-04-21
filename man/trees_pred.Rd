@@ -4,12 +4,16 @@
 \alias{trees_pred}
 \title{Obtain predicted class for new data from baggtree function}
 \usage{
-trees_pred(object, xnew, ...)
+trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 }
 \arguments{
 \item{object}{trees classifiers from trees_pp function or PPforest object}
 
 \item{xnew}{data frame with explicative variables used to get new predicted values.}
+
+\item{parallel}{logical condition, if it is TRUE then  parallelize the function}
+
+\item{cores}{number of cores used in the parallelization}
 
 \item{...}{arguments to be passed to methods}
 }
@@ -23,11 +27,11 @@ Vector with predicted values from a baggtree function.
 crab.trees <- baggtree(data = crab, class = "Type", 
 m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
  
-pr <- trees_pred(  crab.trees,xnew = crab[, -1] )
+pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores= 2)
 
 
 pprf.crab <- PPforest(data = crab, class = "Type",
- std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA' )
+ std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = FALSE, cores = 2  )
  
 trees_pred(pprf.crab, xnew = pprf.crab$test )
 

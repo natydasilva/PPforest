@@ -5,7 +5,7 @@
 \title{Projection Pursuit Random Forest}
 \usage{
 PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
- lambda = .1, parallelcond = FALSE, cores = 2)
+ lambda = .1, parallel = FALSE, cores = 2)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -24,7 +24,7 @@ PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
 
 \item{lambda}{penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.}
 
-\item{parallelcond}{logical condition, if it is TRUE then  parallelize the function}
+\item{parallel}{logical condition, if it is TRUE then  parallelize the function}
 
 \item{cores}{number of cores used in the parallelization}
 }
@@ -54,6 +54,6 @@ An object of class \code{PPforest} with components.
 \examples{
 #crab example with all the observations used as training
 pprf.crab <- PPforest(data = crab, class = "Type",
- std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallelcond = TRUE, cores = 2)
+ std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = TRUE, cores = 2) 
 pprf.crab
 }

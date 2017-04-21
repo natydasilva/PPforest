@@ -7,7 +7,7 @@
 #' @param size.p proportion of random sample variables in each split.
 #' @param PPmethod is the projection pursuit index to be optimized, options LDA or PDA, by default it is LDA.
 #' @param lambda a parameter for PDA index
-#' @param parallelcond logical condition, if it is TRUE then  parallelize the function
+#' @param parallel logical condition, if it is TRUE then  parallelize the function
 #' @param cores number of cores used in the parallelization
 #' @return data frame with trees_pp output for all the bootstraps samples.
 #' @export
@@ -15,12 +15,12 @@
 #' @examples
 #' #crab data set
 #' crab.trees <- baggtree(data = crab, class = "Type", 
-#'  m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallelcond = TRUE, cores = 2) 
+#'  m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallel = TRUE, cores = 2) 
 #' str(crab.trees, max.level = 1)
 baggtree <- function(data , class , m = 500, PPmethod = "LDA", 
-                     lambda = 0.1, size.p = 1, parallelcond = FALSE, cores = 2 ) {
+                     lambda = 0.1, size.p = 1, parallel = FALSE, cores = 2 ) {
 
-  baggtreeaux <- function(data, class, m, PPmethod, lambda, size.p){
+  # baggtreeaux <- function(data, class, m, PPmethod, lambda, size.p){
     bootsam <- NULL
     . <- NULL
     
@@ -39,44 +39,40 @@ baggtree <- function(data , class , m = 500, PPmethod = "LDA",
       list( tree, bt1 )
       
     }
-    
-    #doMC::registerDoMC( cores )
-    
-    # plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
-    #                function(x) boottree(data , class, PPmethod , lambda , size.p ) )
-    
-    # a<-dplyr::data_frame(bootsam = 1:m) %>% dplyr::group_by(bootsam) %>%
-    #        tidyr::nest() %>% head()
-    #       mutate(tree = purrr::map( function(x)
-    #         boottree(data , class, PPmethod , lambda , size.p ) ) )
-    
-    purrr::map(1:m,function(x)
-      boottree(data , class, PPmethod , lambda , size.p ))
-    
-    
-  } 
-if(parallelcond==FALSE){
-  cc <- baggtreeaux(data, class, m, PPmethod, lambda, size.p)
-  
-return(cc)
-}else{
-  ntree <- NULL
-  dopar <- NULL
+    if(parallel){
+    doMC::registerDoMC( cores )
+    }
+    plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
+                   function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
 
-    cl <- parallel::makeCluster(cores)
-    mcr <-  floor(m/cores)
-    dif <- m - cores*floor(m/cores)
-    coregr <- rep(mcr, cores) + c(dif, rep(0, cores-1) )
     
-    cc <- foreach::foreach(ntree = coregr , .packages = 'PPforest', .combine = 'c') %dopar%
-      baggtreeaux(data = data,
-                  m = ntree,
-                  class = class,
-                  PPmethod = PPmethod,
-                  lambda = lambda ,
-                  size.p = size.p)
-    parallel::stopCluster(cl)
-  return(cc)
-}
+    # purrr::map(1:m,function(x)
+    #   boottree(data , class, PPmethod , lambda , size.p ))
+    # 
+    
+ 
+# if(parallel==FALSE){
+#   cc <- baggtreeaux(data, class, m, PPmethod, lambda, size.p)
+#   
+# return(cc)
+# }else{
+#   ntree <- NULL
+#   dopar <- NULL
+# 
+#     cl <- parallel::makeCluster(cores)
+#     mcr <-  floor(m/cores)
+#     dif <- m - cores*floor(m/cores)
+#     coregr <- rep(mcr, cores) + c(dif, rep(0, cores-1) )
+#     
+#     cc <- foreach::foreach(ntree = coregr , .packages = 'PPforest', .combine = 'c') %dopar%
+#       baggtreeaux(data = data,
+#                   m = ntree,
+#                   class = class,
+#                   PPmethod = PPmethod,
+#                   lambda = lambda ,
+#                   size.p = size.p)
+#     parallel::stopCluster(cl)
+#   return(cc)
+# }
   }
 

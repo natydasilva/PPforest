@@ -7,15 +7,17 @@ Maintainer: Natalia da Silva <ndasilva@iastate.edu>
 Description: Random forest build on projection pursuit classification tree.
 LazyData: yes
 Depends:
-    R (>= 3.2.0), foreach, parallel, doParallel
+    R (>= 3.2.0)
 Imports:
     Rcpp (>= 0.12.7),
     RcppArmadillo,
     ggplot2,
     magrittr,
+    plyr,
     purrr,
     dplyr,
     tidyr,
+    doMC,
     plotly
 License: LGPL-2.1
 Suggests:
