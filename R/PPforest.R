@@ -34,8 +34,8 @@
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
-#'pprf.crab <- profvis({PPforest(data = crab, class = "Type",
-#'  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = FALSE, cores = 2) })
+#'pprf.crab <- PPforest(data = crab, class = "Type",
+#'  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = FALSE, cores = 2)
 #' pprf.crab
 PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallel = FALSE, cores = 2) {
   
