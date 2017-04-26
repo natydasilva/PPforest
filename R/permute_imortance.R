@@ -9,17 +9,17 @@
 #' @export
 #' @examples
 #' pprf.crab <- PPforest(data = crab, class = "Type",
-#' std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA')
+#' std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE, core = 2)
 #' permute_importance(ppf = pprf.crab) 
 permute_importance <- function(ppf){
-  sd <-NULL
+  sd <- NULL
   imp <- NULL
   imp2 <- NULL
   sd.imp <- NULL
   sd.imp2 <- NULL
   
   train <- as.matrix(ppf$train[, -which(colnames(ppf$train) == ppf$class.var)])
-  classes <- as.integer(ppf$train[,which(colnames(ppf$train) == ppf$class.var)])
+  classes <- as.integer(unlist(ppf$train[,which(colnames(ppf$train) == ppf$class.var)]) )
   oobid <- apply(ppf$oob.obs, 1, function(x) which(x == 1) -1 ) 
 
   permute <- oobid %>% lapply(  function(x) sample(x,length(x))) 
@@ -27,15 +27,15 @@ permute_importance <- function(ppf){
   noob <- as.integer( lapply(oobid,length) ) 
   TRstrL <- trees %>% lapply( function(x) as.matrix(x[[1]]))
   
-  TRsplL <- trees %>% lapply( function(x) as.matrix(x[[3]]))
-  TRprnodeL <- trees %>% lapply( function(x) as.matrix(x[[2]]))
+  TRsplL <- trees %>% lapply( function(x) as.matrix( x[[3]]) )
+  TRprnodeL <- trees %>% lapply( function(x) as.matrix( x[[2]]) )
   
   
-  corr.oob.per <- imposoon(train, classes, oobid, permute, trees, noob , TRstrL,TRsplL,TRprnodeL)
+  corr.oob.per <- imposoon(train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL)
   
   rank.var <- t(apply(corr.oob.per, 1, rank, ties.method = "random"))
   corr.oob <- (1-ppf$oob.error.tree) * unlist(lapply(oobid, length))
-  n.oob <-  unlist(lapply(permute, length))
+  n.oob <-  unlist(lapply(permute, length) )
   
   #imp is the permuted importance using accuracy in the randomforest paper
   #imp2 is the permuted importance using the error like in randomForest package

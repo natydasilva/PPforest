@@ -59,7 +59,10 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   type = "Classification"
   var.sel <- round( (ncol(train ) - 1) * size.p )
   
-  outputaux <- baggtree(train , class , m , PPmethod , lambda , size.p, parallel,cores  )
+  
+    
+  outputaux <- baggtree(data = train , class = class , m = m , PPmethod = PPmethod , lambda = lambda ,
+                        size.p = size.p, parallel = parallel, cores = cores  )
   
  output <- lapply(outputaux,function(x) x[[1]])
 
@@ -84,6 +87,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   
   votes <- mvote.oob[ , -(length(unique(clnum) ) + 1)] 
   colnames(votes) <- levels(train[ , class])  
+
 ### relajo
   # aux <- data.frame(pred.tr[[1]]) %>% dplyr::mutate(id =  1:m) %>% 
   #   tidyr::gather(tree, pred, -id) %>% 
@@ -99,7 +103,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   
   vote.matrix.prop <- votes/rowSums(votes)
   
-  oob.error <- 1 - sum( diag( table(oob.pred, train[, class] ) ) )/length(train[, class])
+  oob.error <- 1 - sum( diag( table(oob.pred, unlist(train[, class] )) ) )/length(unlist(train[, class]))
   
   ##arreglar ineficiente y con los cambios esto no funciona bien
   # m.pred.tr <- reshape2::melt(pred.tr[[1]])
@@ -113,9 +117,9 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   #   1 - sum(dd)/length(x$value)
   # })$V1
  
-  oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(train[ , class])), m)
+  oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(unlist(train[ , class]))), m)
   
-  error.tr <- 1 - sum(as.numeric(as.factor(train[, class])) == pred.tr[[2]])/length(pred.tr[[2]])
+  error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr[[2]])/length(pred.tr[[2]])
   test <- data[-tr.index,]%>%  
     dplyr::select(-get(class))%>%
     dplyr::filter_()
@@ -124,7 +128,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     pred.test <- trees_pred(outputaux, xnew = test, parallel,cores  )
     error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
     pred.test = as.factor(pred.test[[2]])
-    levels(pred.test) <- levels(train[, class])
+    levels(pred.test) <- levels(unlist(train[, class]))
     } else {
     pred.test <- NULL
     error.test <- NULL
@@ -132,21 +136,21 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   }
   
   oob.pred <- as.factor(oob.pred)
-  if(is.factor(train[, class])){
-  levels(oob.pred) <- levels(train[, class])
+  if(is.factor(unlist(train[, class]))){
+  levels(oob.pred) <- levels(unlist(train[, class]))
   }else{
-    levels(oob.pred) <- levels(as.factor(train[, class]))
+    levels(oob.pred) <- levels(as.factor(unlist(train[, class])))
   }
   
   prediction.training <- as.factor(pred.tr[[2]])
-  if(is.factor(train[, class])){
-   levels(prediction.training) <- levels(train[, class])
+  if(is.factor(unlist(train[, class]))){
+   levels(prediction.training) <- levels(unlist(train[, class]))
   }else{
-    levels(prediction.training) <- levels(as.factor(train[, class]))
+    levels(prediction.training) <- levels(as.factor(unlist(train[, class])))
   }
   
    
-  tab.tr <- table(Observed = train[, class], Predicted = oob.pred)
+  tab.tr <- table(Observed = unlist(train[, class]), Predicted = oob.pred)
   
   class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
   confusion <- cbind(tab.tr, class.error = round(class.error, 2))

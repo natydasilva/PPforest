@@ -8,8 +8,8 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
-#' pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
-#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
+#' pprf.crab <- PPforest(data = crab, std = TRUE, class = "Type",
+#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', parallel = TRUE, cores = 2)
 #'  
 #' ppf_global_imp(data = crab, class = "Type", pprf.crab) 
 ppf_global_imp <- function(data , class, ppf){
@@ -18,13 +18,14 @@ ppf_global_imp <- function(data , class, ppf){
   variable <- NULL
   node <- NULL
   
-  y <- data %>% dplyr::select( get(class) )
+ # y <- data %>% dplyr::select( mget(class) )
+  y <- data[, class] 
   
-  mat.proj <- lapply(ppf[["output.trees"]], function(x){
-    data.frame(node = 1:nrow(x[[2]]), abs(x[[2]]))
+  mat.proj <- lapply( ppf[[ "output.trees" ]], function(x){
+    data.frame( node = 1:nrow( x[[2]] ), abs( x[[2]] ) )
     }) %>% dplyr::bind_rows()
   
-  colnames(mat.proj)[-1] <- colnames(dplyr::select(data,-get(class)))
+  colnames(mat.proj)[-1] <- colnames(dplyr::select(data, -get(class)))
   
   index <- lapply(ppf[["output.trees"]], function(x) {
     data.frame(index = x$Tree.Struct[, "Index"][x$Tree.Struct[, "Index"] != 0])

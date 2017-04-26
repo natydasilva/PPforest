@@ -25,7 +25,7 @@ Data structure with the  projected and boundary by node and class.
 }
 \examples{
 #crab data set with all the observations used as training
-pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
+\dontrun{ pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
  require(dplyr)
 pl_ter <- function(dat, dx, dy ){
@@ -47,5 +47,5 @@ p1 <- pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 2), 1,
 p2 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 3), 1, 3)
 p3 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 2, dy = 3), 2, 3)
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
-
+}
 }

@@ -20,7 +20,7 @@ Install `PPforest` from github using:
 
 ```{r,echo=FALSE, message=FALSE, warning=FALSE,eval=FALSE}
 library(devtools)
-install_github("natydasilva/PPforest")
+#install_github("natydasilva/PPforest")
 library(PPforest)
 ```
 ### Example
@@ -134,7 +134,7 @@ The number of trees in the forest is specified using the argument `m`. The argum
 ```{r }
 set.seed(146)
 pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
-                                size.p =  .5,  PPmethod = 'LDA')
+                                size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
 
 pprf.crab
 ```
@@ -163,53 +163,53 @@ is the predicted class for the observation $i$ in the tree $k$ and $y_{i,P_j}^{(
 This measure is based on comparing the accuracy of classifying out-of-bag observations, using the true class with permuted (nonsense) class.
 To compute this measure you should use permute_importance function.
 
-```{r}
-impo1 <- permute_importance(pprf.crab)
-impo1
+<!-- ```{r} -->
+<!-- impo1 <- permute_importance(pprf.crab) -->
+<!-- impo1 -->
 
-ggplot(impo1, aes(x = imp, y = nm)) + geom_point()
-```
-This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure.
-
-
-For the second importance measure, the coefficients of each projection are examined. The magnitude of these values indicates importance, if the variables have been standardized. The variable importance for a single tree is computed by a weighted sum of the absolute values of the coefficients across nodes. The weights takes the number of classes in each node into account~\citep{lee2013pptree}.
-Then the importance of the variable $X_j$ in the PPtree $k$ can be defined as:
-
-\[
-  IMP_{pptree}^{(k)}(X_j)=\sum_{nd = 1}^{nn}\frac{|\alpha_{nd}^{(k)}|}{cl_{nd} }
-\]
-
-Where $\alpha_{nd}^{(k)}$ is the projected coefficient for node $ns$ and variable $k$ and $nn$ the total number of node partitions in the tree $k$.
-
-The global variable importance in a PPforest then can be defined in different ways. The most intuitive is the average variable importance from each PPtree across all the trees in the forest.
+<!-- ggplot(impo1, aes(x = imp, y = nm)) + geom_point() -->
+<!-- ``` -->
+<!-- This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure. -->
 
 
-\[
-IMP_{ppforest1}(X_j)=\frac{\sum_{k=1}^K IMP_{pptree}^{(k)}(X_j)}{K}
-\]
-Alternatively we have defined a global importance measure for the forest as a weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are based on the projection pursuit indexes in each node ($Ix_{nd}$), and 1-(OOB-error of each tree)($acc_k$).
+<!-- For the second importance measure, the coefficients of each projection are examined. The magnitude of these values indicates importance, if the variables have been standardized. The variable importance for a single tree is computed by a weighted sum of the absolute values of the coefficients across nodes. The weights takes the number of classes in each node into account~\citep{lee2013pptree}. -->
+<!-- Then the importance of the variable $X_j$ in the PPtree $k$ can be defined as: -->
 
-\[IMP_{ppforest2}(X_j)=\frac{\sum_{k=1}^K acc_k \sum_{nd = 1}^{nn}\frac{Ix_{nd}|\alpha_{nd}^{(k)}|}{nn }}{K}
-\]
+<!-- \[ -->
+<!--   IMP_{pptree}^{(k)}(X_j)=\sum_{nd = 1}^{nn}\frac{|\alpha_{nd}^{(k)}|}{cl_{nd} } -->
+<!-- \] -->
 
-(INCLUDE REF TO VIZ PAPER)
+<!-- Where $\alpha_{nd}^{(k)}$ is the projected coefficient for node $ns$ and variable $k$ and $nn$ the total number of node partitions in the tree $k$. -->
 
-```{r}
+<!-- The global variable importance in a PPforest then can be defined in different ways. The most intuitive is the average variable importance from each PPtree across all the trees in the forest. -->
 
-impo2 <-  ppf_avg_pptree_imp(pprf.crab, "Type") 
-impo2 
 
-ggplot(impo2, aes(x = mean, y = variable) ) +geom_point()
-```
+<!-- \[ -->
+<!-- IMP_{ppforest1}(X_j)=\frac{\sum_{k=1}^K IMP_{pptree}^{(k)}(X_j)}{K} -->
+<!-- \] -->
+<!-- Alternatively we have defined a global importance measure for the forest as a weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are based on the projection pursuit indexes in each node ($Ix_{nd}$), and 1-(OOB-error of each tree)($acc_k$). -->
 
-Finally you can get the last importance measure we have proposed for the PPforest using `ppf_global_imp' function.
+<!-- \[IMP_{ppforest2}(X_j)=\frac{\sum_{k=1}^K acc_k \sum_{nd = 1}^{nn}\frac{Ix_{nd}|\alpha_{nd}^{(k)}|}{nn }}{K} -->
+<!-- \] -->
 
-```{r}
-impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab) 
-impo3
+<!-- (INCLUDE REF TO VIZ PAPER) -->
 
-ggplot(impo3, aes(x = mean, y = variable) ) + geom_point()
-```
+<!-- ```{r} -->
+
+<!-- impo2 <-  ppf_avg_pptree_imp(pprf.crab, "Type")  -->
+<!-- impo2  -->
+
+<!-- ggplot(impo2, aes(x = mean, y = variable) ) +geom_point() -->
+<!-- ``` -->
+
+<!-- Finally you can get the last importance measure we have proposed for the PPforest using `ppf_global_imp' function. -->
+
+<!-- ```{r} -->
+<!-- impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)  -->
+<!-- impo3 -->
+
+<!-- ggplot(impo3, aes(x = mean, y = variable) ) + geom_point() -->
+<!-- ``` -->
 <!-- If we compare the results with the `randomForest` function for this data set the results are the following: -->
 
 <!-- ```{r} -->
@@ -219,114 +219,114 @@ ggplot(impo3, aes(x = mean, y = variable) ) + geom_point()
 <!-- We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables. -->
 <!-- This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis. -->
 
-Using the information available in the PPforest object, some visualization can be done. I will include some useful examples to visualize the data and some of the most important diagnostics in a forest structure.
+<!-- Using the information available in the PPforest object, some visualization can be done. I will include some useful examples to visualize the data and some of the most important diagnostics in a forest structure. -->
 
-To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the class variable. 
+<!-- To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the class variable.  -->
 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
-parallel <- function(ppf){
-myscale <- function(x) (x - mean(x)) / sd(x)
+<!-- ```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE} -->
+<!-- parallel <- function(ppf){ -->
+<!-- myscale <- function(x) (x - mean(x)) / sd(x) -->
 
-scale.dat <- ppf$train %>% dplyr::mutate_each(dplyr::funs(myscale),-dplyr::matches(ppf$class.var))
-scale.dat.melt <- scale.dat %>%  dplyr::mutate(ids = 1:nrow(ppf$train)) %>% tidyr::gather(var,Value,-Type,-ids)
-scale.dat.melt$Variables <- as.numeric(as.factor(scale.dat.melt$var))
-colnames(scale.dat.melt)[1] <- "Class"
+<!-- scale.dat <- ppf$train %>% dplyr::mutate_each(dplyr::funs(myscale),-dplyr::matches(ppf$class.var)) -->
+<!-- scale.dat.melt <- scale.dat %>%  dplyr::mutate(ids = 1:nrow(ppf$train)) %>% tidyr::gather(var,Value,-Type,-ids) -->
+<!-- scale.dat.melt$Variables <- as.numeric(as.factor(scale.dat.melt$var)) -->
+<!-- colnames(scale.dat.melt)[1] <- "Class" -->
 
-ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
-                           group = ids, key = ids, colour = Class, var = var)) +
-  ggplot2::geom_line(alpha = 0.3) + ggplot2::scale_x_discrete(limits = levels(as.factor(scale.dat.melt$var)), expand = c(0.01,0.01)) +
-  ggplot2::ggtitle("Data parallel plot ") + ggplot2::theme(legend.position = "none", axis.text.x  = element_text(angle = 90, vjust = 0.5)) +
-  ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2")
-
-
-}
-
-parallel(pprf.crab)
-```
-
-Some  auxiliary functions are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
-Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be possible to explore the individual model level.
-
-With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
-To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences. 
-
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE}
-
-mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
-  
-  d <- diag(nrow(ppf$train))
-  d <- as.dist(d + 1 - ppf$proximity)
-  rf.mds <- stats::cmdscale(d, eig = TRUE,  k = k)
-  colnames(rf.mds$points) <- paste("MDS", 1:k, sep = "")
+<!-- ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value, -->
+<!--                            group = ids, key = ids, colour = Class, var = var)) + -->
+<!--   ggplot2::geom_line(alpha = 0.3) + ggplot2::scale_x_discrete(limits = levels(as.factor(scale.dat.melt$var)), expand = c(0.01,0.01)) + -->
+<!--   ggplot2::ggtitle("Data parallel plot ") + ggplot2::theme(legend.position = "none", axis.text.x  = element_text(angle = 90, vjust = 0.5)) + -->
+<!--   ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") -->
 
 
-  df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
+<!-- } -->
 
-  mds <- ggplot2::ggplot(data = df) +
-   ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Class),
-              size = I(siz), alpha = .5) +
-   ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2", name = "Class") +
-   ggplot2::theme(legend.position = lege, aspect.ratio = 1)
+<!-- parallel(pprf.crab) -->
+<!-- ``` -->
 
-  mds
-}
-mdspl2d(pprf.crab)
-```
+<!-- Some  auxiliary functions are available in `PPforest` to get the data structure needed to do some visualization.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working. -->
+<!-- Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. Also will be possible to explore the individual model level. -->
 
-The vote matrix ($n \times p$) contains the proportion of times each observation was classified to each class, whole oob. Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot or with ternary plots.
- A side-by-side jittered dotplot is used for the display, where class is displayed on one axis and proportion is displayed on the other. For each dotplot, the ideal arrangement is that points of observations in that class have values bigger than 0.5, and all other observations have less. This data is close to the ideal but not perfect, e.g. there are a few blue male crabs (orange) that are frequently predicted to be blue females (green), and a few blue female crabs predicted to be another class.
- 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE, echo=FALSE}
-side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
-                  ttl = "Side by side dotplot") {
-  voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1],
-                      ppf$votes, pred = ppf$prediction.oob ) %>%
-  tidyr::gather(Class, Probability, -pred, -ids, -Type)
+<!-- With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees. -->
+<!-- To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences.  -->
 
-  ggplot2::ggplot(data = voteinf, ggplot2::aes(Class, Probability, color = Type)) +
-    ggplot2::geom_jitter(height = 0, size = I(siz), alpha = .5) +
-    ggtitle(ttl) +
-    ylab("Proportion") +
-    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") +
-    ggplot2::theme(legend.position = lege, legend.text = ggplot2::element_text(angle = ang)) +
-    ggplot2::labs(colour = "Class")
-}
+<!-- ```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE} -->
 
-side(pprf.crab)
-```
+<!-- mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) { -->
 
-<!-- A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space. -->
-<!-- One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown. -->
-<!-- When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized. \cite{sutherland2000orca} suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information. -->
+<!--   d <- diag(nrow(ppf$train)) -->
+<!--   d <- as.dist(d + 1 - ppf$proximity) -->
+<!--   rf.mds <- stats::cmdscale(d, eig = TRUE,  k = k) -->
+<!--   colnames(rf.mds$points) <- paste("MDS", 1:k, sep = "") -->
 
-A ternary plot is a triangular diagram used to display compositional data with three components. More generally, compositional data can have any number of components, say $p$, and hence is contrained to a $(p-1)$-D simplex in $p$-space. The vote matrix is an example of compositional data, with $G$ components.
 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
-pl_ter <- function(dat, dx, dy ){
-p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>%
-  dplyr::select(Class, x, y) %>%
-  ggplot2::ggplot(aes(x, y, color = Class)) +
-  ggplot2::geom_segment(data = dat[[2]], aes(x = x1, xend = x2,
-                               y = y1, yend = y2), color = "black" ) +
-  ggplot2::geom_point(size = I(3), alpha = .5) +
-  ggplot2::labs(y = " ",  x = " ") +
-  ggplot2::theme(legend.position = "none", aspect.ratio = 1) +
-  ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") +
-  ggplot2::labs(x = paste0("T", dx, ""), y = paste0("T", dy, " ")) +
-  ggplot2::theme(aspect.ratio = 1)
+<!--   df <- data.frame(Class = ppf$train[, 1], rf.mds$points) -->
 
-p1
-}
+<!--   mds <- ggplot2::ggplot(data = df) + -->
+<!--    ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Class), -->
+<!--               size = I(siz), alpha = .5) + -->
+<!--    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2", name = "Class") + -->
+<!--    ggplot2::theme(legend.position = lege, aspect.ratio = 1) -->
 
-p1 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 2), 1, 2 )
-p2 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 3), 1, 3)
-p3 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 2, dy = 3), 2, 3)
+<!--   mds -->
+<!-- } -->
+<!-- mdspl2d(pprf.crab) -->
+<!-- ``` -->
 
-gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
+<!-- The vote matrix ($n \times p$) contains the proportion of times each observation was classified to each class, whole oob. Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot or with ternary plots. -->
+<!--  A side-by-side jittered dotplot is used for the display, where class is displayed on one axis and proportion is displayed on the other. For each dotplot, the ideal arrangement is that points of observations in that class have values bigger than 0.5, and all other observations have less. This data is close to the ideal but not perfect, e.g. there are a few blue male crabs (orange) that are frequently predicted to be blue females (green), and a few blue female crabs predicted to be another class. -->
 
-```
+<!-- ```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE, echo=FALSE} -->
+<!-- side <-  function(ppf, ang = 0, lege = "bottom", siz = 3, -->
+<!--                   ttl = "Side by side dotplot") { -->
+<!--   voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1], -->
+<!--                       ppf$votes, pred = ppf$prediction.oob ) %>% -->
+<!--   tidyr::gather(Class, Probability, -pred, -ids, -Type) -->
 
-To see a complete description about how to visualize a PPforest object read Interactive Graphics for Visually Diagnosing Forest Classifiers in R (Include reference).
+<!--   ggplot2::ggplot(data = voteinf, ggplot2::aes(Class, Probability, color = Type)) + -->
+<!--     ggplot2::geom_jitter(height = 0, size = I(siz), alpha = .5) + -->
+<!--     ggtitle(ttl) + -->
+<!--     ylab("Proportion") + -->
+<!--     ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") + -->
+<!--     ggplot2::theme(legend.position = lege, legend.text = ggplot2::element_text(angle = ang)) + -->
+<!--     ggplot2::labs(colour = "Class") -->
+<!-- } -->
+
+<!-- side(pprf.crab) -->
+<!-- ``` -->
+
+<!-- <!-- A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space. --> -->
+<!-- <!-- One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown. --> -->
+<!-- <!-- When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized. \cite{sutherland2000orca} suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information. --> -->
+
+<!-- A ternary plot is a triangular diagram used to display compositional data with three components. More generally, compositional data can have any number of components, say $p$, and hence is contrained to a $(p-1)$-D simplex in $p$-space. The vote matrix is an example of compositional data, with $G$ components. -->
+
+<!-- ```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE} -->
+<!-- pl_ter <- function(dat, dx, dy ){ -->
+<!-- p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>% -->
+<!--   dplyr::select(Class, x, y) %>% -->
+<!--   ggplot2::ggplot(aes(x, y, color = Class)) + -->
+<!--   ggplot2::geom_segment(data = dat[[2]], aes(x = x1, xend = x2, -->
+<!--                                y = y1, yend = y2), color = "black" ) + -->
+<!--   ggplot2::geom_point(size = I(3), alpha = .5) + -->
+<!--   ggplot2::labs(y = " ",  x = " ") + -->
+<!--   ggplot2::theme(legend.position = "none", aspect.ratio = 1) + -->
+<!--   ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") + -->
+<!--   ggplot2::labs(x = paste0("T", dx, ""), y = paste0("T", dy, " ")) + -->
+<!--   ggplot2::theme(aspect.ratio = 1) -->
+
+<!-- p1 -->
+<!-- } -->
+
+<!-- p1 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 2), 1, 2 ) -->
+<!-- p2 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 3), 1, 3) -->
+<!-- p3 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 2, dy = 3), 2, 3) -->
+
+<!-- gridExtra::grid.arrange(p1, p2, p3, ncol = 3) -->
+
+<!-- ``` -->
+
+<!-- To see a complete description about how to visualize a PPforest object read Interactive Graphics for Visually Diagnosing Forest Classifiers in R (Include reference). -->
 
 <!-- ```{r, fig.show = 'hold',fig.width = 5 ,fig.height = 4, warning = FALSE} -->
 

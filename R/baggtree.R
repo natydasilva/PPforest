@@ -26,10 +26,10 @@ baggtree <- function(data , class , m = 500, PPmethod = "LDA",
     
     boottree <- function( data , class , PPmethod, lambda, size.p ){
       
-      origclass <- data[,class]
+      origclass <- data[ , class]
       origdata <- data[ , setdiff( colnames( data ), class )]
       origdata <- as.matrix(origdata)
-      origclass <- as.numeric(as.factor(origclass))
+      origclass <- as.numeric(as.factor(unlist(origclass) ))
       
       bt1 <- boot(as.matrix( origclass ),  origdata  )   
       
@@ -51,7 +51,7 @@ baggtree <- function(data , class , m = 500, PPmethod = "LDA",
     # 
     
  
-# if(parallel==FALSE){
+# if(parallel == FALSE){
 #   cc <- baggtreeaux(data, class, m, PPmethod, lambda, size.p)
 #   
 # return(cc)
