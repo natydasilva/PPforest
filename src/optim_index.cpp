@@ -7,15 +7,15 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 arma::vec tableC(arma::vec x) {
   arma::vec values = arma::unique(x);
-    arma::vec counts(values.size(), fill::zeros);
-    
-    for(int i = 0; i < values.size(); i++) {
-      for(int j=0; j<x.size();j++){
-        if(x(j)==values(i)){
-          counts(i)++;
-            }
+  arma::vec counts(values.size(), fill::zeros);
+  
+  for(int i = 0; i < values.size(); i++) {
+    for(int j = 0; j < x.size(); j++){
+      if(x(j) == values(i)){
+        counts(i)++;
       }
-
+    }
+    
   }
   
   return counts;
@@ -35,82 +35,82 @@ double roundme(double x)
 arma::vec LDAindex2(arma::vec origclass, arma::mat origdata, 
                  arma::mat proj, bool weight=true){
   double index=0.0;
-  int n=origdata.n_rows, p=origdata.n_cols; 
-  int q=proj.n_cols, p1=proj.n_rows;
+  int n = origdata.n_rows, p = origdata.n_cols; 
+  int q = proj.n_cols, p1 = proj.n_rows;
 
   
    
    arma::vec clval = arma::unique(origclass);
    //----
    arma::vec newclass(n, fill::zeros);
-   for(int i=0;i<n;i++){
-   for (int k=0; k < clval.size(); k++) {
+   for(int i = 0; i < n; i++){
+   for (int k = 0; k < clval.size(); k++) {
        if (origclass(i) == clval(k) ){
          newclass(i) = k + 1;
        }
      }
 
    }
-   origclass=newclass;
-   arma::vec gn=tableC(origclass);
-   int g=gn.size(); 
+   origclass = newclass;
+   arma::vec gn = tableC(origclass);
+   int g = gn.size(); 
 
    //----
    
    
-   if(p1!=p){
-     q=p;
+   if(p1!= p){
+     q = p;
      }
     arma::vec allmean(q, fill::zeros);
-   arma::mat W(q,q, fill::zeros),WB(q,q, fill::zeros),gsum(q,g, fill::zeros);        
-   arma::mat projdata(n,q, fill::zeros);
+   arma::mat W(q, q, fill::zeros), WB(q, q, fill::zeros ),gsum(q, g, fill::zeros );        
+   arma::mat projdata(n, q, fill::zeros);
    
-  if(p1!=p||p1==1){
+  if(p1!= p||p1 == 1){
     projdata = origdata;
   }else{
-    for(int i=0;i<n;i++){
-      for(int j=0;j<q;j++){
-        for(int k=0;k<p;k++){
-          projdata(i,j)+=origdata(i,k)*proj(k,j);
+    for(int i = 0; i < n; i++ ){
+      for(int j = 0; j < q; j++ ){
+        for(int k = 0; k < p ; k++ ){
+          projdata(i, j )+= origdata( i, k )*proj(k, j );
         }
       }
     }
   }
-  for(int i=0;i<n;i++){
-    for(int k=0;k<q;k++){
-      allmean(k)+=projdata(i,k)/n;
-      gsum(k,(origclass(i)-1))+=projdata(i,k);
+  for(int i = 0; i < n; i++){
+    for(int k = 0; k < q; k++){
+      allmean(k) += projdata(i, k) / n;
+      gsum(k, (origclass(i) - 1) ) += projdata(i, k);
     }
   }
-  double temp=0.0;
-  for(int i=0;i<n;i++){
-    int l=origclass(i)-1;
+  double temp = 0.0;
+  for(int i = 0; i < n; i++){
+    int l = origclass(i) - 1;
     double gn1;
     if(weight){
-      gn1=gn(l);
+      gn1 = gn(l);
     } else{
-      gn1=n/g;
+      gn1 = n / g;
     }
     
-    for(int j1=0;j1<q;j1++){
-      for(int j2=0;j2<=j1;j2++){
-        W(j1,j2)+=((projdata(i,j1)-gsum(j1,l)/gn(l))*
-          (projdata(i,j2)-gsum(j2,l)/gn(l)))/gn(l)*gn1;
-        W(j2,j1)=W(j1,j2);
-        temp=((projdata(i,j1)-gsum(j1,l)/gn(l))*
-                     (projdata(i,j2)-gsum(j2,l)/gn(l)) +
-                     (gsum(j1,l)/gn(l)-allmean(j1))*
-                     (gsum(j2,l)/gn(l)-allmean(j2)))/gn(l)*gn1;
-        WB(j1,j2)+=temp;
-        WB(j2,j1)=WB(j1,j2);
+    for(int j1 = 0; j1 < q; j1++){
+      for(int j2 = 0; j2 <= j1; j2++){
+        W(j1, j2) += ( (projdata(i, j1) - gsum(j1, l) / gn(l) )*
+          (projdata(i, j2) - gsum(j2, l) / gn(l) ) ) / gn(l)*gn1;
+        W(j2, j1) = W(j1, j2);
+        temp = ( (projdata(i, j1) - gsum(j1, l) / gn(l) )*
+                     (projdata(i,j2)-gsum(j2,l)/gn(l) ) +
+                     (gsum(j1, l) / gn(l) - allmean(j1) )*
+                     (gsum(j2, l) / gn(l) - allmean(j2))) / gn(l)*gn1;
+        WB(j1, j2)+= temp;
+        WB(j2, j1)= WB(j1, j2);
       }
     }
   }
 
-  index = 1.0-det(W)/det(WB);
+  index = 1.0 - det(W) / det(WB);
   
    arma::vec out(q, fill::zeros);
-   out(0)  =index; 
+   out(0)  = index; 
     return out;
 }
 
@@ -122,15 +122,15 @@ double signC(double x) {
   } else if (x == 0) {
     return 0;
   } else {
-    return -1;
+    return - 1;
   }
 }
    
 // [[Rcpp::export]] 
-  arma::vec LDAopt(arma::vec origclass, arma::mat origdata,int q=1, 
-              std::string PPmethod="LDA",bool weight=true){
+  arma::vec LDAopt(arma::vec origclass, arma::mat origdata, int q = 1, 
+              std::string PPmethod = "LDA", bool weight = true){
     
-  int n=origdata.n_rows, p=origdata.n_cols;
+  int n = origdata.n_rows, p = origdata.n_cols;
   
   // group totals, group means and overall mean
   arma::vec clval = arma::unique(origclass);
@@ -141,14 +141,14 @@ double signC(double x) {
    arma::colvec mean_all(p);
    arma::mat  mean_g(g, p);
    
-    for (int i=0; i < p; i++){
+    for (int i = 0; i < p; i++){
       mean_all[i] = mean( origdata.col(i) ) ;// variable mean
-      for (int k=0; k < g; k++) { // in groups
+      for (int k = 0; k < g; k++) { // in groups
         double tot = 0.0;
-        for (int j=0; j<n; j++) {//in observations
+        for (int j = 0; j < n; j++) {//in observations
           if (origclass(j) == clval(k) ) tot += origdata(j,i) ; //total by variable and group 
         }
-        mean_g(k, i) = tot/ng(k) ; //mean by variable and group
+        mean_g(k, i) = tot / ng(k) ; //mean by variable and group
       }
     }  
     
@@ -157,9 +157,9 @@ double signC(double x) {
     arma::mat  W(p, p, arma::fill::zeros);
     double gdbl = ng.size();
     
-   for (int k=0; k < g; k++) {
+   for (int k = 0; k < g; k++) {
      arma::vec  temp1(p);
-     arma::mat Temp1(p,p, arma::fill::zeros);
+     arma::mat Temp1(p, p, arma::fill::zeros);
       double gn1 = 0.0;
       
         if(weight) {
@@ -170,27 +170,27 @@ double signC(double x) {
         temp1 = arma::trans(mean_g.row(k)) - mean_all;
         Temp1 = gn1 * temp1 * arma::trans(temp1); 
         //Rcout << gn1;
-        for (int i=0; i < p; i++) {
-          for (int j=0; j < p; j++) {
-            B(i,j) += Temp1(i,j);
+        for (int i = 0; i < p; i++) {
+          for (int j = 0; j < p; j++) {
+            B(i,j) += Temp1(i, j);
           }
         }
    }
    
    // Whithin SS matrix
    arma::mat rr(n, p, arma::fill::zeros); 
-        for (int i=0; i < n; i++) {
-          for (int k=0; k < g; k++) {    
+        for (int i = 0; i < n; i++) {
+          for (int k = 0; k < g; k++) {    
             if ( origclass(i) == clval(k) ) {
-              for (int j=0; j<p; j++)
-              rr(i,j) = origdata(i,j) - mean_g(k,j); 
+              for (int j = 0; j < p; j++)
+              rr(i, j) = origdata(i, j) - mean_g(k, j); 
             }
           }
         }
    W = arma::trans(rr) * rr;
         
 // eigen decomposition and compute projection
-  W = arma::inv(W+B);
+  W = arma::inv(W + B);
   B = W * B;
   cx_vec eigval;
   cx_mat eigvec;
@@ -206,39 +206,39 @@ double signC(double x) {
 
 // [[Rcpp::export]]
 double PDAindex2(arma::vec origclass, arma::mat origdata,
-                arma::mat proj,bool weight=true,
-                double lambda=0.1){
+                arma::mat proj,bool weight = true,
+                double lambda = 0.1){
 
-  double index=0.0;
-  int n=origdata.n_rows, p=origdata.n_cols; 
+  double index = 0.0;
+  int n = origdata.n_rows, p = origdata.n_cols; 
   
-  int q=proj.n_cols, p1=proj.n_rows;
+  int q = proj.n_cols, p1 = proj.n_rows;
   
-  arma::vec gn=tableC(origclass);
+  arma::vec gn = tableC(origclass);
   int g = gn.size();  
   
  arma::vec clval = arma::unique(origclass);
  //----
  arma::vec newclass(n, fill::zeros);
- for(int i=0;i<n;i++){
-   for (int k=0; k < clval.size(); k++) {
+ for(int i = 0; i < n; i++){
+   for (int k = 0; k < clval.size(); k++) {
      if (origclass(i) == clval(k) ){
-       newclass(i) = k +1;
+       newclass(i) = k + 1;
      }
    }
    
  }
  origclass = newclass;
  
-  arma::mat W(p,p,fill::zeros),WB(p,p,fill::zeros),gsum(p,g,fill::zeros);
-  arma::vec allmean(p,fill::zeros);
+  arma::mat W(p, p, fill::zeros), WB(p, p, fill::zeros), gsum(p, g, fill::zeros);
+  arma::vec allmean(p, fill::zeros);
   
-  if(p1!=p)
-    q=p;
-  for(int i=0;i<n;i++){
-    for(int k=0;k<p;k++){
-      allmean(k)+=origdata(i,k)/n;
-      gsum(k,(origclass(i)-1))+=origdata(i,k);
+  if(p1!= p)
+    q = p;
+  for(int i = 0; i < n; i++){
+    for(int k = 0; k < p; k++){
+      allmean(k)+= origdata(i, k) / n;
+      gsum(k, (origclass(i) - 1 ) )+= origdata(i, k);
     }
   }
   for(int i=0;i<n;i++){
@@ -425,7 +425,7 @@ List datanode(arma::mat origdata, double sizep){
 
 //--------First split, redefine the problem in a two class problem,this is used inside findproj
 // [[Rcpp::export]]
-arma::vec split_rel(arma::vec origclass,arma::mat origdata, arma::colvec  projdata){
+arma::vec split_rel(arma::vec origclass, arma::mat origdata, arma::colvec  projdata){
 //origdata here are after variable selection (varselect and datenode functions)  
   
 int n = origdata.n_rows;
@@ -743,13 +743,13 @@ return Rcpp::List::create(Rcpp::Named("Index") = indexbest,Rcpp::Named("Alpha") 
 
 //tree structure
 // [[Rcpp::export]]
-List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
+List treeconstruct(arma::vec origclass, arma::mat origdata, arma::mat Treestruct, int id, int rep, int rep1, int rep2, arma::mat projbestnode, arma::mat  splitCutoffnode,
                    std::string PPmethod, double lambda = 0.1, double sizep = 1) {
   
   int n = origdata.n_rows;
-  arma::vec cl2= unique(origclass);
+  arma::vec cl2 = unique(origclass);
   arma::vec g(cl2.size(), fill::zeros); 
- g= tableC(origclass);
+  g = tableC(origclass);
 
   int G = g.size();
   
@@ -778,7 +778,7 @@ List treeconstruct(arma::vec origclass, arma::mat origdata,arma::mat Treestruct,
     
     // Rcout<< Treestruct;
     a = findprojwrap(origclass, origdata, PPmethod, sizep, lambda);
-    classe =as<vec>(a["classe"]);
+    classe = as<vec>(a["classe"]);
     C = nodestr(classe,as<vec>(a["projdata"]));
    
     splitCutoffnode.insert_rows( splitCutoffnode.n_rows,C.t());

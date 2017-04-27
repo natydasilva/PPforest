@@ -59,25 +59,23 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   type = "Classification"
   var.sel <- round( (ncol(train ) - 1) * size.p )
   
-  
-    
   outputaux <- baggtree(data = train , class = class , m = m , PPmethod = PPmethod , lambda = lambda ,
                         size.p = size.p, parallel = parallel, cores = cores  )
   
  output <- lapply(outputaux,function(x) x[[1]])
 
  data.b <-  lapply(outputaux, function(x) x[[2]])
-  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train,-get( class ) ), parallel,cores  )
+  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train, -get( class ) ), parallel, cores  )
 
-  expand.grid.ef <- function(seq1,seq2) {
+  expand.grid.ef <- function(seq1, seq2) {
     data.frame(a = rep.int(seq1, length(seq2)), 
-          b = rep.int(seq2, rep.int(length(seq1),length(seq2))))
+          b = rep.int(seq2, rep.int(length(seq1), length(seq2) ) ) )
   }
   pos <-  expand.grid.ef( 1:dim(train)[1],  1:dim(train)[1])
   
   proximity <- proximi( (pred.tr[[1]]), m)
   
-  index <- oobindex(data.b,m)
+  index <- oobindex(data.b, m)
     
   oob.obs <- oobobs(index)
   
@@ -101,9 +99,9 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   
 
   
-  vote.matrix.prop <- votes/rowSums(votes)
+  vote.matrix.prop <- votes / rowSums(votes)
   
-  oob.error <- 1 - sum( diag( table(oob.pred, unlist(train[, class] )) ) )/length(unlist(train[, class]))
+  oob.error <- 1 - sum( diag( table(oob.pred, unlist(train[, class] )) ) ) / length(unlist(train[, class]))
   
   ##arreglar ineficiente y con los cambios esto no funciona bien
   # m.pred.tr <- reshape2::melt(pred.tr[[1]])
@@ -119,7 +117,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
  
   oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(unlist(train[ , class]))), m)
   
-  error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr[[2]])/length(pred.tr[[2]])
+  error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class] ) ) ) == pred.tr[[2]] ) / length(pred.tr[[2]])
   test <- data[-tr.index,]%>%  
     dplyr::select(-get(class))%>%
     dplyr::filter_()

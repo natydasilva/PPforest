@@ -43,7 +43,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.
     g <- table(origclass)
     G <- length(g)
     
-    Tree.final <- treeconstruct(origclass, origdata, Treestruct = cbind( 1:(2*G-1), matrix(0, ncol = 4, nrow = 2*G-1) ), 
+    Tree.final <- treeconstruct(origclass, origdata, Treestruct = cbind( 1:(2*G - 1), matrix(0, ncol = 4, nrow = 2*G-1) ), 
                   id = 0,  rep = 1, rep1 = 2, rep2 = 1, projbestnode = matrix(0, ncol = pp, nrow = 1), 
                   splitCutoffnode = matrix(0, ncol = 8, nrow = 1), PPmethod, lambda, size.p )
     
@@ -55,7 +55,7 @@ PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.
     #projbest.node <- Tree.final$projbestnode[-1, ]
     
    
-    if(nrow(Tree.final$splitCutoffnode)==2){
+    if(nrow(Tree.final$splitCutoffnode) == 2){
       splitCutoff.node <- data.frame(splitCutoffnode = t(Tree.final$splitCutoffnode[-1, ]))
       colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
       projbest.node <- t(as.matrix(Tree.final$projbestnode[-1, ]))
