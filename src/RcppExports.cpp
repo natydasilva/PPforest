@@ -413,3 +413,42 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"PPforest_tableC", (DL_FUNC) &PPforest_tableC, 1},
+    {"PPforest_roundme", (DL_FUNC) &PPforest_roundme, 1},
+    {"PPforest_LDAindex2", (DL_FUNC) &PPforest_LDAindex2, 4},
+    {"PPforest_signC", (DL_FUNC) &PPforest_signC, 1},
+    {"PPforest_LDAopt", (DL_FUNC) &PPforest_LDAopt, 5},
+    {"PPforest_PDAindex2", (DL_FUNC) &PPforest_PDAindex2, 5},
+    {"PPforest_PDAopt", (DL_FUNC) &PPforest_PDAopt, 6},
+    {"PPforest_varselect", (DL_FUNC) &PPforest_varselect, 2},
+    {"PPforest_datanode", (DL_FUNC) &PPforest_datanode, 2},
+    {"PPforest_split_rel", (DL_FUNC) &PPforest_split_rel, 3},
+    {"PPforest_findproj", (DL_FUNC) &PPforest_findproj, 4},
+    {"PPforest_arma_sub_cond", (DL_FUNC) &PPforest_arma_sub_cond, 2},
+    {"PPforest_quantileCpp", (DL_FUNC) &PPforest_quantileCpp, 2},
+    {"PPforest_quant", (DL_FUNC) &PPforest_quant, 2},
+    {"PPforest_nodestr", (DL_FUNC) &PPforest_nodestr, 2},
+    {"PPforest_findprojwrap", (DL_FUNC) &PPforest_findprojwrap, 5},
+    {"PPforest_treeconstruct", (DL_FUNC) &PPforest_treeconstruct, 12},
+    {"PPforest_csample_num", (DL_FUNC) &PPforest_csample_num, 4},
+    {"PPforest_boot", (DL_FUNC) &PPforest_boot, 2},
+    {"PPforest_trainfn", (DL_FUNC) &PPforest_trainfn, 3},
+    {"PPforest_proximi", (DL_FUNC) &PPforest_proximi, 2},
+    {"PPforest_mvote", (DL_FUNC) &PPforest_mvote, 1},
+    {"PPforest_oobindex", (DL_FUNC) &PPforest_oobindex, 2},
+    {"PPforest_oobobs", (DL_FUNC) &PPforest_oobobs, 1},
+    {"PPforest_mvoteoob", (DL_FUNC) &PPforest_mvoteoob, 2},
+    {"PPforest_ooberrortree", (DL_FUNC) &PPforest_ooberrortree, 4},
+    {"PPforest_PPclassification", (DL_FUNC) &PPforest_PPclassification, 6},
+    {"PPforest_PPclassindex", (DL_FUNC) &PPforest_PPclassindex, 8},
+    {"PPforest_PPpred", (DL_FUNC) &PPforest_PPpred, 4},
+    {"PPforest_imposoon", (DL_FUNC) &PPforest_imposoon, 9},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_PPforest(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

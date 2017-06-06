@@ -14,11 +14,11 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set
-#' crab.trees <- baggtree(data = crab, class = "Type", 
-#'  m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallel = TRUE, cores = 2) 
+#' crab.trees <- baggtree(data = crab, class = "Type",
+#' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallel = TRUE, cores = 2)
 #' str(crab.trees, max.level = 1)
 baggtree <- function(data , class , m = 500, PPmethod = "LDA", 
-                     lambda = 0.1, size.p = 1, parallel = FALSE, cores = 2 ) {
+                     lambda = 0.1, size.p = 1, parallel = FALSE, cores=2 ) {
 
   # baggtreeaux <- function(data, class, m, PPmethod, lambda, size.p){
     bootsam <- NULL
@@ -39,13 +39,28 @@ baggtree <- function(data , class , m = 500, PPmethod = "LDA",
       list( tree, bt1 )
       
     }
+    
+    if(.Platform$OS.type == "windows") {
+      plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
+                  function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
+    }else{
     if(parallel){
     doMC::registerDoMC( cores )
-    }
+     # nodes <- parallel::detectCores()
+      # cl <- parallel::makeCluster(cores)
+      # doParallel::registerDoParallel(cl)
+      # 
+      
+      
     plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
                    function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
-
-    
+    #doParallel::stopCluster(cl)
+    }else{
+      plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
+                  function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
+      
+    }
+    }
     # purrr::map(1:m,function(x)
     #   boottree(data , class, PPmethod , lambda , size.p ))
     # 

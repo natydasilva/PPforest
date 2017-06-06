@@ -17,6 +17,7 @@ Imports:
     purrr,
     dplyr,
     tidyr,
+    parallel,
     doMC,
     plotly
 License: LGPL-2.1

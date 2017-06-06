@@ -38,7 +38,7 @@ pl_ter <- function(dat, dx, dy ){
     ggplot2::labs(y = " ",  x = " ") +
     ggplot2::theme(legend.position = "none", aspect.ratio = 1) +
     ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2") +
-    ggplot2::labs(x = paste0("T", dx, ""), y = paste0("T", dy, " ")) +
+    ggplot2::labs(x = paste0("T", dx, " "), y = paste0("T", dy, " ")) +
     ggplot2::theme(aspect.ratio = 1)
   p1
 }

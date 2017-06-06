@@ -60,12 +60,12 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   var.sel <- round( (ncol(train ) - 1) * size.p )
   
   outputaux <- baggtree(data = train , class = class , m = m , PPmethod = PPmethod , lambda = lambda ,
-                        size.p = size.p, parallel = parallel, cores = cores  )
+                        size.p = size.p, parallel = parallel, cores=cores )
   
  output <- lapply(outputaux,function(x) x[[1]])
 
  data.b <-  lapply(outputaux, function(x) x[[2]])
-  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train, -get( class ) ), parallel, cores  )
+  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train, -get( class ) ), parallel, cores=cores )
 
   expand.grid.ef <- function(seq1, seq2) {
     data.frame(a = rep.int(seq1, length(seq2)), 
@@ -123,7 +123,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     dplyr::filter_()
   
   if (dim(test)[1] != 0) {
-    pred.test <- trees_pred(outputaux, xnew = test, parallel,cores  )
+    pred.test <- trees_pred(outputaux, xnew = test, parallel, cores = cores )
     error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
     pred.test = as.factor(pred.test[[2]])
     levels(pred.test) <- levels(unlist(train[, class]))
