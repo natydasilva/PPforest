@@ -40,7 +40,6 @@ require(RColorBrewer)
 require(GGally)
 require(gridExtra)
 require(PPtreeViz)
-require(plotly)
 ```
 
 ```{r,fig.show='hold', fig.width = 5, fig.height = 5, echo=FALSE}

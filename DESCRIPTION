@@ -11,15 +11,11 @@ Depends:
 Imports:
     Rcpp (>= 0.12.7),
     RcppArmadillo,
-    ggplot2,
     magrittr,
     plyr,
-    purrr,
     dplyr,
     tidyr,
-    parallel,
     doMC,
-    plotly
 License: LGPL-2.1
 Suggests:
     knitr,
@@ -27,6 +23,7 @@ Suggests:
     rpart,
     gridExtra,
     GGally,
+    ggplot2,
     RColorBrewer,
     roxygen2 (>= 3.0.0),
     rmarkdown,
