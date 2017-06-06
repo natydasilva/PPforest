@@ -111,62 +111,61 @@ To use this function we need to specify a formula describing the model to be fit
 `size.p` is the proportion of variables randomly sampled in each split. If size.p = 1 a classic `PPtreeclass` object will be fitted using all the variables in each node partition instead of a subset of them.
 `lambda` penalty parameter in PDA index and is between 0 to 1 .
 he following example fits a projection pursuit classification tree constructed using 0.6 of the variables (3 out of 5) in each node split. We selected `LDA` method.
-<!-- # ```{r} -->
-<!-- # Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.6) -->
-<!-- #  Tree.crab -->
-<!-- # ``` -->
+```{r}
+Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.6)
+ Tree.crab 
+```
+# `baggtree` this function grow a `PPtreeclass` using `PPtree_split` for each bootstrap sample. 
+# This function returns a data frame with the results from `PPtree_split` for each bootsrap samples. 
+# `m` is the number of trees here is a small example.
+ ```{r tidy=FALSE} 
+crab.trees <- baggtree(data = crab, class = "Type",  
+  m =  10, PPmethod = 'LDA', size.p = 0.6, parallel = TRUE,cores=2 )  
+ str(crab.trees, max.level = 1) 
 
-<!-- `baggtree` this function grow a `PPtreeclass` using `PPtree_split` for each bootstrap sample. -->
-<!-- This function returns a data frame with the results from `PPtree_split` for each bootsrap samples. -->
-<!-- `m` is the number of trees here is a small example. -->
-<!-- ```{r tidy=FALSE} -->
-<!-- crab.trees <- baggtree(data = crab, class = "Type",  -->
-<!--  m =  10, PPmethod = 'LDA', size.p = 0.6, parallel = TRUE,cores=2 )  -->
-<!-- str(crab.trees, max.level = 1) -->
+ #selecting first PPtree object, 
+ crab.trees[[1]][[1]]
+```
 
-<!-- #selecting first PPtree object,  -->
-<!-- crab.trees[[1]][[1]] -->
-<!-- ``` -->
+```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
+The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
 
-<!-- ```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`. -->
-<!-- The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.  -->
+```{r }
+set.seed(146)
+pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
+                                size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
 
-<!-- ```{r } -->
-<!-- set.seed(146) -->
-<!-- pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200, -->
-<!--                                 size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2) -->
+pprf.crab
+```
 
-<!-- pprf.crab -->
-<!-- ``` -->
+`PPforest` print a summary result from the model with the confusion matrix information and the oob-error rate in a similar way randomForest packages does.
 
-<!-- `PPforest` print a summary result from the model with the confusion matrix information and the oob-error rate in a similar way randomForest packages does. -->
+This function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from , proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
 
-<!-- This function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from , proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned. -->
+The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 
-<!-- The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale. -->
+```{r}
+str(pprf.crab,max.level=1 )
+```
 
-<!-- ```{r} -->
-<!-- str(pprf.crab,max.level=1 ) -->
-<!-- ``` -->
+The PPforest algorithm calculates variable importance in two ways: (1) permuted importance using accuracy,  and (2) importance based on projection coefficients on standardized variables.
 
-<!-- The PPforest algorithm calculates variable importance in two ways: (1) permuted importance using accuracy,  and (2) importance based on projection coefficients on standardized variables. -->
+The permuted variable importance is comparable with the measure defined in the classical random forest algorithm. It is computed using the out of bag (oob) sample for the tree $k\;\;(B^{(k)})$ for each $X_j$ predictor variable.  Then the
+permuted importance of the variable $X_j$ in the tree $k$ can be defined as:
 
-<!-- The permuted variable importance is comparable with the measure defined in the classical random forest algorithm. It is computed using the out of bag (oob) sample for the tree $k\;\;(B^{(k)})$ for each $X_j$ predictor variable.  Then the -->
-<!-- permuted importance of the variable $X_j$ in the tree $k$ can be defined as: -->
+\[
+IMP^{(k)}(X_j) = \frac{\sum_{i \in B^{(k)} } I(y_i=\hat y_i^{(k)})-I(y_i=\hat y_{i,P_j}^{(k)})}{|B^{(k)}|}
+\]
 
-<!-- \[ -->
-<!-- IMP^{(k)}(X_j) = \frac{\sum_{i \in B^{(k)} } I(y_i=\hat y_i^{(k)})-I(y_i=\hat y_{i,P_j}^{(k)})}{|B^{(k)}|} -->
-<!-- \] -->
+\noindent where $\hat y_i^{(k)}$
+is the predicted class for the observation $i$ in the tree $k$ and $y_{i,P_j}^{(k)}$ is the predicted class for the observation $i$ in the tree $k$ after permuting the values for variable $X_j$. The global permuted importance measure is the average importance over all the trees in the forest.
+This measure is based on comparing the accuracy of classifying out-of-bag observations, using the true class with permuted (nonsense) class.
+To compute this measure you should use permute_importance function.
 
-<!-- \noindent where $\hat y_i^{(k)}$ -->
-<!-- is the predicted class for the observation $i$ in the tree $k$ and $y_{i,P_j}^{(k)}$ is the predicted class for the observation $i$ in the tree $k$ after permuting the values for variable $X_j$. The global permuted importance measure is the average importance over all the trees in the forest. -->
-<!-- This measure is based on comparing the accuracy of classifying out-of-bag observations, using the true class with permuted (nonsense) class. -->
-<!-- To compute this measure you should use permute_importance function. -->
-
-<!-- ```{r} -->
-<!-- impo1 <- permute_importance(pprf.crab) -->
-<!-- impo1 -->
-
+```{r}
+impo1 <- permute_importance(pprf.crab)
+impo1
+```
 <!-- ggplot(impo1, aes(x = imp, y = nm)) + geom_point() -->
 <!-- ``` -->
 <!-- This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure. -->
