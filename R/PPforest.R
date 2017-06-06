@@ -86,35 +86,10 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
   votes <- mvote.oob[ , -(length(unique(clnum) ) + 1)] 
   colnames(votes) <- levels(train[ , class])  
 
-### relajo
-  # aux <- data.frame(pred.tr[[1]]) %>% dplyr::mutate(id =  1:m) %>% 
-  #   tidyr::gather(tree, pred, -id) %>% 
-  #   dplyr::mutate(pred = factor(pred, labels = levels(train[, class]))) %>%
-  #   tidyr::spread(key = tree, value = pred) %>% dplyr::select(-id)
-  #          
-  # votes <- plyr::mdply( dplyr::data_frame( id = 1:nrow(train)) , function(id) {
-  #   x <- aux[oob.obs[, id] == 1, id]
-  #   table(factor(x, levels=levels(train[, class])))
-  #   })[,-1]
-  
-
-  
   vote.matrix.prop <- votes / rowSums(votes)
   
   oob.error <- 1 - sum( diag( table(oob.pred, unlist(train[, class] )) ) ) / length(unlist(train[, class]))
   
-  ##arreglar ineficiente y con los cambios esto no funciona bien
-  # m.pred.tr <- reshape2::melt(pred.tr[[1]])
-  # m.oob.obs <- reshape2::melt(as.matrix(oob.obs))
-  # m.pred.tr$oob <- m.oob.obs$value
-  # m.pred.tr$class <- rep(train[, class], each = m)
-  # 
-  # 
-  # oob.err.tree <- plyr::ddply(m.pred.tr[m.pred.tr$oob, ], plyr::.(Var1), function(x) {
-  #   dd <- diag(table(x$value, x$class))
-  #   1 - sum(dd)/length(x$value)
-  # })$V1
- 
   oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(unlist(train[ , class]))), m)
   
   error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class] ) ) ) == pred.tr[[2]] ) / length(pred.tr[[2]])
