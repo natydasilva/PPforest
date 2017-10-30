@@ -24,50 +24,49 @@
 #' @keywords tree
 #' @examples
 #' #crab data set
-#' Tree.crab <- PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.5)
+#' Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
 #' Tree.crab
-PPtree_split <- function(form, data,  PPmethod = "LDA", size.p = 1,  lambda = 0.1, ...) {
-   
-     formula <- stats::as.formula(form)
-     mf <- stats::model.frame(formula, data = data)
-     origclass <- stats::model.response(mf)
+PPtree_split <- function(form, data, PPmethod = "LDA", size.p = 1, lambda = 0.1, ...) {
+    
+    formula <- stats::as.formula(form)
+    mf <- stats::model.frame(formula, data = data)
+    origclass <- stats::model.response(mf)
     
     cls <- all.vars(formula)[[1]]
     
-    origdata <- data[,-which(colnames(data)%in%cls)]
+    origdata <- data[, -which(colnames(data) %in% cls)]
     origdata <- as.matrix(origdata)
     pp <- ncol(origdata)
     origclass <- as.numeric(as.factor(origclass))
-
-
+    
+    
     g <- table(origclass)
     G <- length(g)
     
-    Tree.final <- treeconstruct(origclass, origdata, Treestruct = cbind( 1:(2*G - 1), matrix(0, ncol = 4, nrow = 2*G-1) ), 
-                  id = 0,  rep = 1, rep1 = 2, rep2 = 1, projbestnode = matrix(0, ncol = pp, nrow = 1), 
-                  splitCutoffnode = matrix(0, ncol = 8, nrow = 1), PPmethod, lambda, size.p )
+    Tree.final <- treeconstruct(origclass, origdata, Treestruct = cbind(1:(2 * G - 1), matrix(0, 
+        ncol = 4, nrow = 2 * G - 1)), id = 0, rep = 1, rep1 = 2, rep2 = 1, projbestnode = matrix(0, 
+        ncol = pp, nrow = 1), splitCutoffnode = matrix(0, ncol = 8, nrow = 1), PPmethod, lambda, 
+        size.p)
     
-   
+    
     
     Tree.Struct <- Tree.final$Treestruct
-    colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", 
-                               "Coef.ID", "Index")
-    #projbest.node <- Tree.final$projbestnode[-1, ]
+    colnames(Tree.Struct) <- c("id", "L.node.ID", "R.F.node.ID", "Coef.ID", "Index")
+    # projbest.node <- Tree.final$projbestnode[-1, ]
     
-   
-    if(nrow(Tree.final$splitCutoffnode) == 2){
-      splitCutoff.node <- data.frame(splitCutoffnode = t(Tree.final$splitCutoffnode[-1, ]))
-      colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
-      projbest.node <- t(as.matrix(Tree.final$projbestnode[-1, ]))
-      
-    }else{
-      splitCutoff.node <- data.frame(splitCutoffnode = Tree.final$splitCutoffnode[-1, ])
-      colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
-      projbest.node <- Tree.final$projbestnode[-1, ]
+    
+    if (nrow(Tree.final$splitCutoffnode) == 2) {
+        splitCutoff.node <- data.frame(splitCutoffnode = t(Tree.final$splitCutoffnode[-1, ]))
+        colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+        projbest.node <- t(as.matrix(Tree.final$projbestnode[-1, ]))
+        
+    } else {
+        splitCutoff.node <- data.frame(splitCutoffnode = Tree.final$splitCutoffnode[-1, ])
+        colnames(splitCutoff.node) <- paste("Rule", 1:8, sep = "")
+        projbest.node <- Tree.final$projbestnode[-1, ]
     }
-    treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, 
-                    splitCutoff.node = splitCutoff.node, origclass = origclass, 
-                    origdata = origdata)
+    treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, splitCutoff.node = splitCutoff.node, 
+        origclass = origclass, origdata = origdata)
     
     class(treeobj) <- append(class(treeobj), "PPtreeclass")
     

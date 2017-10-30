@@ -18,4 +18,4 @@
 #' @name olive
 #' @usage data(olive)
 #' @format A data frame contains 573 observations and 10 variables
-NULL 
+NULL

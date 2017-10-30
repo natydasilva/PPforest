@@ -24,13 +24,13 @@ predicted values form PPforest
 Vector with predicted values from a baggtree function.
 }
 \examples{
-crab.trees <- baggtree(data = crab, class = "Type", 
+crab.trees <- baggtree(data = crab, class = 'Type', 
 m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
  
 pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores=2)
 
 
-pprf.crab <- PPforest(data = crab, class = "Type",
+pprf.crab <- PPforest(data = crab, class = 'Type',
  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
 trees_pred(pprf.crab, xnew = pprf.crab$test ,paralle=TRUE)

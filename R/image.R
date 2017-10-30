@@ -27,4 +27,4 @@
 #' @name image
 #' @usage data(image)
 #' @format A data frame contains 2310 observations and 19 variables
-NULL 
+NULL

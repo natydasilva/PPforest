@@ -14,48 +14,48 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set
-#' crab.trees <- baggtree(data = crab, class = "Type",
+#' crab.trees <- baggtree(data = crab, class = 'Type',
 #' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallel = TRUE, cores = 2)
 #' str(crab.trees, max.level = 1)
-baggtree <- function(data , class , m = 500, PPmethod = "LDA", 
-                     lambda = 0.1, size.p = 1, parallel = FALSE, cores = 2 ) {
-
+baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1, parallel = FALSE, 
+    cores = 2) {
+    
     bootsam <- NULL
     . <- NULL
     
-    boottree <- function( data , class , PPmethod, lambda, size.p ){
-      
-      origclass <- data[ , class]
-      origdata <- data[ , setdiff( colnames( data ), class )]
-      origdata <- as.matrix(origdata)
-      origclass <- as.numeric(as.factor(unlist(origclass) ))
-      
-      bt1 <- boot(as.matrix( origclass ),  origdata  )   
-      
-      f <- stats::as.formula(paste(class, "~.",sep=''))
-      tree <- PPtree_split( f, data = data[ ( bt1 + 1 ), ] , PPmethod, lambda ,size.p = size.p )
-      
-      list( tree, bt1 )
-      
+    boottree <- function(data, class, PPmethod, lambda, size.p) {
+        
+        origclass <- data[, class]
+        origdata <- data[, setdiff(colnames(data), class)]
+        origdata <- as.matrix(origdata)
+        origclass <- as.numeric(as.factor(unlist(origclass)))
+        
+        bt1 <- boot(as.matrix(origclass), origdata)
+        
+        f <- stats::as.formula(paste(class, "~.", sep = ""))
+        tree <- PPtree_split(f, data = data[(bt1 + 1), ], PPmethod, lambda, size.p = size.p)
+        
+        list(tree, bt1)
+        
     }
     
-    if(.Platform$OS.type == "windows") {
-      plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
-                  function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
-    }else{
-    if(parallel){
-    doMC::registerDoMC( cores )
-   
-      
-    plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
-                   function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
-   
-    }else{
-      plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam),
-                  function(x) boottree(data , class, PPmethod , lambda , size.p ), .parallel = parallel )
-      
+    if (.Platform$OS.type == "windows") {
+        plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
+            class, PPmethod, lambda, size.p), .parallel = parallel)
+    } else {
+        if (parallel) {
+            doMC::registerDoMC(cores)
+            
+            
+            plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
+                class, PPmethod, lambda, size.p), .parallel = parallel)
+            
+        } else {
+            plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
+                class, PPmethod, lambda, size.p), .parallel = parallel)
+            
+        }
     }
-    }
-
-  }
+    
+}
 

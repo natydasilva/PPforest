@@ -17,4 +17,4 @@
 #' @usage data(crab)
 #' @format A data frame with 200 rows and 6 variables
 #' @source Campbell, N. A. & Mahon, R. J. (1974), A Multivariate Study of Variation in Two Species of Rock Crab of genus Leptograpsus, Australian Journal of Zoology 22(3), 417 - 425.
-NULL 
+NULL

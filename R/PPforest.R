@@ -34,108 +34,108 @@
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
-#'pprf.crab <- PPforest(data = crab, class = "Type",
+#'pprf.crab <- PPforest(data = crab, class = 'Type',
 #'  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = FALSE, cores = 2)
 #' pprf.crab
-PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, parallel = FALSE, cores = 2) {
-  
-  Var1 <- NULL
-  tree <- NULL
-  pred <- NULL
-  id <- NULL
-  if(std){
-   dataux <- data %>% dplyr::select(-get(class)) %>%
-   apply(2, FUN = scale) %>% dplyr::as_data_frame()
-  data <- data.frame( data[,class], dataux)
-  colnames(data)[1] <- class 
-  }
-  
-  clnum <- as.numeric( as.factor(data[, class] ) )
-  tr.index <- trainfn(as.matrix(clnum), as.matrix(data[ , setdiff(colnames(data), class)]),
-                      sizetr = size.tr) + 1
-  train <-  data %>% 
-    dplyr::slice(tr.index)
-  
-  type = "Classification"
-  var.sel <- round( (ncol(train ) - 1) * size.p )
-  
-  outputaux <- baggtree(data = train , class = class , m = m , PPmethod = PPmethod , lambda = lambda ,
-                        size.p = size.p, parallel = parallel, cores=cores )
-  
- output <- lapply(outputaux,function(x) x[[1]])
-
- data.b <-  lapply(outputaux, function(x) x[[2]])
-  pred.tr <- trees_pred( outputaux,xnew = dplyr::select( train, -get( class ) ), parallel, cores=cores )
-
-  expand.grid.ef <- function(seq1, seq2) {
-    data.frame(a = rep.int(seq1, length(seq2)), 
-          b = rep.int(seq2, rep.int(length(seq1), length(seq2) ) ) )
-  }
-  pos <-  expand.grid.ef( 1:dim(train)[1],  1:dim(train)[1])
-  
-  proximity <- proximi( (pred.tr[[1]]), m)
-  
-  index <- oobindex(data.b, m)
+PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
+    parallel = FALSE, cores = 2) {
     
-  oob.obs <- oobobs(index)
-  
-
-  mvote.oob <- mvoteoob(pred.tr[[1]], oob.obs)
-  oob.pred <- mvote.oob[,length(unique(clnum)) + 1]
-  
-  votes <- mvote.oob[ , -(length(unique(clnum) ) + 1)] 
-  colnames(votes) <- levels(train[ , class])  
-
-  vote.matrix.prop <- votes / rowSums(votes)
-  
-  oob.error <- 1 - sum( diag( table(oob.pred, unlist(train[, class] )) ) ) / length(unlist(train[, class]))
-  
-  oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(unlist(train[ , class]))), m)
-  
-  error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class] ) ) ) == pred.tr[[2]] ) / length(pred.tr[[2]])
-  test <- data[-tr.index,]%>%  
-    dplyr::select(-get(class))%>%
-    dplyr::filter_()
-  
-  if (dim(test)[1] != 0) {
-    pred.test <- trees_pred(outputaux, xnew = test, parallel, cores = cores )
-    error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
-    pred.test = as.factor(pred.test[[2]])
-    levels(pred.test) <- levels(unlist(train[, class]))
+    Var1 <- NULL
+    tree <- NULL
+    pred <- NULL
+    id <- NULL
+    if (std) {
+        dataux <- data %>% dplyr::select(-get(class)) %>% apply(2, FUN = scale) %>% dplyr::as_data_frame()
+        data <- data.frame(data[, class], dataux)
+        colnames(data)[1] <- class
+    }
+    
+    clnum <- as.numeric(as.factor(data[, class]))
+    tr.index <- trainfn(as.matrix(clnum), as.matrix(data[, setdiff(colnames(data), class)]), 
+        sizetr = size.tr) + 1
+    train <- data %>% dplyr::slice(tr.index)
+    
+    type = "Classification"
+    var.sel <- round((ncol(train) - 1) * size.p)
+    
+    outputaux <- baggtree(data = train, class = class, m = m, PPmethod = PPmethod, lambda = lambda, 
+        size.p = size.p, parallel = parallel, cores = cores)
+    
+    output <- lapply(outputaux, function(x) x[[1]])
+    
+    data.b <- lapply(outputaux, function(x) x[[2]])
+    pred.tr <- trees_pred(outputaux, xnew = dplyr::select(train, -get(class)), parallel, cores = cores)
+    
+    expand.grid.ef <- function(seq1, seq2) {
+        data.frame(a = rep.int(seq1, length(seq2)), b = rep.int(seq2, rep.int(length(seq1), 
+            length(seq2))))
+    }
+    pos <- expand.grid.ef(1:dim(train)[1], 1:dim(train)[1])
+    
+    proximity <- proximi((pred.tr[[1]]), m)
+    
+    index <- oobindex(data.b, m)
+    
+    oob.obs <- oobobs(index)
+    
+    
+    mvote.oob <- mvoteoob(pred.tr[[1]], oob.obs)
+    oob.pred <- mvote.oob[, length(unique(clnum)) + 1]
+    
+    votes <- mvote.oob[, -(length(unique(clnum)) + 1)]
+    colnames(votes) <- levels(train[, class])
+    
+    vote.matrix.prop <- votes/rowSums(votes)
+    
+    oob.error <- 1 - sum(diag(table(oob.pred, unlist(train[, class]))))/length(unlist(train[, 
+        class]))
+    
+    oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(unlist(train[, 
+        class]))), m)
+    
+    error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr[[2]])/length(pred.tr[[2]])
+    test <- data[-tr.index, ] %>% dplyr::select(-get(class)) %>% dplyr::filter_()
+    
+    if (dim(test)[1] != 0) {
+        pred.test <- trees_pred(outputaux, xnew = test, parallel, cores = cores)
+        error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
+        pred.test = as.factor(pred.test[[2]])
+        levels(pred.test) <- levels(unlist(train[, class]))
     } else {
-    pred.test <- NULL
-    error.test <- NULL
-    test <- NULL
-  }
-  
-  oob.pred <- as.factor(oob.pred)
-  if(is.factor(unlist(train[, class]))){
-  levels(oob.pred) <- levels(unlist(train[, class]))
-  }else{
-    levels(oob.pred) <- levels(as.factor(unlist(train[, class])))
-  }
-  
-  prediction.training <- as.factor(pred.tr[[2]])
-  if(is.factor(unlist(train[, class]))){
-   levels(prediction.training) <- levels(unlist(train[, class]))
-  }else{
-    levels(prediction.training) <- levels(as.factor(unlist(train[, class])))
-  }
-  
-   
-  tab.tr <- table(Observed = unlist(train[, class]), Predicted = oob.pred)
-  
-  class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
-  confusion <- cbind(tab.tr, class.error = round(class.error, 2))
-  
-  results <- list(predicting.training = prediction.training , training.error = error.tr, prediction.test = pred.test, 
-                  error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, boot.samp = data.b, 
-                  output.trees = output, proximity = proximity, votes = vote.matrix.prop, prediction.oob = oob.pred, n.tree = m, 
-                  n.var = var.sel, type = "Classification", confusion = confusion, call = match.call(), train = train, test = test, 
-                  vote.mat = pred.tr[[1]], class.var = class, oob.obs = oob.obs)
-  
-  class(results) <- "PPforest"
-
-  return(results)
-  
-} 
+        pred.test <- NULL
+        error.test <- NULL
+        test <- NULL
+    }
+    
+    oob.pred <- as.factor(oob.pred)
+    if (is.factor(unlist(train[, class]))) {
+        levels(oob.pred) <- levels(unlist(train[, class]))
+    } else {
+        levels(oob.pred) <- levels(as.factor(unlist(train[, class])))
+    }
+    
+    prediction.training <- as.factor(pred.tr[[2]])
+    if (is.factor(unlist(train[, class]))) {
+        levels(prediction.training) <- levels(unlist(train[, class]))
+    } else {
+        levels(prediction.training) <- levels(as.factor(unlist(train[, class])))
+    }
+    
+    
+    tab.tr <- table(Observed = unlist(train[, class]), Predicted = oob.pred)
+    
+    class.error <- 1 - diag(tab.tr)/((stats::addmargins(tab.tr, 2))[, "Sum"])
+    confusion <- cbind(tab.tr, class.error = round(class.error, 2))
+    
+    results <- list(predicting.training = prediction.training, training.error = error.tr, prediction.test = pred.test, 
+        error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, 
+        boot.samp = data.b, output.trees = output, proximity = proximity, votes = vote.matrix.prop, 
+        prediction.oob = oob.pred, n.tree = m, n.var = var.sel, type = "Classification", confusion = confusion, 
+        call = match.call(), train = train, test = test, vote.mat = pred.tr[[1]], class.var = class, 
+        oob.obs = oob.obs)
+    
+    class(results) <- "PPforest"
+    
+    return(results)
+    
+}

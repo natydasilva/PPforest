@@ -16,7 +16,7 @@ The `PPforest` package (projection pursuit random forest) contains functions to 
 
 To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
-Install `PPforest` from github using:
+The development version of`PPforest` can be installed from github using:
 
 ```{r,echo=FALSE, message=FALSE, warning=FALSE,eval=FALSE}
 library(devtools)
@@ -90,7 +90,8 @@ Projection pursuit random forest algorithm description
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
 |node_data|Data structure with the  projected and boundary by node and class|
 |permute_importance|Obtain the permuted importance variable measure|
-|ppf_avg_pptree_imp| Computes a global importance measure for a PPforest object, average importance measure for a pptree over all the trees.| 
+|ppf_avg__imp| Computes a global importance measure for a PPforest object, average importance measure for a pptree over all the trees.| 
+|PPclassify|
 |ppf_global_imp| Computes a global importance measure for a PPforest object|
 |PPforest|Runs a Projection pursuit random forest|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|

@@ -11,8 +11,9 @@ print.PPforest <- function(x, ...) {
     cat("                     Number of trees: ", x$n.tree, "\n", sep = "")
     cat("No. of variables tried at each split: ", x$n.var, "\n\n", sep = "")
     
-    cat("        OOB estimate of  error rate: ", round(x$oob.error.forest * 100, digits = 2), "%\n", sep = "")
+    cat("        OOB estimate of  error rate: ", round(x$oob.error.forest * 100, digits = 2), 
+        "%\n", sep = "")
     cat("Confusion matrix:\n")
     print(x$confusion)
     
-} 
+}

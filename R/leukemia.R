@@ -11,4 +11,4 @@
 #' @usage data(leukemia)
 #' @format A data frame with 72 rows and 41 variables
 #' @source Dudoit, S., Fridlyand, J. and Speed, T. P. (2002). Comparison of Discrimination Methods for the Classification of Tumors Using Gene Ex- pression Data. Journal of the American statistical Association 97 77-87.
-NULL 
+NULL

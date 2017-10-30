@@ -32,4 +32,4 @@
 #' @usage data(parkinson)
 #' @format A data frame with 195 rows and 23 variables
 #' @source url{https://archive.ics.uci.edu/ml/datasets/Parkinsons}
-NULL 
+NULL

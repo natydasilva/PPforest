@@ -12,4 +12,4 @@
 #' @name wine
 #' @usage data(wine)
 #' @format A data frame with 178 rows and 14 variables
-NULL 
+NULL

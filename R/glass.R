@@ -18,4 +18,4 @@
 #' @name glass
 #' @usage data(glass)
 #' @format A data frame with 214 rows and 10 variables
-NULL 
+NULL

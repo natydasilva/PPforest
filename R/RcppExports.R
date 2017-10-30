@@ -2,122 +2,122 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 tableC <- function(x) {
-    .Call('PPforest_tableC', PACKAGE = 'PPforest', x)
+    .Call('_PPforest_tableC', PACKAGE = 'PPforest', x)
 }
 
 roundme <- function(x) {
-    .Call('PPforest_roundme', PACKAGE = 'PPforest', x)
+    .Call('_PPforest_roundme', PACKAGE = 'PPforest', x)
 }
 
 LDAindex2 <- function(origclass, origdata, proj, weight = TRUE) {
-    .Call('PPforest_LDAindex2', PACKAGE = 'PPforest', origclass, origdata, proj, weight)
+    .Call('_PPforest_LDAindex2', PACKAGE = 'PPforest', origclass, origdata, proj, weight)
 }
 
 signC <- function(x) {
-    .Call('PPforest_signC', PACKAGE = 'PPforest', x)
+    .Call('_PPforest_signC', PACKAGE = 'PPforest', x)
 }
 
 LDAopt <- function(origclass, origdata, q = 1L, PPmethod = "LDA", weight = TRUE) {
-    .Call('PPforest_LDAopt', PACKAGE = 'PPforest', origclass, origdata, q, PPmethod, weight)
+    .Call('_PPforest_LDAopt', PACKAGE = 'PPforest', origclass, origdata, q, PPmethod, weight)
 }
 
 PDAindex2 <- function(origclass, origdata, proj, weight = TRUE, lambda = 0.1) {
-    .Call('PPforest_PDAindex2', PACKAGE = 'PPforest', origclass, origdata, proj, weight, lambda)
+    .Call('_PPforest_PDAindex2', PACKAGE = 'PPforest', origclass, origdata, proj, weight, lambda)
 }
 
 PDAopt <- function(origclass, origdata, q = 1L, PPmethod = "PDA", weight = TRUE, lambda = 0.1) {
-    .Call('PPforest_PDAopt', PACKAGE = 'PPforest', origclass, origdata, q, PPmethod, weight, lambda)
+    .Call('_PPforest_PDAopt', PACKAGE = 'PPforest', origclass, origdata, q, PPmethod, weight, lambda)
 }
 
 varselect <- function(p, s) {
-    .Call('PPforest_varselect', PACKAGE = 'PPforest', p, s)
+    .Call('_PPforest_varselect', PACKAGE = 'PPforest', p, s)
 }
 
 datanode <- function(origdata, sizep) {
-    .Call('PPforest_datanode', PACKAGE = 'PPforest', origdata, sizep)
+    .Call('_PPforest_datanode', PACKAGE = 'PPforest', origdata, sizep)
 }
 
 split_rel <- function(origclass, origdata, projdata) {
-    .Call('PPforest_split_rel', PACKAGE = 'PPforest', origclass, origdata, projdata)
+    .Call('_PPforest_split_rel', PACKAGE = 'PPforest', origclass, origdata, projdata)
 }
 
 findproj <- function(origclass, origdata, PPmethod, lambda = 0.1) {
-    .Call('PPforest_findproj', PACKAGE = 'PPforest', origclass, origdata, PPmethod, lambda)
+    .Call('_PPforest_findproj', PACKAGE = 'PPforest', origclass, origdata, PPmethod, lambda)
 }
 
 arma_sub_cond <- function(x, val) {
-    .Call('PPforest_arma_sub_cond', PACKAGE = 'PPforest', x, val)
+    .Call('_PPforest_arma_sub_cond', PACKAGE = 'PPforest', x, val)
 }
 
 quantileCpp <- function(x, probs) {
-    .Call('PPforest_quantileCpp', PACKAGE = 'PPforest', x, probs)
+    .Call('_PPforest_quantileCpp', PACKAGE = 'PPforest', x, probs)
 }
 
 quant <- function(x, q) {
-    .Call('PPforest_quant', PACKAGE = 'PPforest', x, q)
+    .Call('_PPforest_quant', PACKAGE = 'PPforest', x, q)
 }
 
 nodestr <- function(classe, projdata) {
-    .Call('PPforest_nodestr', PACKAGE = 'PPforest', classe, projdata)
+    .Call('_PPforest_nodestr', PACKAGE = 'PPforest', classe, projdata)
 }
 
 findprojwrap <- function(origclass, origdata, PPmethod, sizep = 1, lambda = .1) {
-    .Call('PPforest_findprojwrap', PACKAGE = 'PPforest', origclass, origdata, PPmethod, sizep, lambda)
+    .Call('_PPforest_findprojwrap', PACKAGE = 'PPforest', origclass, origdata, PPmethod, sizep, lambda)
 }
 
 treeconstruct <- function(origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda = 0.1, sizep = 1) {
-    .Call('PPforest_treeconstruct', PACKAGE = 'PPforest', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep)
+    .Call('_PPforest_treeconstruct', PACKAGE = 'PPforest', origclass, origdata, Treestruct, id, rep, rep1, rep2, projbestnode, splitCutoffnode, PPmethod, lambda, sizep)
 }
 
 csample_num <- function(x, size, replace, prob) {
-    .Call('PPforest_csample_num', PACKAGE = 'PPforest', x, size, replace, prob)
+    .Call('_PPforest_csample_num', PACKAGE = 'PPforest', x, size, replace, prob)
 }
 
 boot <- function(origclass, origdata) {
-    .Call('PPforest_boot', PACKAGE = 'PPforest', origclass, origdata)
+    .Call('_PPforest_boot', PACKAGE = 'PPforest', origclass, origdata)
 }
 
 trainfn <- function(origclass, origdata, sizetr) {
-    .Call('PPforest_trainfn', PACKAGE = 'PPforest', origclass, origdata, sizetr)
+    .Call('_PPforest_trainfn', PACKAGE = 'PPforest', origclass, origdata, sizetr)
 }
 
 proximi <- function(predtrnt, m) {
-    .Call('PPforest_proximi', PACKAGE = 'PPforest', predtrnt, m)
+    .Call('_PPforest_proximi', PACKAGE = 'PPforest', predtrnt, m)
 }
 
 mvote <- function(votes) {
-    .Call('PPforest_mvote', PACKAGE = 'PPforest', votes)
+    .Call('_PPforest_mvote', PACKAGE = 'PPforest', votes)
 }
 
 oobindex <- function(datab, m) {
-    .Call('PPforest_oobindex', PACKAGE = 'PPforest', datab, m)
+    .Call('_PPforest_oobindex', PACKAGE = 'PPforest', datab, m)
 }
 
 oobobs <- function(index) {
-    .Call('PPforest_oobobs', PACKAGE = 'PPforest', index)
+    .Call('_PPforest_oobobs', PACKAGE = 'PPforest', index)
 }
 
 mvoteoob <- function(votes, oobobs) {
-    .Call('PPforest_mvoteoob', PACKAGE = 'PPforest', votes, oobobs)
+    .Call('_PPforest_mvoteoob', PACKAGE = 'PPforest', votes, oobobs)
 }
 
 ooberrortree <- function(votes, oobobs, classe, m) {
-    .Call('PPforest_ooberrortree', PACKAGE = 'PPforest', votes, oobobs, classe, m)
+    .Call('_PPforest_ooberrortree', PACKAGE = 'PPforest', votes, oobobs, classe, m)
 }
 
 PPclassification <- function(Treestruct, testclassindex, IOindex, testclass, id, rep) {
-    .Call('PPforest_PPclassification', PACKAGE = 'PPforest', Treestruct, testclassindex, IOindex, testclass, id, rep)
+    .Call('_PPforest_PPclassification', PACKAGE = 'PPforest', Treestruct, testclassindex, IOindex, testclass, id, rep)
 }
 
 PPclassindex <- function(classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule) {
-    .Call('PPforest_PPclassindex', PACKAGE = 'PPforest', classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule)
+    .Call('_PPforest_PPclassindex', PACKAGE = 'PPforest', classtemp, testclassindex, testdata, Treestruct, AlphaKeep, CKeep, id, Rule)
 }
 
 PPpred <- function(TRstr, TRprnode, TRspl, testdata) {
-    .Call('PPforest_PPpred', PACKAGE = 'PPforest', TRstr, TRprnode, TRspl, testdata)
+    .Call('_PPforest_PPpred', PACKAGE = 'PPforest', TRstr, TRprnode, TRspl, testdata)
 }
 
 imposoon <- function(train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL) {
-    .Call('PPforest_imposoon', PACKAGE = 'PPforest', train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL)
+    .Call('_PPforest_imposoon', PACKAGE = 'PPforest', train, classes, oobid, permute, trees, noob, TRstrL, TRsplL, TRprnodeL)
 }
 
