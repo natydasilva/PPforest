@@ -1,8 +1,7 @@
 
-#' Predict class for the test set and calculate prediction error
+#' Predict class for the test set and calculate prediction error after finding the PPtree structure, .
 #' 
-#' After finding tree structure, predict class for the test set and calculate prediction error.
-#' @usage PPclassify( Tree.result, test.data = NULL, Rule = 1, true.class = NULL)  
+#' @usage PPclassify2( Tree.result, test.data = NULL, Rule = 1, true.class = NULL)  
 #' @param Tree.result the result of PP.Tree
 #' @param test.data  the test dataset
 #' @param Rule split rule 1:mean of two group means, 2:weighted mean, 3: mean of max(left group) and min(right group), 4: weighted mean of max(left group) and min(right group)
@@ -19,8 +18,8 @@
 #' Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
 #' Tree.crab
 #' 
-#' PPclassify(Tree.crab)
-PPclassify <- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
+#' PPclassify2(Tree.crab)
+PPclassify2 <- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
     if (is.null(test.data)) 
         test.data <- Tree.result$origdata
     test.data <- as.matrix(test.data)
@@ -53,7 +52,6 @@ PPclassify <- function(Tree.result, test.data = NULL, Rule = 1, true.class = NUL
         temp <- PPclassification(as.matrix(Tree.result$Tree.Struct), as.matrix(temp$testclassindex[-1, 
             ]), as.vector(IOindex), as.vector(test.class), 0, 0)
     }
-    
     
     
     if (!is.null(true.class)) {

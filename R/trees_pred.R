@@ -15,7 +15,6 @@
 #'  
 #' pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores=2)
 #' 
-#' 
 #' pprf.crab <- PPforest(data = crab, class = 'Type',
 #'  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
 #'  
@@ -24,10 +23,10 @@
 trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, ...) {
     if (.Platform$OS.type == "windows") {
         if (class(object) == "PPforest") {
-            votes <- plyr::ldply(object[[8]], function(x) as.numeric(PPclassify(Tree.result = x, 
+            votes <- plyr::ldply(object[[8]], function(x) as.numeric(PPclassify2(Tree.result = x, 
                 test.data = xnew, Rule = 1)[[2]]))[, -1]
         } else {
-            votes <- plyr::ldply(object, function(x) as.numeric(PPclassify(Tree.result = x[[1]], 
+            votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], 
                 test.data = xnew, Rule = 1)[[2]]))[, -1]
             
             
@@ -39,10 +38,10 @@ trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, ...) {
             # cl <- parallel::makeCluster(cores) doParallel::registerDoParallel(cl)
         }
         if (class(object) == "PPforest") {
-            votes <- plyr::ldply(object[[8]], function(x) as.numeric(PPclassify(Tree.result = x, 
+            votes <- plyr::ldply(object[[8]], function(x) as.numeric(PPclassify2(Tree.result = x, 
                 test.data = xnew, Rule = 1)[[2]]), .parallel = parallel)[, -1]
         } else {
-            votes <- plyr::ldply(object, function(x) as.numeric(PPclassify(Tree.result = x[[1]], 
+            votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], 
                 test.data = xnew, Rule = 1)[[2]]), .parallel = parallel)[, -1]
             
             

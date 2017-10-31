@@ -4,12 +4,20 @@ author: "N. da Silva, D. Cook & E. Lee & "
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 fig_caption: true
+bibliography: biblio.bib
+nocite: |
+  @devtools
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Vignette Title}
   \usepackage[utf8]{inputenc}
 ---
 
+```{r hooks, echo = FALSE}
+library(ggplot2)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = TRUE, autodep=TRUE, cache.lazy=FALSE )
+theme_set(theme_bw(base_family="serif"))
+```
 ##Introduction
 
 The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
@@ -18,48 +26,15 @@ To improve the speed performance `PPforest` package, `PPtree` algorithm was tran
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
 The development version of`PPforest` can be installed from github using:
 
-```{r,echo=FALSE, message=FALSE, warning=FALSE,eval=FALSE}
+```r
 library(devtools)
-#install_github("natydasilva/PPforest")
+install_github("natydasilva/PPforest")
 library(PPforest)
 ```
-### Example
-Australian crab data set will be used as example. This data contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
-
-1. FL the size of the frontal lobe length, in mm
-2. RW rear width, in mm
-3. CL length of mid line of the carapace, in mm
-4. CW maximum width of carapace, in mm
-5. BD depth of the body; for females, measured after displacement of the abdomen, in mm
-
-To visualize this data set we use a scatterplot matrix from the package `GGally` 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-require(PPforest)
-require(RColorBrewer)
-require(GGally)
-require(gridExtra)
-require(PPtreeViz)
-```
-
-```{r,fig.show='hold', fig.width = 5, fig.height = 5, echo=FALSE}
-
-a <- GGally::ggpairs(PPforest::crab,
-    columns = 2:6,
-    ggplot2::aes(colour = Type, alpha=.1),
-    lower = list(continuous = 'points'),
-    axisLabels='none',
-    upper=list(continuous='blank')
-     , legend = NULL)
-
-a
-```
-
-
-In this figure we can see a strong, positive and linear association between the different variables. Also look like the classes can be separated by linear combinations.
 
 ##Projection pursuit classification forest
-In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance to run the forest.  
+
+In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance to run the forest.
 
 One important characteristic of PPtree is that treats the data always as a two-class system,  when the classes are more than two the algorithm uses a two step  projection pursuits optimization in every node split.
 Let  $(X_i,y_i)$ the data set, $X_i$ is a  p-dimensional vector of explanatory variables and  $y_i\in {1,2,\ldots G}$ represents class information with $i=1,\ldots n$.
@@ -83,15 +58,16 @@ Projection pursuit random forest algorithm description
 5.  Based on majority vote predict the class for new data.
 
 ###Overview PPforest package
+
 `PPforest` package implements a classification random forest using projection pursuit classification trees. The following table present all the functions in `PPforest` package.
 
 | Function |Description |
-| ----------------- | --------------------------------------------------------------  | 
+| ----------------- | --------------------------------------------------------------  |
 |baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
 |node_data|Data structure with the  projected and boundary by node and class|
 |permute_importance|Obtain the permuted importance variable measure|
-|ppf_avg__imp| Computes a global importance measure for a PPforest object, average importance measure for a pptree over all the trees.| 
-|PPclassify|
+|ppf_avg_imp| Computes a global importance measure for a PPforest object, average importance measure for a pptree over all the trees.|
+|PPclassify| Predict class for the test set and calculate prediction error after finding the PPtree structure|
 |ppf_global_imp| Computes a global importance measure for a PPforest object|
 |PPforest|Runs a Projection pursuit random forest|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
@@ -102,30 +78,67 @@ Projection pursuit random forest algorithm description
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
+
+### Example
+Australian crab data set will be used as example. This data contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
+
+1. FL the size of the frontal lobe length, in mm
+2. RW rear width, in mm
+3. CL length of mid line of the carapace, in mm
+4. CW maximum width of carapace, in mm
+5. BD depth of the body; for females, measured after displacement of the abdomen, in mm
+
+To visualize this data set we use a scatterplot matrix from the package `GGally`
+
+
+```{r libraries, cache = FALSE, Eecho = FALSE, message = FALSE, warning = FALSE}
+require(PPforest)
+require(RColorBrewer)
+require(GGally)
+require(gridExtra)
+require(PPtreeViz)
+```
+
+```{r,fig.show='hold', fig.height = 5, fig.width = 5, echo=FALSE}
+
+a <- GGally::ggpairs(PPforest::crab,
+    columns = 2:6,
+    ggplot2::aes(colour = Type, alpha=.1),
+    lower = list(continuous = 'points'),
+    axisLabels='none',
+    upper=list(continuous='blank')
+     , legend = NULL)
+
+a
+```
+
+In this figure we can see a strong, positive and linear association between the different variables. Also look like the classes can be separated by linear combinations.
+
 The main function of the package is `PPforest` which implements a projection pursuit random forest.
-<!-- `parallel_dat`, `ppf_oob_error`, `proxy_plot` and `vote_viz` are functions to visualize some of the main diagnostics in `PPforest`. The main diagnostics are; vote matrix, proximity matrix, importance variable measure and error rate. -->
 
 `PPtree_split` this function implements a projection pursuit classification tree with random variable selection in each split, based on the original PPtreeViz algorithm. This function returns a `PPtreeclass` object.
 To use this function we need to specify a formula describing the model to be fitted response\~predictors (`form`),
-`data` is a data frame with the complete data set. Also we need to specify the method `PPmethod`, it is the index to use for projection pursuit: 'LDA' or 'PDA', 
+`data` is a data frame with the complete data set. Also we need to specify the method `PPmethod`, it is the index to use for projection pursuit: 'LDA' or 'PDA',
 `size.p` is the proportion of variables randomly sampled in each split. If size.p = 1 a classic `PPtreeclass` object will be fitted using all the variables in each node partition instead of a subset of them.
 `lambda` penalty parameter in PDA index and is between 0 to 1 .
 he following example fits a projection pursuit classification tree constructed using 0.6 of the variables (3 out of 5) in each node split. We selected `LDA` method.
+
 ```{r}
 Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.6)
- Tree.crab 
+ Tree.crab
 ```
-# `baggtree` this function grow a `PPtreeclass` using `PPtree_split` for each bootstrap sample. 
-# This function returns a data frame with the results from `PPtree_split` for each bootsrap samples. 
-# `m` is the number of trees here is a small example.
- ```{r tidy=FALSE} 
-crab.trees <- baggtree(data = crab, class = "Type",  
-  m =  10, PPmethod = 'LDA', size.p = 0.6, parallel = TRUE,cores=2 )  
- str(crab.trees, max.level = 1) 
+<!-- `baggtree` this function grow a `PPtreeclass` using `PPtree_split` for each bootstrap sample.  -->
+<!--  This function returns a data frame with the results from `PPtree_split` for each bootsrap samples.  -->
+<!-- `m` is the number of trees here is a small example. -->
 
- #selecting first PPtree object, 
- crab.trees[[1]][[1]]
-```
+<!--  ```{r tidy = FALSE}  -->
+<!-- crab.trees <- baggtree(data = crab, class = "Type",   -->
+<!--   m =  10, PPmethod = 'LDA', size.p = 0.6, parallel = TRUE,cores=2 )   -->
+<!--  str(crab.trees, max.level = 1)  -->
+
+<!--  #selecting first PPtree object,  -->
+<!--  crab.trees[[1]][[1]] -->
+<!-- ``` -->
 
 ```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
 The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
@@ -166,49 +179,51 @@ To compute this measure you should use permute_importance function.
 impo1 <- permute_importance(pprf.crab)
 impo1
 ```
-<!-- ggplot(impo1, aes(x = imp, y = nm)) + geom_point() -->
-<!-- ``` -->
-<!-- This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure. -->
+```{r}
+ggplot(impo1, aes(x = imp, y = nm)) + geom_point()
+```
+
+This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure.
 
 
-<!-- For the second importance measure, the coefficients of each projection are examined. The magnitude of these values indicates importance, if the variables have been standardized. The variable importance for a single tree is computed by a weighted sum of the absolute values of the coefficients across nodes. The weights takes the number of classes in each node into account~\citep{lee2013pptree}. -->
-<!-- Then the importance of the variable $X_j$ in the PPtree $k$ can be defined as: -->
+For the second importance measure, the coefficients of each projection are examined. The magnitude of these values indicates importance, if the variables have been standardized. The variable importance for a single tree is computed by a weighted sum of the absolute values of the coefficients across nodes. The weights takes the number of classes in each node into account [@lee2013pptree].
+Then the importance of the variable $X_j$ in the PPtree $k$ can be defined as:
 
-<!-- \[ -->
-<!--   IMP_{pptree}^{(k)}(X_j)=\sum_{nd = 1}^{nn}\frac{|\alpha_{nd}^{(k)}|}{cl_{nd} } -->
-<!-- \] -->
+\[
+  IMP_{pptree}^{(k)}(X_j)=\sum_{nd = 1}^{nn}\frac{|\alpha_{nd}^{(k)}|}{cl_{nd} }
+\]
 
-<!-- Where $\alpha_{nd}^{(k)}$ is the projected coefficient for node $ns$ and variable $k$ and $nn$ the total number of node partitions in the tree $k$. -->
+Where $\alpha_{nd}^{(k)}$ is the projected coefficient for node $ns$ and variable $k$ and $nn$ the total number of node partitions in the tree $k$.
 
-<!-- The global variable importance in a PPforest then can be defined in different ways. The most intuitive is the average variable importance from each PPtree across all the trees in the forest. -->
+The global variable importance in a PPforest then can be defined in different ways. The most intuitive is the average variable importance from each PPtree across all the trees in the forest.
 
 
-<!-- \[ -->
-<!-- IMP_{ppforest1}(X_j)=\frac{\sum_{k=1}^K IMP_{pptree}^{(k)}(X_j)}{K} -->
-<!-- \] -->
-<!-- Alternatively we have defined a global importance measure for the forest as a weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are based on the projection pursuit indexes in each node ($Ix_{nd}$), and 1-(OOB-error of each tree)($acc_k$). -->
+\[
+IMP_{ppforest1}(X_j)=\frac{\sum_{k=1}^K IMP_{pptree}^{(k)}(X_j)}{K}
+\]
 
-<!-- \[IMP_{ppforest2}(X_j)=\frac{\sum_{k=1}^K acc_k \sum_{nd = 1}^{nn}\frac{Ix_{nd}|\alpha_{nd}^{(k)}|}{nn }}{K} -->
-<!-- \] -->
+Alternatively we have defined a global importance measure for the forest as a weighted mean of the absolute value of the projection coefficients across all nodes in every tree. The weights are based on the projection pursuit indexes in each node ($Ix_{nd}$), and 1-(OOB-error of each tree)($acc_k$).
 
-<!-- (INCLUDE REF TO VIZ PAPER) -->
+\[IMP_{ppforest2}(X_j)=\frac{\sum_{k=1}^K acc_k \sum_{nd = 1}^{nn}\frac{Ix_{nd}|\alpha_{nd}^{(k)}|}{nn }}{K}
+\]
 
-<!-- ```{r} -->
 
-<!-- impo2 <-  ppf_avg_pptree_imp(pprf.crab, "Type")  -->
-<!-- impo2  -->
+```{r}
 
-<!-- ggplot(impo2, aes(x = mean, y = variable) ) +geom_point() -->
-<!-- ``` -->
+impo2 <-  ppf_avg_imp(pprf.crab, "Type")
+impo2
 
-<!-- Finally you can get the last importance measure we have proposed for the PPforest using `ppf_global_imp' function. -->
+ ggplot(impo2, aes(x = mean, y = variable) ) +geom_point() 
+```
 
-<!-- ```{r} -->
-<!-- impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)  -->
-<!-- impo3 -->
+Finally you can get the last importance measure we have proposed for the PPforest using `ppf_global_imp' function.
 
-<!-- ggplot(impo3, aes(x = mean, y = variable) ) + geom_point() -->
-<!-- ``` -->
+```{r}
+impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)
+impo3
+
+ggplot(impo3, aes(x = mean, y = variable) ) + geom_point()
+```
 <!-- If we compare the results with the `randomForest` function for this data set the results are the following: -->
 
 <!-- ```{r} -->
@@ -218,11 +233,11 @@ impo1
 <!-- We can see that for this data set the `PPforest` performance is much better than using `randomForest`. `PPforest` works well since the classes can be separated by linear combinations of variables. -->
 <!-- This is a clear case where oblique hyperplanes are more adequate in this case than hyperplanes horizontal to the axis. -->
 
-<!-- Using the information available in the PPforest object, some visualization can be done. I will include some useful examples to visualize the data and some of the most important diagnostics in a forest structure. -->
+Using the information available in the PPforest object, some visualization can be done. I will include some useful examples to visualize the data and some of the most important diagnostics in a forest structure.
 
-<!-- To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the class variable.  -->
+To describe the data structure a parallel plot can be done, the data were stundarized and the color represents the class variable.
 
-<!-- ```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE} -->
+<!-- ```{r,fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE} -->
 <!-- parallel <- function(ppf){ -->
 <!-- myscale <- function(x) (x - mean(x)) / sd(x) -->
 

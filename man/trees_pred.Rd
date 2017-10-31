@@ -29,7 +29,6 @@ m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
  
 pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores=2)
 
-
 pprf.crab <- PPforest(data = crab, class = 'Type',
  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
