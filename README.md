@@ -47,6 +47,21 @@ Overview PPforest package
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
+ Example
+------------
+Australian crab data set will be used as example. This data contains measurements on rock crabs of the genus Leptograpsus. There are 200 observations from two species (blue and orange) and for each specie (50 in each one) there are 50 males and 50 females. Class variable has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale). The data were collected on site at Fremantle, Western Australia. For each specimen, five measurements were made, using vernier calipers.
+
+1. FL the size of the frontal lobe length, in mm
+2. RW rear width, in mm
+3. CL length of mid line of the carapace, in mm
+4. CW maximum width of carapace, in mm
+5. BD depth of the body; for females, measured after displacement of the abdomen, in mm
+
+To visualize this data set we use a scatterplot matrix from the package `GGally`
+
+<img src="scmatrix.png" style="display: block; margin: auto;" />
+
+
 ```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
 The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
 
