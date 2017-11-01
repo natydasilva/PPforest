@@ -1,9 +1,16 @@
 
+The `PPforest` package
+======================
+N. da Silva, D. Cook & E. Lee 
+2017-11-01
+
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
 
 
-##Introduction
+Introduction
+============
 
 The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
 
@@ -11,13 +18,14 @@ To improve the speed performance `PPforest` package, `PPtree` algorithm was tran
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
 The development version of`PPforest` can be installed from github using:
 
-```{r,echo=FALSE, message=FALSE, warning=FALSE,eval=FALSE}
+```r
 library(devtools)
-#install_github("natydasilva/PPforest")
+install_github("natydasilva/PPforest")
 library(PPforest)
 ```
 
-##Projection pursuit classification forest
+Projection pursuit classification forest
+========================================
 
 In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance to run the forest.  
 
@@ -42,7 +50,9 @@ Projection pursuit random forest algorithm description
 
 5.  Based on majority vote predict the class for new data.
 
-###Overview PPforest package
+Overview PPforest package
+-------------------------
+
 `PPforest` package implements a classification random forest using projection pursuit classification trees. The following table present all the functions in `PPforest` package.
 
 | Function |Description |

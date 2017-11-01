@@ -98,6 +98,7 @@ require(RColorBrewer)
 require(GGally)
 require(gridExtra)
 require(PPtreeViz)
+set.seed(310756) #reproducibility
 ```
 
 ```{r,fig.show='hold', fig.height = 5, fig.width = 5, echo=FALSE}
@@ -343,4 +344,9 @@ gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 ``` 
 
 To see a complete description about how to visualize a PPforest object read Interactive Graphics for Visually Diagnosing Forest Classifiers in R [@da2017interactive].
+
+
+
+
+
 
