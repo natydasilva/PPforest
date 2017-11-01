@@ -146,7 +146,7 @@ Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", siz
 The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
 
 ```{r }
-set.seed(146)
+
 pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
                                 size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
 

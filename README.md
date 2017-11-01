@@ -24,31 +24,6 @@ install_github("natydasilva/PPforest")
 library(PPforest)
 ```
 
-Projection pursuit classification forest
-========================================
-
-In `PPforest`, projection pursuit classification trees  are used as the individual model to be combined in the forest. The original algorithm is in `PPtreeViz` package,  we translate the original tree algorithm into `Rcpp` to improve the speed performance to run the forest.  
-
-One important characteristic of PPtree is that treats the data always as a two-class system,  when the classes are more than two the algorithm uses a two step  projection pursuits optimization in every node split.
-Let  $(X_i,y_i)$ the data set, $X_i$ is a  p-dimensional vector of explanatory variables and  $y_i\in {1,2,\ldots G}$ represents class information with $i=1,\ldots n$.
-
-In the first step optimize a projection pursuit index to find an optimal one-dimension projection $\alpha^*$ for separating all classes in the current data. With the projected data redefine the problem in a two class problem by comparing means, and assign a new label $G1$ or $G2$ to each observation, a new variable $y_i^*$ is created.  The new groups $G1$ and $G2$ can contain more than one original classes. Next step is to find an optimal one-dimensional projection $\alpha$, using $(X_i,y_i^*)$ to separate the two class problem $G1$ and $G2$. The best separation of $G1$ and $G2$ is determine in this step and the decision rule is defined for the current node, if $\sum_{i=1}^p \alpha_i M1< c$ then assign $G1$ to the left node else assign $G2$ to the right node, where $M1$ is the mean of $G1$.
-For each groups we can repeat all the previous steps until $G1$ and $G2$ have only one class from the original classes. Base on this process to grow the tree, the depth of PPtree is at most the number of classes because one class is assigned only to one final node.
-
-Trees from `PPtree` algorithm are simple, they use the association between variables to find separation. If a linear boundary exists, `PPtree` produces a tree without misclassification.
-
-Projection pursuit random forest algorithm description
-
-
-1. Let N the number of cases in the training set $\Theta=(X,Y)$, $B$ bootstrap samples from the training set are taking (samples of size N with replacement).
-
-2. For each bootstrap sample a \verb PPtree  is grown to the largest extent possible $h(x, {\Theta_k})$. No pruning. This tree is grown using step 3 modification.
-
-3. Let M the number of input variables, a number of $m<<M$ variables are selected at random at each node and the best split based on a linear combination of these randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes.
-
-4.  Predict the classes of each case not included in the bootstrap sample and compute oob error.
-
-5.  Based on majority vote predict the class for new data.
 
 Overview PPforest package
 -------------------------
@@ -72,3 +47,23 @@ Overview PPforest package
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
+```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
+The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
+
+```{r }
+
+pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
+                                size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
+
+pprf.crab
+```
+
+`PPforest` print a summary result from the model with the confusion matrix information and the oob-error rate in a similar way randomForest packages does.
+
+This function returns the predicted values of the training data, training error, test error and predicted test values. Also there is the information about out of bag error for the forest and also for each tree in the forest. Bootstrap samples, output of all the trees in the forest from , proximity matrix and vote matrix, number of trees grown in the forest, number of predictor variables selected to use for splitting at each node. Confusion matrix of the prediction (based on OOb data), the training data and test data and vote matrix are also returned.
+
+The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
+
+```{r}
+str(pprf.crab,max.level=1 )
+```
