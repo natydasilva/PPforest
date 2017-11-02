@@ -2,7 +2,7 @@
 % Please edit documentation in R/trees_pred.R
 \name{trees_pred}
 \alias{trees_pred}
-\title{Obtain predicted class for new data from baggtree function}
+\title{Obtain predicted class for new data from baggtree function or PPforest}
 \usage{
 trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 }
@@ -21,7 +21,7 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 predicted values form PPforest
 }
 \description{
-Vector with predicted values from a baggtree function.
+Obtain predicted class for new data from baggtree function or PPforest
 }
 \examples{
 crab.trees <- baggtree(data = crab, class = 'Type', 

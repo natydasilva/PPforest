@@ -1,6 +1,5 @@
-#' Obtain predicted class for new data from baggtree function 
+#' Obtain predicted class for new data from baggtree function or PPforest 
 #' 
-#' Vector with predicted values from a baggtree function.
 #' @param object trees classifiers from trees_pp function or PPforest object
 #' @param xnew data frame with explicative variables used to get new predicted values.
 #' @param parallel logical condition, if it is TRUE then  parallelize the function
