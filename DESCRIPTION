@@ -15,19 +15,17 @@ Imports:
     plyr,
     dplyr,
     tidyr,
-    doMC,
 License: LGPL-2.1
 Suggests:
     knitr,
-    randomForest,
-    rpart,
     gridExtra,
     GGally,
     ggplot2,
     RColorBrewer,
     roxygen2 (>= 3.0.0),
     rmarkdown,
-    PPtreeViz
+    PPtreeViz,
+      doMC
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
 RoxygenNote: 6.0.1
