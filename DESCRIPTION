@@ -15,7 +15,7 @@ Imports:
     plyr,
     dplyr,
     tidyr,
-    doParallel
+     doParallel
 License: LGPL-2.1
 Suggests:
     knitr,
