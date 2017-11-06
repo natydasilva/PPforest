@@ -39,13 +39,13 @@ baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.
         
     }
     
-    if (.Platform$OS.type == "windows") {
-        plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
-            class, PPmethod, lambda, size.p), .parallel = parallel)
-    } else {
+    # if (.Platform$OS.type == "windows") {
+    #     plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
+    #         class, PPmethod, lambda, size.p), .parallel = parallel)
+    # } else {
         if (parallel) {
-            doMC::registerDoMC(cores)
-            
+            #doMC::registerDoMC(cores)
+          doParallel::registerDoParallel(cores)
             
             plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
                 class, PPmethod, lambda, size.p), .parallel = parallel)
@@ -55,7 +55,7 @@ baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.
                 class, PPmethod, lambda, size.p), .parallel = parallel)
             
         }
-    }
+    #}
     
 }
 

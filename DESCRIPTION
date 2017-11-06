@@ -15,6 +15,7 @@ Imports:
     plyr,
     dplyr,
     tidyr,
+    doParallel
 License: LGPL-2.1
 Suggests:
     knitr,
@@ -24,8 +25,7 @@ Suggests:
     RColorBrewer,
     roxygen2 (>= 3.0.0),
     rmarkdown,
-    PPtreeViz,
-      doMC
+    PPtreeViz
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
 RoxygenNote: 6.0.1
