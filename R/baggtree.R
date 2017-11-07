@@ -14,9 +14,11 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set
+#' \dontrun{ 
 #' crab.trees <- baggtree(data = crab, class = 'Type',
 #' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallel = FALSE, cores = 2)
 #' str(crab.trees, max.level = 1)
+#' }
 baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1, parallel = FALSE, 
     cores = 2) {
     
@@ -41,7 +43,7 @@ baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.
     
   
         if(parallel) {
-    
+    data <- data
           doParallel::registerDoParallel(cores)
             
             plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 

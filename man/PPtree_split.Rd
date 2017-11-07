@@ -5,7 +5,7 @@
 \title{Projection pursuit classification tree with random variable selection in each split}
 \usage{
 PPtree_split(form, data, PPmethod='LDA', 
-size.p=1,  lambda=0.1,...)
+size.p=1,  lambda = 0.1,...)
 }
 \arguments{
 \item{form}{A character with the name of the class variable.}
@@ -33,8 +33,10 @@ Find tree structure using various projection pursuit indices of classification i
 }
 \examples{
 #crab data set
+\dontrun{ 
 Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
 Tree.crab
+}
 }
 \references{
 Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 

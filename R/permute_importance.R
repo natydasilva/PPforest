@@ -8,10 +8,11 @@
 #' @importFrom Rcpp evalCpp
 #' @export
 #' @examples
+#' \dontrun{ 
 #' pprf.crab <- PPforest(data = crab, class = 'Type',
 #' std = TRUE, size.tr = 1, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE, core = 2)
 #' permute_importance(ppf = pprf.crab) 
-#' 
+#' }
 permute_importance <- function(ppf) {
     sd <- NULL
     imp <- NULL
