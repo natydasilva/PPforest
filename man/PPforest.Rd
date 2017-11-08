@@ -53,9 +53,9 @@ An object of class \code{PPforest} with components.
 }
 \examples{
 #crab example with all the observations used as training
-\dontrun{ 
+
 pprf.crab <- PPforest(data = crab, class = 'Type',
  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = TRUE, cores = 2)
 pprf.crab
-}
+
 }

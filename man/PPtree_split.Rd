@@ -33,10 +33,10 @@ Find tree structure using various projection pursuit indices of classification i
 }
 \examples{
 #crab data set
-\dontrun{ 
+
 Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
 Tree.crab
-}
+
 }
 \references{
 Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 

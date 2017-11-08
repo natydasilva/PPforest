@@ -21,9 +21,9 @@ Data structure with the  projected and boundary by node and class.
 }
 \examples{
 #crab data set with all the observations used as training
-\dontrun{ 
+
 pprf.crab <- PPforest(data = crab, std =TRUE, class = 'Type',
  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 node_data(ppf = pprf.crab, tr = 1) 
-}
+
 }

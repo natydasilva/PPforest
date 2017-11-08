@@ -3,7 +3,7 @@ Type: Package
 Version: 0.1.0
 Title: Projection Pursuit Classification Forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
-Maintainer: Natalia da Silva <ndasilva@iastate.edu>
+Maintainer: Natalia da Silva <natalia@iesta.edu.uy>
 Description: Random forest build on projection pursuit classification tree.
 LazyData: yes
 Depends:

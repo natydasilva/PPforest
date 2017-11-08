@@ -7,7 +7,7 @@
 trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 }
 \arguments{
-\item{object}{trees classifiers from trees_pp function or PPforest object}
+\item{object}{Projection pursuit classification forest structure from PPforest or baggtree}
 
 \item{xnew}{data frame with explicative variables used to get new predicted values.}
 
@@ -18,13 +18,13 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 \item{...}{arguments to be passed to methods}
 }
 \value{
-predicted values form PPforest
+predicted values from PPforest or baggtree
 }
 \description{
 Obtain predicted class for new data from baggtree function or PPforest
 }
 \examples{
-\dontrun{ 
+
 crab.trees <- baggtree(data = crab, class = 'Type', 
 m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
  
@@ -34,5 +34,5 @@ pprf.crab <- PPforest(data = crab, class = 'Type',
  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
 trees_pred(pprf.crab, xnew = pprf.crab$test ,paralle = TRUE)
-}
+
 }

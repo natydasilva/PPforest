@@ -1,9 +1,9 @@
 ---
 title: "Projection pursuit classification random forest "
-author: "N. da Silva, D. Cook & E. Lee & "
+author: "N. da Silva, D. Cook & E.K Lee "
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-fig_caption: true
+fig_caption: yes
 bibliography: biblio.bib
 nocite: |
   @devtools
@@ -12,10 +12,22 @@ vignette: >
   %\VignetteIndexEntry{Vignette Title}
   \usepackage[utf8]{inputenc}
 ---
+```{r libraries, cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE}
+require(PPforest)
+require(dplyr)
+require(RColorBrewer)
+require(GGally)
+require(gridExtra)
+require(PPtreeViz)
+library(ggplot2)
+library(knitr)
+set.seed(310756) #reproducibility
+```
 
 ```{r hooks, echo = FALSE}
-library(ggplot2)
+
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = TRUE, autodep=TRUE, cache.lazy=FALSE )
+opts_knit$set(eval.after = 'fig.cap')
 theme_set(theme_bw(base_family="serif"))
 ```
 ##Introduction
@@ -24,7 +36,14 @@ The `PPforest` package (projection pursuit random forest) contains functions to 
 
 To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
-The development version of`PPforest` can be installed from github using:
+
+You can install the package from CRAN:
+
+```r
+install.package(PPforest)
+library(PPforest)
+```
+Or the development version of `PPforest` can be installed from github using:
 
 ```r
 library(devtools)
@@ -91,17 +110,11 @@ Australian crab data set will be used as example. This data contains measurement
 To visualize this data set we use a scatterplot matrix from the package `GGally`
 
 
-```{r libraries, cache = FALSE, Eecho = FALSE, message = FALSE, warning = FALSE}
-require(PPforest)
-require(dplyr)
-require(RColorBrewer)
-require(GGally)
-require(gridExtra)
-require(PPtreeViz)
-set.seed(310756) #reproducibility
-```
+&nbsp;
 
-```{r,fig.show='hold', fig.height = 5, fig.width = 5, echo=FALSE}
+&nbsp;
+
+```{r descri, fig.align="center", fig.cap=capmatrix,  fig.show='hold', fig.height = 5, fig.width = 5, echo=FALSE}
 
 a <- GGally::ggpairs(PPforest::crab,
     columns = 2:6,
@@ -111,8 +124,13 @@ a <- GGally::ggpairs(PPforest::crab,
     upper=list(continuous='blank')
      , legend = NULL)
 
+capmatrix<-"Scatter plot matrix of crab data "
 a
 ```
+&nbsp;
+
+&nbsp;
+
 
 In this figure we can see a strong, positive and linear association between the different variables. Also look like the classes can be separated by linear combinations.
 
@@ -125,7 +143,7 @@ To use this function we need to specify a formula describing the model to be fit
 `lambda` penalty parameter in PDA index and is between 0 to 1 .
 he following example fits a projection pursuit classification tree constructed using 0.6 of the variables (3 out of 5) in each node split. We selected `LDA` method.
 
-```{r}
+```{r ppsplit}
 Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", size.p = 0.6)
  Tree.crab
 ```
@@ -133,9 +151,9 @@ Tree.crab <- PPforest::PPtree_split("Type~.", data = crab, PPmethod = "LDA", siz
 ```PPforest``` function runs a projection pursuit random forest.  The arguments are a data frame with the data information, class with the name of the class variable argument.  size.tr to specify the proportion of observations using in the training. Using this function we have the option to split the data in training and test using size.tr directly. `size.tr` is the proportion of data used in the training and the test proportion will be 1- `size.tr`.
 The number of trees in the forest is specified using the argument `m`. The argument size.p is the sample proportion of the variables used in each node split, `PPmethod` is the projection pursuit index to be optimized,  two options LDA and PDA are available.
 
-```{r }
+```{r ppf}
 
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
+pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = .8, m = 200,
                                 size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
 
 pprf.crab
@@ -148,8 +166,18 @@ This function returns the predicted values of the training data, training error,
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 
 The output from a `PPforest` object contains a lot of information as we can see in the next output.
-```{r}
-str(pprf.crab,max.level=1 )
+```{r ppstr}
+str(pprf.crab, max.level = 1 )
+```
+
+For example to get the predicted values for the test data we can use the PPforest output:
+```{r predtest}
+pprf.crab$prediction.test
+```
+
+If new data are available you can use the function `trees_pred` to get the predicted classes by PPforest object.
+```r
+trees_pred(pprf.crab, xnew = newdata, paralle = TRUE)
 ```
 
 The PPforest algorithm calculates variable importance in two ways: (1) permuted importance using accuracy,  and (2) importance based on projection coefficients on standardized variables.
@@ -165,14 +193,25 @@ IMP^{(k)}(X_j) = \frac{\sum_{i \in B^{(k)} } I(y_i=\hat y_i^{(k)})-I(y_i=\hat y_
 is the predicted class for the observation $i$ in the tree $k$ and $y_{i,P_j}^{(k)}$ is the predicted class for the observation $i$ in the tree $k$ after permuting the values for variable $X_j$. The global permuted importance measure is the average importance over all the trees in the forest.
 This measure is based on comparing the accuracy of classifying out-of-bag observations, using the true class with permuted (nonsense) class.
 To compute this measure you should use permute_importance function.
+&nbsp;
 
-```{r}
+&nbsp;
+
+```{r impo1}
 impo1 <- permute_importance(pprf.crab)
 impo1
 ```
-```{r}
-ggplot(impo1, aes(x = imp, y = nm)) + geom_point()
+&nbsp;
+
+&nbsp;
+
+```{r figimp1, fig.align="center", fig.cap=capimp1,echo=FALSE}
+ggplot(impo1, aes(x = imp, y = nm) ) + geom_point()
+capimp1 <- "Permuted importance variable"
 ```
+&nbsp;
+
+&nbsp;
 
 This function returns a data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper, imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the also the standardized measure.
 
@@ -197,31 +236,59 @@ Alternatively we have defined a global importance measure for the forest as a we
 
 \[IMP_{ppforest2}(X_j)=\frac{\sum_{k=1}^K acc_k \sum_{nd = 1}^{nn}\frac{Ix_{nd}|\alpha_{nd}^{(k)}|}{nn }}{K}
 \]
+&nbsp;
+
+&nbsp;
 
 
-```{r}
+```{r impo2}
 
 impo2 <-  ppf_avg_imp(pprf.crab, "Type")
 impo2
 
- ggplot(impo2, aes(x = mean, y = variable) ) +geom_point() 
 ```
+
+&nbsp;
+
+&nbsp;
+
+```{r figimp2, fig.align="center",  fig.cap=capimp2,echo=FALSE}
+ ggplot(impo2, aes(x = mean, y = variable) ) + geom_point() 
+capimp2<- "Average importance variable"
+```
+&nbsp;
+
+&nbsp;
 
 Finally you can get the last importance measure we have proposed for the PPforest using `ppf_global_imp' function.
 
-```{r}
+&nbsp;
+
+&nbsp;
+
+```{r impo3}
 impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)
 impo3
+```
+&nbsp;
 
+&nbsp;
+
+```{r figimp3, fig.align = "center",  fig.cap = capimp3, echo = FALSE}
 ggplot(impo3, aes(x = mean, y = variable) ) + geom_point()
+capimp3 <- "Global importance variable"
 ```
 
 
 Using the information available in the PPforest object, some visualization can be done. I will include some useful examples to visualize the data and some of the most important diagnostics in a forest structure.
 
-To describe the data structure a parallel plot can be done, the data were standarized and the color represents the class variable.
+To describe the data structure a parallel plot can be done, the data were standardized and the color represents the class variable.
 
-```{r,fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE}
+&nbsp;
+
+&nbsp;
+
+```{r parallel, , fig.align="center", fig.cap= capar, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE}
 parallel <- function(ppf){
 myscale <- function(x) (x - mean(x)) / sd(x)
 
@@ -239,17 +306,26 @@ ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
 
 }
 
+capar <-"Parallel coordinate plot of crab data"
  parallel(pprf.crab)
-``` 
+```
+ &nbsp;
+ 
+ &nbsp;
+ 
 
-`ternary_str` is an  auxiliary functions in `PPforest` to get the data structure needed to do a ternary plot or a generaized ternary plot if more than 3 classes are available.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
+`ternary_str` is an  auxiliary functions in `PPforest` to get the data structure needed to do a ternary plot or a generalized ternary plot if more than 3 classes are available.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
 Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. 
 <!-- Also will be possible to explore the individual model level. -->
 
 With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
 To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences.
 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE}
+&nbsp;
+
+&nbsp;
+
+```{r mds, , fig.align="center",fig.cap= capmds, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE}
 
 mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 
@@ -269,15 +345,24 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 
   mds
 }
+capmds<- "Multidimensional scaling plot to examine similarities between cases"
+  
 mdspl2d(pprf.crab)
 ```
-
+ &nbsp;
+ 
+ &nbsp;
+ 
 The vote matrix ($n \times p$) contains the proportion of times each observation was classified to each class, whole oob. Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot or with ternary plots.
  A side-by-side jittered dotplot is used for the display, where class is displayed on one axis and proportion is displayed on the other. For each dotplot, the ideal arrangement is that points of observations in that class have values bigger than 0.5, and all other observations have less. This data is close to the ideal but not perfect, e.g. there are a few blue male crabs (orange) that are frequently predicted to be blue females (green), and a few blue female crabs predicted to be another class.
 
-```{r,fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE, echo=FALSE}
+&nbsp;
+
+&nbsp;
+
+```{r side, fig.align="center", fig.cap= capside, fig.show='hold',fig.width = 5 ,fig.height = 5, warning = FALSE, echo=FALSE}
 side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
-                  ttl = "Side by side dotplot") {
+                  ttl = "") {
   voteinf <- data.frame(ids = 1:length(ppf$train[, 1]), Type = ppf$train[, 1],
                       ppf$votes, pred = ppf$prediction.oob ) %>%
   tidyr::gather(Class, Probability, -pred, -ids, -Type)
@@ -290,17 +375,23 @@ side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
     ggplot2::theme(legend.position = lege, legend.text = ggplot2::element_text(angle = ang)) +
     ggplot2::labs(colour = "Class")
 }
-
+capside <-"Vote matrix representation by a jittered side-by-side dotplot. Each dotplot shows the proportion of times the case was predicted into the group, with 1 indicating that the case was always predicted to the group and 0 being never."
  side(pprf.crab) 
  ``` 
+ &nbsp;
+ 
+ &nbsp;
 
  A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space. 
  One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown. 
  When we have tree classes a ternary plot are well defined. With more than tree classes the ternary plot idea need to be generalized.@sutherland2000orca suggest the best approach to visualize compositional data will be to project the data into the $(p-1)-$D space (ternary diagram in $2-D$)  This will be the approach used to visualize the vote matrix information. 
 
  A ternary plot is a triangular diagram used to display compositional data with three components. More generally, compositional data can have any number of components, say $p$, and hence is contrained to a $(p-1)$-D simplex in $p$-space. The vote matrix is an example of compositional data, with $G$ components. 
+&nbsp;
 
-```{r,fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
+&nbsp;
+ 
+```{r ternary, fig.align="center",fig.cap= capter, fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
  pl_ter <- function(dat, dx, dy ){ 
  p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>% 
    dplyr::select(Class, x, y) %>% 
@@ -323,12 +414,16 @@ p3 <-  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 2, dy = 3), 2
 
 gridExtra::grid.arrange(p1, p2, p3, ncol = 3) 
 
+capter <- "Generalized ternary plot representation of the vote matrix for four classes. The tetrahedron is shown pairwise. Each point corresponds to one observation and color is the true class."
 ``` 
+&nbsp;
+
+&nbsp;
+
 
 To see a complete description about how to visualize a PPforest object read Interactive Graphics for Visually Diagnosing Forest Classifiers in R [@da2017interactive].
 
 
 
 
-
-
+## REFERENCES
