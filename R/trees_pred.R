@@ -9,7 +9,7 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @examples 
-#' 
+#' \dontrun{
 #' crab.trees <- baggtree(data = crab, class = 'Type', 
 #' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
 #'  
@@ -19,7 +19,7 @@
 #'  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
 #'  
 #' trees_pred(pprf.crab, xnew = pprf.crab$test ,paralle = TRUE)
-#' 
+#' }
 trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, ...) {
 
         if (parallel) {
