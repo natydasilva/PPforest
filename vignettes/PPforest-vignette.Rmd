@@ -8,8 +8,6 @@ bibliography: biblio.bib
 nocite: |
   @devtools
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Vignette Title}
   \usepackage[utf8]{inputenc}
 ---
 ```{r libraries, cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE}
