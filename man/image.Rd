@@ -15,7 +15,7 @@ contains  2310 observations of instances from 7 outdoor images
 \item{X1}{ the column of the center pixel of the region} 
 \item{X2}{ the row of the center pixel of the region. }
 \item{X3}{ the number of pixels in a region = 9. }
-\item{X4}{ the results of a line extractoin algorithm that counts how many lines of length 5 (any orientation) with low contrast, less than or equal to 5, go through the region.}
+\item{X4}{ the results of a line extraction algorithm that counts how many lines of length 5 (any orientation) with low contrast, less than or equal to 5, go through the region.}
 \item{X5}{ measure the contrast of horizontally adjacent pixels in the region. There are 6, the mean and standard deviation are given. This attribute is used as a vertical edge detector.}
 \item{X6}{ X5 sd}
 \item{X7}{ measures the contrast of vertically adjacent pixels. Used for horizontal line detection. }

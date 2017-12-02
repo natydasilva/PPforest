@@ -2,7 +2,7 @@
 % Please edit documentation in R/baggtree.R
 \name{baggtree}
 \alias{baggtree}
-\title{For each bootstrap sample grow a projection persuit tree (PPtree object).}
+\title{For each bootstrap sample grow a projection pursuit tree (PPtree object).}
 \usage{
 baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
   size.p = 1, parallel = FALSE, cores = 2)
@@ -28,7 +28,7 @@ baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
 data frame with trees_pp output for all the bootstraps samples.
 }
 \description{
-For each bootstrap sample grow a projection persuit tree (PPtree object).
+For each bootstrap sample grow a projection pursuit tree (PPtree object).
 }
 \examples{
 #crab data set

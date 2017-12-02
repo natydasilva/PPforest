@@ -2,7 +2,7 @@
 % Please edit documentation in R/ppf_avg_imp.R
 \name{ppf_avg_imp}
 \alias{ppf_avg_imp}
-\title{Gobal importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
+\title{Global importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
 in the forest}
 \usage{
 ppf_avg_imp(ppf, class)
@@ -16,7 +16,7 @@ ppf_avg_imp(ppf, class)
 Data frame with the global importance measure
 }
 \description{
-Gobal importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
+Global importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
 in the forest
 }
 \examples{

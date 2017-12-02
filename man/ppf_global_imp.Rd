@@ -2,7 +2,7 @@
 % Please edit documentation in R/ppf_global_imp.R
 \name{ppf_global_imp}
 \alias{ppf_global_imp}
-\title{Gobal importance measure for a PPforest object}
+\title{Global importance measure for a PPforest object}
 \usage{
 ppf_global_imp(data, class, ppf)
 }
@@ -17,7 +17,7 @@ ppf_global_imp(data, class, ppf)
 Data frame with the global importance measure
 }
 \description{
-Gobal importance measure for a PPforest object
+Global importance measure for a PPforest object
 }
 \examples{
 #crab data set with all the observations used as training
