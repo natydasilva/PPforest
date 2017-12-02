@@ -7,7 +7,7 @@
 #' @param class A character with the name of the class variable.
 #' @param std if TRUE standardize the data set, needed to compute global importance measure. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
-#' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this nunber no too small. \code{m = 500} is by default.
+#' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this number no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
 #' @param size.p proportion of variables randomly sampled in each split.
 #' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
@@ -27,7 +27,7 @@
 #' \item{n.tree}{number of trees grown in \code{PPforest}.}
 #' \item{n.var}{number of predictor variables selected to use for spliting at each node.}
 #' \item{type}{classification.}
-#' \item{confusion}{confusion matrix of the prediction (based on OOb data).}
+#' \item{confusion}{confusion matrix of the prediction (based on OOB data).}
 #' \item{call}{the original call to \code{PPforest}.}
 #' \item{train}{is the training data based on \code{size.tr} sample proportion}
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}

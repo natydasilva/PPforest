@@ -1,4 +1,4 @@
-#' Gobal importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
+#' Global importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
 #' in the forest
 #' 
 #' @param ppf is a PPforest object

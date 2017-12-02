@@ -1,4 +1,4 @@
-#' For each bootstrap sample grow a projection persuit tree (PPtree object).
+#' For each bootstrap sample grow a projection pursuit tree (PPtree object).
 #' 
 #' @importFrom magrittr %>%
 #' @param data Data frame with the complete data set.

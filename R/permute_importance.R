@@ -2,8 +2,8 @@
 #' 
 #' @param ppf is a PPforest object
 #' @return A data frame with permuted importance measures, imp is the permuted importance measure defined in Brieman paper,
-#' imp2 is the prmuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the 
-#' also the stundardized mesure. 
+#' imp2 is the permuted importance measure defined in randomForest package, the standard deviation (sd.im and sd.imp2) for each measure is computed and the 
+#' also the standardized mesure. 
 #' @useDynLib PPforest
 #' @importFrom Rcpp evalCpp
 #' @export
