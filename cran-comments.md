@@ -8,4 +8,4 @@ This is the first version of the package.
 
 # R CMD check results
 
-There were no ERRORs, WARNINGs, or NOTEs.
+There were no ERRORs or WARNINGs, there was 1 NOTE.
