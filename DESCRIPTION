@@ -14,7 +14,6 @@ Imports:
     plyr,
     dplyr,
     tidyr,
-    rmarkdown,
      doParallel
 License: LGPL-2.1
 Suggests:
@@ -24,7 +23,8 @@ Suggests:
     ggplot2,
     RColorBrewer,
     roxygen2 (>= 3.0.0),
-    PPtreeViz
+    PPtreeViz,
+    rmarkdown
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
 RoxygenNote: 6.0.1
