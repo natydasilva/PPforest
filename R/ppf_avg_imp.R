@@ -8,11 +8,11 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
-#' \dontrun{
+#' 
 #' pprf.crab <- PPforest(data = crab, std =TRUE, class = 'Type',
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 #'  ppf_avg_imp(pprf.crab, 'Type') 
-#'  }
+#'  
 ppf_avg_imp <- function(ppf, class) {
     node.id <- NULL
     nodecl <- NULL

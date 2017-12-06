@@ -7,11 +7,11 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
-#' \dontrun{
+#'
 #' pprf.crab <- PPforest(data = crab, std =TRUE, class = 'Type',
 #'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
 #' node_data(ppf = pprf.crab, tr = 1) 
-#'} 
+#' 
 node_data <- function(ppf, tr, Rule = 1) {
     ind_node <- function(PPclassOBJ, node.id, Rule) {
         searchGroup <- function(node.id, TS, gName) {

@@ -15,12 +15,12 @@
 #' @keywords tree
 #' @examples
 #' #crab data set
-#'\dontrun{
+#'
 #' Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
 #' Tree.crab
 #' 
 #' PPclassify2(Tree.crab)
-#'}
+#'
 PPclassify2 <- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
     if (is.null(test.data)) 
         test.data <- Tree.result$origdata

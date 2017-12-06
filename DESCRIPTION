@@ -4,7 +4,9 @@ Version: 0.1.0
 Title: Projection Pursuit Classification Forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <natalia@iesta.edu.uy>
-Description: Random forest build on projection pursuit classification tree.
+Description: Implements projection pursuit forest algorithm for supervised classification.
+License: GPL (>= 2)
+URL: https://github.com/natydasilva/PPforest
 LazyData: yes
 Depends:
     R (>= 3.2.0)
@@ -28,3 +30,4 @@ Suggests:
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
 RoxygenNote: 6.0.1
+
