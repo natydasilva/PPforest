@@ -23,7 +23,7 @@ in the forest
 #crab data set with all the observations used as training
 
 pprf.crab <- PPforest(data = crab, std =TRUE, class = 'Type',
- size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA')
+ size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
  ppf_avg_imp(pprf.crab, 'Type') 
  
 }
