@@ -154,7 +154,7 @@ The number of trees in the forest is specified using the argument `m`. The argum
 ```{r ppf}
 
 pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = .8, m = 200,
-                                size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
+                                size.p =  .5,  PPmethod = 'LDA',  parallel =FALSE, cores = 2)
 
 pprf.crab
 ```
@@ -177,7 +177,7 @@ pprf.crab$prediction.test
 
 If new data are available you can use the function `trees_pred` to get the predicted classes by PPforest object.
 ```r
-trees_pred(pprf.crab, xnew = newdata, paralle = TRUE)
+trees_pred(pprf.crab, xnew = newdata, parallel = TRUE)
 ```
 
 The PPforest algorithm calculates variable importance in two ways: (1) permuted importance using accuracy,  and (2) importance based on projection coefficients on standardized variables.

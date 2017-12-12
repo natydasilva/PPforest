@@ -31,14 +31,15 @@ trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, ...) {
             votes <-  plyr::ldply(object[[8]], function(x) as.numeric(PPforest::PPclassify2(Tree.result = x, 
                 test.data = xnew, Rule = 1)[[2]]), .parallel = parallel)[, -1]
          
+            on.exit()
         } else {
             votes <- plyr::ldply(object, function(x) as.numeric(PPclassify2(Tree.result = x[[1]], 
                 test.data = xnew, Rule = 1)[[2]]), .parallel = parallel)[, -1]
             
             
         }
+  
  
-    
     max.vote <- mvote(as.matrix((votes)))
     
     colnames(votes) <- NULL
