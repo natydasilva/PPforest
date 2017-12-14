@@ -49,7 +49,7 @@ baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.
            pp <- plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
                 class, PPmethod, lambda, size.p), .parallel = parallel)
           
-           on.exit()
+           doParallel::stopImplicitCluster()
         }else{
             pp <- plyr::dlply(dplyr::data_frame(bootsam = 1:m), plyr::.(bootsam), function(x) boottree(data, 
                 class, PPmethod, lambda, size.p), .parallel = parallel)
