@@ -16,7 +16,6 @@ Imports:
     plyr,
     dplyr,
     tidyr,
-    parallel,
      doParallel
 License: LGPL-2.1
 Suggests:
