@@ -6,8 +6,7 @@ N. da Silva, D. Cook & E. Lee
 
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
-
+[![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)](https://cran.r-project.org/web/packages/PPforest/index.html) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
 
 Introduction
 ============
