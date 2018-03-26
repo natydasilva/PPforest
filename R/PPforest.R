@@ -47,7 +47,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     pred <- NULL
     id <- NULL
     if (std) {
-        dataux <- data %>% dplyr::select(-get(class)) %>% apply(2, FUN = scale) %>% dplyr::as_data_frame()
+        dataux <- data %>% dplyr::select(-class) %>% apply(2, FUN = scale) %>% dplyr::as_data_frame()
         data <- data.frame(data[, class], dataux)
         colnames(data)[1] <- class
     }
@@ -66,7 +66,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     output <- lapply(outputaux, function(x) x[[1]])
     
     data.b <- lapply(outputaux, function(x) x[[2]])
-    pred.tr <- trees_pred(outputaux, xnew = dplyr::select(train, -get(class)), parallel, cores = cores)
+    pred.tr <- trees_pred(outputaux, xnew = dplyr::select(train, -class), parallel, cores = cores)
     
     expand.grid.ef <- function(seq1, seq2) {
         data.frame(a = rep.int(seq1, length(seq2)), b = rep.int(seq2, rep.int(length(seq1), 
@@ -96,7 +96,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
         class]))), m)
     
     error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr[[2]])/length(pred.tr[[2]])
-    test <- data[-tr.index, ] %>% dplyr::select(-get(class)) %>% dplyr::filter_()
+    test <- data[-tr.index, ] %>% dplyr::select(-class) %>% dplyr::filter_()
     
     if (dim(test)[1] != 0) {
         pred.test <- trees_pred(outputaux, xnew = test, parallel, cores = cores)

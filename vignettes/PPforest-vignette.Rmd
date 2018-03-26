@@ -338,7 +338,7 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
   df <- data.frame(Class = ppf$train[, 1], rf.mds$points)
 
   mds <- ggplot2::ggplot(data = df) +
-   ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Type),
+   ggplot2::geom_point(ggplot2::aes(x = MDS1, y = MDS2, color = Class),
               size = I(siz), alpha = .5) +
    ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2", name = "Type") +
    ggplot2::theme(legend.position = lege, aspect.ratio = 1)
@@ -347,7 +347,7 @@ mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 }
 capmds<- "Multidimensional scaling plot to examine similarities between cases"
   
-mdspl2d(pprf.crab)
+mdspl2d(ppf = pprf.crab)
 ```
  &nbsp;
  
@@ -391,7 +391,7 @@ capside <-"Vote matrix representation by a jittered side-by-side dotplot. Each d
 
 &nbsp;
  
-```{r ternary, fig.align="center",fig.cap= capter, fig.show='hold',fig.width = 7 ,fig.height = 4, warning=FALSE, echo=FALSE}
+```{r ternary, fig.align = "center",fig.cap = capter, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo=FALSE}
  pl_ter <- function(dat, dx, dy ){ 
  p1  <- dat[[1]] %>% dplyr::filter(pair %in% paste(dx, dy, sep = "-") ) %>% 
    dplyr::select(Class, x, y) %>% 

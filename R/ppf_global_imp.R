@@ -26,7 +26,7 @@ ppf_global_imp <- function(data, class, ppf) {
         data.frame(node = 1:nrow(x[[2]]), abs(x[[2]]))
     }) %>% dplyr::bind_rows()
     
-    colnames(mat.proj)[-1] <- colnames(dplyr::select(data, -get(class)))
+    colnames(mat.proj)[-1] <- colnames(dplyr::select(data, -class))
     
     index <- lapply(ppf[["output.trees"]], function(x) {
         data.frame(index = x$Tree.Struct[, "Index"][x$Tree.Struct[, "Index"] != 0])

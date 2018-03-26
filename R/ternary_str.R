@@ -73,7 +73,7 @@ makePairs <- function(dat, id) {
 #id select proj directions
 ternarydata <- function(ppf, id){
   n.class <- ppf$train %>% dplyr::select_(ppf$class.var) %>% unique() %>% nrow()
-  projct <- t(f.helmert(nrow(unique(ppf$train[, ppf$class.var])))[-1,])
+  projct <- t(f.helmert(nrow(unique(data.frame(ppf$train[, ppf$class.var]))))[-1,])
   
   dat3 <-
     data.frame(

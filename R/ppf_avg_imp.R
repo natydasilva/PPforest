@@ -39,7 +39,7 @@ ppf_avg_imp <- function(ppf, class) {
     
     infond <- apply(data.frame(1:ppf$n.tree), 1, function(x) nodecl(x)$clt)  #info to weight importance
     info <- data.frame(clnd = matrix(infond, ncol = 1, nrow = ppf$n.tree * nrow(infond), byrow = T))
-    colnames(mat.proj)[-1] <- colnames(dplyr::select(ppf$train, -get(class)))
+    colnames(mat.proj)[-1] <- colnames(dplyr::select(ppf$train, -class))
     
     mat.proj %>% dplyr::bind_cols(clnd = info) %>% dplyr::mutate(tr = rep(1:ppf$n.tree, dim(nn)[1])) %>% 
         tidyr::gather(variable, value, -node, -tr, -clnd) %>% dplyr::mutate(impaux = value/clnd) %>% 
