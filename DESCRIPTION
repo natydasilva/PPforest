@@ -17,7 +17,7 @@ Imports:
     dplyr,
     tidyr,
      doParallel
-License: LGPL-2.1
+Remotes:tidyverse/dplyr
 Suggests:
     knitr,
     gridExtra,
