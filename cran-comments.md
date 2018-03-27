@@ -9,4 +9,4 @@ This is the second version of the package. I have fixed some bugs without adding
 
 # R CMD check results
 
-There were no ERRORs or WARNINGs.
+There were no ERRORs or WARNINGs, one Note.

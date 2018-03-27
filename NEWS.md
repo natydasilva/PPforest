@@ -2,5 +2,4 @@
 
 
 
-* This is the first release of the package
-  
+* This is the second release of the package, minor changes were included to get PPforest and the new dplyr version working together smoothly
