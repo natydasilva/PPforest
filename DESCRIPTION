@@ -1,6 +1,6 @@
 Package: PPforest
 Type: Package
-Version: 0.1.0
+Version: 0.1.1
 Title: Projection Pursuit Classification Forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <natalia@iesta.edu.uy>
@@ -17,7 +17,6 @@ Imports:
     dplyr,
     tidyr,
      doParallel
-Remotes:tidyverse/dplyr
 Suggests:
     knitr,
     gridExtra,
