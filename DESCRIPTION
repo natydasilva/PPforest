@@ -14,7 +14,7 @@ Imports:
     Rcpp (>= 0.12.7),
     magrittr,
     plyr,
-    dplyr,
+    dplyr (>= 0.7.5),
     tidyr,
      doParallel
 Suggests:
