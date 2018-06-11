@@ -5,7 +5,7 @@ This is the second version of the package. I have fixed some bugs without adding
 # Test Environments
 * local OS X (Sierra) install, R 3.5.0
 * win-builder (devel and release)
-* ubuntu 14.04 (on travis-ci), R 3.5.0
+* ubuntu 18.04, R 3.5.0
 
 # R CMD check results
 
