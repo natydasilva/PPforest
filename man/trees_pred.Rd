@@ -4,7 +4,7 @@
 \alias{trees_pred}
 \title{Obtain predicted class for new data from baggtree function or PPforest}
 \usage{
-trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
+trees_pred(object, xnew, parallel = FALSE, cores = 2, rule = 1)
 }
 \arguments{
 \item{object}{Projection pursuit classification forest structure from PPforest or baggtree}
@@ -15,7 +15,7 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, ...)
 
 \item{cores}{number of cores used in the parallelization}
 
-\item{...}{arguments to be passed to methods}
+\item{rule}{split rule 1: mean of two group means 2: weighted mean of two group means - weight with group size 3: weighted mean of two group means - weight with group sd 4: weighted mean of two group means - weight with group se 5: mean of two group medians 6: weighted mean of two group medians - weight with group size 7: weighted mean of two group median - weight with group IQR 8: weighted mean of two group median - weight with group IQR and size}
 }
 \value{
 predicted values from PPforest or baggtree
