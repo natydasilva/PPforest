@@ -37,7 +37,8 @@
 #' #crab example with all the observations used as training
 #' 
 #'pprf.crab <- PPforest(data = crab, class = 'Type',
-#'  std = FALSE, size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
+#'  std = FALSE, size.tr = 1, m = 200, size.p = .5, 
+#'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
 #' pprf.crab
 #' 
 PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
@@ -75,14 +76,14 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     }
     pos <- expand.grid.ef(1:dim(train)[1], 1:dim(train)[1])
     
-    proximity <- proximi((pred.tr[[1]]), m)
+    proximity <- proximi((pred.tr$predtree), m)
     
     index <- oobindex(data.b, m)
     
     oob.obs <- oobobs(index)
     
     
-    mvote.oob <- mvoteoob(pred.tr[[1]], oob.obs)
+    mvote.oob <- mvoteoob(pred.tr$predtree, oob.obs)
     oob.pred <- mvote.oob[, length(unique(clnum)) + 1]
     
     votes <- mvote.oob[, -(length(unique(clnum)) + 1)]
@@ -93,10 +94,10 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     oob.error <- 1 - sum(diag(table(oob.pred, unlist(train[, class]))))/length(unlist(train[, 
         class]))
     
-    oob.err.tree <- ooberrortree(pred.tr[[1]], oob.obs, as.numeric(as.factor(unlist(train[, 
+    oob.err.tree <- ooberrortree(pred.tr$predtree, oob.obs, as.numeric(as.factor(unlist(train[, 
         class]))), m)
     
-    error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr[[2]])/length(pred.tr[[2]])
+    error.tr <- 1-sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr$predforest)/length(pred.tr$predforest)
     test <- data[-tr.index, ] %>% dplyr::select(-(!!class)) %>% dplyr::filter_()
     
     if (dim(test)[1] != 0) {
@@ -117,7 +118,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
         levels(oob.pred) <- levels(as.factor(unlist(train[, class])))
     }
     
-    prediction.training <- as.factor(pred.tr[[2]])
+    prediction.training <- as.factor(pred.tr$predforest)
     if (is.factor(unlist(train[, class]))) {
         levels(prediction.training) <- levels(unlist(train[, class]))
     } else {
@@ -134,7 +135,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
         error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree, 
         boot.samp = data.b, output.trees = output, proximity = proximity, votes = vote.matrix.prop, 
         prediction.oob = oob.pred, n.tree = m, n.var = var.sel, type = "Classification", confusion = confusion, 
-        call = match.call(), train = train, test = test, vote.mat = pred.tr[[1]], class.var = class, 
+        call = match.call(), train = train, test = test, vote.mat = pred.tr$predtree, class.var = class, 
         oob.obs = oob.obs)
     
     class(results) <- "PPforest"

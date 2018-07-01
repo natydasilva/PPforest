@@ -13,14 +13,14 @@
 #' crab.trees <- baggtree(data = crab, class = 'Type', 
 #' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
 #'  
-#' pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores=2)
+#' pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores = 2)
 #' 
 #' pprf.crab <- PPforest(data = crab, class = 'Type',
 #'  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
 #'  
 #' trees_pred(pprf.crab, xnew = pprf.crab$test ,paralle = TRUE)
 #' }
-trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, rule=1) {
+trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, rule = 1) {
 
         if (parallel) {
          
@@ -46,8 +46,9 @@ trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, rule=1) {
     
     colnames(votes) <- NULL
     vote.mat <- as.matrix(votes, ncol = dim(xnew)[[1]], byrow = T)
-    
-    return(list(vote.mat, max.vote))
+    result <- list(vote.mat, max.vote)
+    names(result) <- c("predtree", "predforest")
+    return(result)
 }
 
 
