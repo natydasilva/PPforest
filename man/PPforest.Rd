@@ -5,7 +5,7 @@
 \title{Projection Pursuit Random Forest}
 \usage{
 PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
- lambda = .1, parallel = FALSE, cores = 2, rule =1)
+ lambda = .1, parallel = FALSE, cores = 2, rule = 1, q = 5)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}
@@ -29,6 +29,8 @@ PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
 \item{cores}{number of cores used in the parallelization}
 
 \item{rule}{split rule 1: mean of two group means 2: weighted mean of two group means - weight with group size 3: weighted mean of two group means - weight with group sd 4: weighted mean of two group means - weight with group se 5: mean of two group medians 6: weighted mean of two group medians - weight with group size 7: weighted mean of two group median - weight with group IQR 8: weighted mean of two group median - weight with group IQR and size}
+
+\item{q}{quantile to remove sick trees from the forest}
 }
 \value{
 An object of class \code{PPforest} with components.
@@ -57,7 +59,7 @@ An object of class \code{PPforest} with components.
 #crab example with all the observations used as training
 
 pprf.crab <- PPforest(data = crab, class = 'Type',
- std = FALSE, size.tr = 1, m = 200, size.p = .5, 
+ std = FALSE, size.tr = 1, m = 100, size.p = .5, 
  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
 pprf.crab
 
