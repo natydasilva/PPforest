@@ -288,7 +288,7 @@ To describe the data structure a parallel plot can be done, the data were standa
 
 &nbsp;
 
-```{r parallel, , fig.align="center", fig.cap= capar, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE}
+```{r parallel, fig.align="center", fig.cap= capar, fig.show = 'hold',fig.width = 7 ,fig.height = 4, warning = FALSE, echo = FALSE}
 parallel <- function(ppf){
 myscale <- function(x) (x - mean(x)) / sd(x)
 
@@ -304,19 +304,20 @@ ggplot2::ggplot(scale.dat.melt, ggplot2::aes(x = Variables, y = Value,
   ggplot2::scale_colour_brewer(type = "qual", palette = "Dark2")
 
 
+
 }
 
 capar <-"Parallel coordinate plot of crab data"
- parallel(pprf.crab)
+parallel(pprf.crab)
+
 ```
- &nbsp;
+&nbsp;
  
- &nbsp;
+&nbsp;
  
 
 `ternary_str` is an  auxiliary functions in `PPforest` to get the data structure needed to do a ternary plot or a generalized ternary plot if more than 3 classes are available.  Because the PPforest is composed of many tree fits on subsets of the data, a lot of statistics can be calculated to analyze as a separate data set, and better understand how the model is working.
 Some of the diagnostics of interest are: variable importance, OOB error rate, vote matrix and proximity matrix. 
-<!-- Also will be possible to explore the individual model level. -->
 
 With a decision tree we can compute for every pair of observations the proximity matrix. This is a $nxn$ matrix where if two cases $k_i$ and $k_j$ are in the same terminal node increase their proximity by one, at the end normalize the proximities by dividing by the number of trees.
 To visualize the proximity matrix we use a scatter plot with information from multidimensional scaling method. In this plot color indicates the true species and sex. For this data two dimensions are enough to see the four groups separated quite well. Some crabs are clearly more similar to a different group, though, especially in examining the sex differences.
@@ -325,7 +326,7 @@ To visualize the proximity matrix we use a scatter plot with information from mu
 
 &nbsp;
 
-```{r mds, , fig.align="center",fig.cap= capmds, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE}
+```{r mds, fig.align="center",fig.cap= capmds, fig.show='hold',fig.width = 5 ,fig.height = 4, warning=FALSE, echo=FALSE}
 
 mdspl2d <- function(ppf, lege = "bottom", siz = 3, k = 2) {
 
@@ -349,9 +350,9 @@ capmds<- "Multidimensional scaling plot to examine similarities between cases"
   
 mdspl2d(ppf = pprf.crab)
 ```
- &nbsp;
+&nbsp;
  
- &nbsp;
+&nbsp;
  
 The vote matrix ($n \times p$) contains the proportion of times each observation was classified to each class, whole oob. Two possible approaches to visualize the vote matrix information are shown, with a side-by-side jittered dot plot or with ternary plots.
  A side-by-side jittered dotplot is used for the display, where class is displayed on one axis and proportion is displayed on the other. For each dotplot, the ideal arrangement is that points of observations in that class have values bigger than 0.5, and all other observations have less. This data is close to the ideal but not perfect, e.g. there are a few blue male crabs (orange) that are frequently predicted to be blue females (green), and a few blue female crabs predicted to be another class.
@@ -377,10 +378,10 @@ side <-  function(ppf, ang = 0, lege = "bottom", siz = 3,
 }
 capside <-"Vote matrix representation by a jittered side-by-side dotplot. Each dotplot shows the proportion of times the case was predicted into the group, with 1 indicating that the case was always predicted to the group and 0 being never."
  side(pprf.crab) 
- ``` 
- &nbsp;
+``` 
+&nbsp;
  
- &nbsp;
+&nbsp;
 
  A ternary plot is a triangular diagram that shows the proportion of three variables that sum to a constant and is done using barycentric coordinates. Compositional data lies in a $(p-1)$-D simplex in $p$-space. 
  One advantage of ternary plot is that are good to visualize compositional data and the proportion of three variables in a two dimensional space can be shown. 
