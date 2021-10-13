@@ -1,6 +1,6 @@
 Package: PPforest
 Type: Package
-Version: 0.1.1
+Version: 0.1.2
 Title: Projection Pursuit Classification Forest
 Author: Natalia da Silva, Eun-Kyung Lee, Di Cook
 Maintainer: Natalia da Silva <natalia@iesta.edu.uy>
