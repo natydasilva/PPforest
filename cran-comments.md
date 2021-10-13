@@ -1,11 +1,10 @@
 
-This is the second version of the package. I have fixed some bugs without adding any significant new features. The changes are done to get PPforest and the new dplyr version (0.7.5) working together smoothly.
-
+This is the third version of the package. I have fixed some bugs without adding any significant new features. I have changed the vignette that contain unbalanced codechunk delimiters and I have included PPforest paper references
 
 # Test Environments
-* local OS X (Sierra) install, R 3.5.0
+* local OS X (Catalina) install, R 4.1.1
 * win-builder (devel and release)
-* ubuntu 18.04, R 3.5.0
+
 
 # R CMD check results
 
