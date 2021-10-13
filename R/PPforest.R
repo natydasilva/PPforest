@@ -32,6 +32,10 @@
 #' \item{call}{the original call to \code{PPforest}.}
 #' \item{train}{is the training data based on \code{size.tr} sample proportion}
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
+#'@references Natalia da Silva, Dianne Cook & Eun-Kyung Lee (2021) 
+#'A Projection Pursuit Forest Algorithm for Supervised Classification, 
+#'Journal of Computational and Graphical Statistics,
+#' DOI: 10.1080/10618600.2020.1870480
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
