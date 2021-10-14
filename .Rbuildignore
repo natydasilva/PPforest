@@ -3,3 +3,4 @@
 .travis.yml
 cran-comments.md
 .DS_Store
+^\.github$
