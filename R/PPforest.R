@@ -62,6 +62,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     clnum <- as.numeric(as.factor(data[, class]))
     tr.index <- trainfn(as.matrix(clnum), as.matrix(data[, setdiff(colnames(data), class)]), 
         sizetr = size.tr) + 1
+    tr.index <- as.vector(tr.index)
     train <- data %>% dplyr::slice(tr.index)
     
     type = "Classification"
