@@ -16,7 +16,8 @@ Imports:
     plyr,
     dplyr (>= 0.7.5),
     tidyr,
-     doParallel
+    doParallel, 
+    tibble
 Suggests:
     knitr,
     gridExtra,
