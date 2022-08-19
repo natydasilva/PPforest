@@ -4,7 +4,9 @@
 \name{image}
 \alias{image}
 \title{The image data set}
-\format{A data frame contains 2310 observations and 19 variables}
+\format{
+A data frame contains 2310 observations and 19 variables
+}
 \usage{
 data(image)
 }

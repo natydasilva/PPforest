@@ -4,7 +4,9 @@
 \name{olive}
 \alias{olive}
 \title{The olive data set}
-\format{A data frame contains 573 observations and 10 variables}
+\format{
+A data frame contains 573 observations and 10 variables
+}
 \usage{
 data(olive)
 }

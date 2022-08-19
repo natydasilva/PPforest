@@ -57,8 +57,14 @@ An object of class \code{PPforest} with components.
 #crab example with all the observations used as training
 
 pprf.crab <- PPforest(data = crab, class = 'Type',
- std = FALSE, size.tr = 1, m = 100, size.p = .5, 
+ std = FALSE, size.tr = 1, m = 200, size.p = .5, 
  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
 pprf.crab
 
+}
+\references{
+Natalia da Silva, Dianne Cook & Eun-Kyung Lee (2021) 
+A Projection Pursuit Forest Algorithm for Supervised Classification, 
+Journal of Computational and Graphical Statistics,
+DOI: 10.1080/10618600.2020.1870480
 }

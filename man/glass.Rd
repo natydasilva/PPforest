@@ -4,7 +4,9 @@
 \name{glass}
 \alias{glass}
 \title{Glass data set}
-\format{A data frame with 214 rows and 10 variables}
+\format{
+A data frame with 214 rows and 10 variables
+}
 \usage{
 data(glass)
 }

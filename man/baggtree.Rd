@@ -4,8 +4,16 @@
 \alias{baggtree}
 \title{For each bootstrap sample grow a projection pursuit tree (PPtree object).}
 \usage{
-baggtree(data, class, m = 500, PPmethod = "LDA", lambda = 0.1,
-  size.p = 1, parallel = FALSE, cores = 2)
+baggtree(
+  data,
+  class,
+  m = 500,
+  PPmethod = "LDA",
+  lambda = 0.1,
+  size.p = 1,
+  parallel = FALSE,
+  cores = 2
+)
 }
 \arguments{
 \item{data}{Data frame with the complete data set.}

@@ -4,7 +4,9 @@
 \name{parkinson}
 \alias{parkinson}
 \title{Parkinson data set}
-\format{A data frame with 195 rows and 23 variables}
+\format{
+A data frame with 195 rows and 23 variables
+}
 \source{
 url{https://archive.ics.uci.edu/ml/datasets/Parkinsons}
 }
