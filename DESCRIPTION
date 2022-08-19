@@ -16,7 +16,8 @@ Imports:
     plyr,
     dplyr (>= 0.7.5),
     tidyr,
-     doParallel
+     doParallel,
+     tibble
 Suggests:
     knitr,
     gridExtra,
@@ -28,5 +29,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
-RoxygenNote: 6.0.1
-
+Encoding: UTF-8
+RoxygenNote: 7.2.1
