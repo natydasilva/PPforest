@@ -4,3 +4,4 @@
 cran-comments.md
 .DS_Store
 ^\.github$
+^CRAN-RELEASE$

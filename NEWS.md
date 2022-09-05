@@ -1,5 +1,5 @@
-# PPforest 0.1.2
+# PPforest 0.1.3
 
-* This is the third release of the package, minor changes were included.
-* Include rule paramenter in the trees_pred function to get predictions using different  rules to define the cutooff values of each node.
-* Inlude names  to the list results from trees_pred function.
+* This is the fourth release of the package, minor changes were included.
+* Since R 4.2.0 switched to use HTML5 for documentation pages. Fix problems in the HTML generated from package Rd files.
+* Changed some deprected functions.

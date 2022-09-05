@@ -2,7 +2,7 @@
 The `PPforest` package
 ======================
 N. da Silva, D. Cook & E. Lee 
-2017-11-01
+
 
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
