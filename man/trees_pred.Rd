@@ -33,6 +33,6 @@ pr <- trees_pred(  crab.trees,xnew = crab[, -1], parallel= FALSE, cores = 2)
 pprf.crab <- PPforest(data = crab, class = 'Type',
  std = FALSE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
-trees_pred(pprf.crab, xnew = pprf.crab$test ,paralle = TRUE)
+trees_pred(pprf.crab, xnew = pprf.crab$test ,parallel = TRUE)
 }
 }
