@@ -3,7 +3,7 @@ The `PPforest` package
 ======================
 N. da Silva, D. Cook & E. Lee 
 
-
+![](man/figures/PPforest.png){align="right" width="150px"}
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)]( https://CRAN.R-project.org/package=PPforest) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
