@@ -1,0 +1,6 @@
+url: https://github.com/natydasilva/PPforest
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+  bslib:
+    pkgdown-nav-height: 100px
