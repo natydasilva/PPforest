@@ -4,7 +4,6 @@
 Natalia da Silva, Dianne Cook & Eun-Kyung Lee 
 
 
-<img src="man/figures/PPforest.png" align="right" alt="" width="160" />
 
 
 [![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)]( https://CRAN.R-project.org/package=PPforest)[![CRAN\_Download\_Badge](https://cranlogs.r-pkg.org/badges/grand-total/PPforest)](https://cran.r-project.org/package=PPforest) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
@@ -13,6 +12,8 @@ Natalia da Silva, Dianne Cook & Eun-Kyung Lee
 
 Introduction
 ============
+
+<img src="man/figures/PPforest.png" align="right" alt="" width="160" />
 
 The `PPforest` package (projection pursuit random forest) contains functions to run a projection pursuit random forest for classification problems. This method utilize combinations of variables in each tree construction.  In a random forest each split is based on a single variable, chosen from a subset of predictors. In the `PPforest`, each split is based on a linear combination of randomly chosen variables. The linear combination is computed by optimizing a projection pursuit index, to get a projection of the variables that best separates the classes. The `PPforest` uses the `PPtree` algorithm, which fits a single tree to the data. Utilizing linear combinations of variables to separate classes takes the correlation between variables into account, and can outperform the basic forest when separations between groups occurs on combinations of variables. Two projection pursuit indexes, LDA and PDA, are used for `PPforest`.
 
