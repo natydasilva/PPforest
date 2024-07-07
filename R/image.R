@@ -1,7 +1,7 @@
 #' The image data set 
 #'
 #' contains  2310 observations of instances from 7 outdoor images
-#' \itemize{
+#' \describe{
 #' \item{Type}{ has 7 types of outdoor images, brickface, cement,  foliage, grass, path, sky, and window.}
 #' \item{X1}{ the column of the center pixel of the region} 
 #' \item{X2}{ the row of the center pixel of the region. }

@@ -12,7 +12,7 @@ data(glass)
 }
 \description{
 Contains measurements 214 observations of 6 types of glass; defined in terms of their oxide content.
-\itemize{
+\describe{
 \item{Type}{ has 6 types of glasses}
 \item{X1}{ refractive index} 
 \item{X2}{ Sodium (unit measurement: weight percent in corresponding oxide).} 

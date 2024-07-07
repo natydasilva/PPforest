@@ -12,11 +12,9 @@ data(wine)
 }
 \description{
 A data set containing 178 observations from 3 wine grown cultivares in Italy.
-}
-\details{
-\itemize{
+\describe{
   \item{Type}{ Class variable has 3 classes that are 3 different wine grown cultivares in Italy. } 
   \item{X1 to X13}{Check vbles}
-}
+  }
 }
 \keyword{datasets}

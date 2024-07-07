@@ -1,7 +1,7 @@
 #' Parkinson data set
 #' 
 #' A data set containing 195 observations from 2 parkinson types.
-#' \itemize{
+#' \describe{
 #'  \item{Type}{ Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}. 
 #'   \item{X1}{ Average vocal fundamental frequency}
 #'   \item{X2}{ Maximum vocal fundamental frequency} 
@@ -25,11 +25,11 @@
 #'   \item{X20}{ spread1 Nonlinear measures of fundamental frequency variation}
 #'   \item{X21}{ spread2 Nonlinear measures of fundamental frequency variation}
 #'   \item{X22}{ PPE Nonlinear measures of fundamental frequency variation}
-#' }
+#'   }
 #' @docType data
 #' @keywords datasets
 #' @name parkinson
 #' @usage data(parkinson)
 #' @format A data frame with 195 rows and 23 variables
-#' @source url{https://archive.ics.uci.edu/ml/datasets/Parkinsons}
+#' @source [https://archive.ics.uci.edu/ml/datasets/Parkinsons](Parkinson)
 NULL

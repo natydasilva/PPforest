@@ -38,8 +38,6 @@ arma::vec LDAindex2(arma::vec origclass, arma::mat origdata,
   int n = origdata.n_rows, p = origdata.n_cols; 
   int q = proj.n_cols, p1 = proj.n_rows;
 
-  
-   
    arma::vec clval = arma::unique(origclass);
    //----
    arma::vec newclass(n, fill::zeros);
@@ -442,9 +440,9 @@ int n = origdata.n_rows;
     newclass = origclass;
     
   } else { 
-    for (int k=0; k < g; k++) {
-      double tot=0.0;
-      for (int j=0; j<n; j++) {
+    for (int k = 0; k < g; k++) {
+      double tot = 0.0;
+      for (int j = 0; j < n; j++) {
         if (origclass(j) == clval(k) ) tot += projdata(j);  
       }
       mean_g(k) = tot/ng(k) ; 

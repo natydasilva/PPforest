@@ -3,7 +3,7 @@
 #' Measurements on rock crabs of the genus Leptograpsus. The data set contains 200 observations
 #'  from two species of crab (blue and orange), there are 50 specimens of each sex of each species,
 #'   collected on site at Fremantle, Western Australia. 
-#' \itemize{
+#' \describe{
 #'   \item{Type}{ is the class variable and has 4 classes with the combinations of specie and sex (BlueMale, BlueFemale, OrangeMale and OrangeFemale)}. 
 #'   \item{FL}{the size of the frontal lobe length, in mm}
 #'   \item{RW}{rear width, in mm}
