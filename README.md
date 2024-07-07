@@ -1,13 +1,13 @@
 
-The `PPforest` package
+`PPforest` package
 ======================
 Natalia da Silva, Dianne Cook & Eun-Kyung Lee 
 
-<p align="right">
-  <img src="man/figures/PPforest.png" alt="Descripción de la imagen" width="250px">
-</p>
 
-[![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)]( https://CRAN.R-project.org/package=PPforest) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
+<img src="man/figures/PPforest.png" align="right" alt="" width="120" />
+
+
+[![CRAN Status](https://www.r-pkg.org/badges/version/PPforest)]( https://CRAN.R-project.org/package=PPforest)[![CRAN\_Download\_Badge](https://cranlogs.r-pkg.org/badges/grand-total/PPforest)](https://cran.r-project.org/package=PPforest) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/PPforest)](https://www.r-pkg.org/pkg/PPforest)[![Travis-CI Build Status](https://travis-ci.org/natydasilva/PPforest.svg?branch=master)](https://travis-ci.org/natydasilva/PPforest)
 
 Introduction
 ============
