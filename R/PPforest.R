@@ -66,11 +66,12 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     train <- data %>% dplyr::slice(tr.index)
     
     type = "Classification"
-    var.sel <- round((ncol(train) - 1) * size.p)
+    #var.sel <- round((ncol(train) - 1) * size.p) error en print que no coincide con Andres avisa
     
     outputaux <- baggtree(data = train, class = class, m = m, PPmethod = PPmethod, lambda = lambda, 
         size.p = size.p, parallel = parallel, cores = cores)
     
+    var.sel <- sum(outputaux[[1]][[1]]$projbest.node[1,]!=0)
     output <- lapply(outputaux, function(x) x[[1]])
     
     data.b <- lapply(outputaux, function(x) x[[2]])

@@ -23,7 +23,7 @@
 #' PPclassify2(Tree.crab)
 #' 
 #'
-PPclassify2 <- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
+PPclassify2<- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
     if (is.null(test.data)) 
         test.data <- Tree.result$origdata
     test.data <- as.matrix(test.data)
@@ -66,4 +66,5 @@ PPclassify2 <- function(Tree.result, test.data = NULL, Rule = 1, true.class = NU
     # class.name <- names(table(Tree.result$origclass)) predict.class <-
     # class.name[temp$testclass]
     list(predict.error = predict.error, predict.class = temp$testclass)
+    
 }
