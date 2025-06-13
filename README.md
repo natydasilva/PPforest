@@ -19,6 +19,7 @@ The `PPforest` package (projection pursuit random forest) contains functions to 
 
 To improve the speed performance `PPforest` package, `PPtree` algorithm was translated to Rcpp. 
 `PPforest` package utilizes a number of R packages some of them included in "suggests" not to load them all at package start-up.
+
 The development version of`PPforest` can be installed from github using:
 
 ```r
