@@ -1,0 +1,15 @@
+descri	a	capmatrix
+ppsplit	Tree.crab
+ppf	pprf.crab
+ppstr	
+predtest	
+impo1	impo1
+figimp1	capimp1
+impo2	impo2
+figimp2	capimp2
+impo3	impo3
+figimp3	capimp3
+parallel	capar	parallel
+mds	capmds	mdspl2d
+side	capside	side
+ternary	capter	p1	p2	p3	pl_ter

@@ -1,10 +1,9 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: '3.4'
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   PPforest-vignette: PPforest-vignette.html
-last_built: 2023-10-27T14:21Z
+last_built: 2025-06-13T17:32Z
 urls:
   reference: https://github.com/natydasilva/PPforest/reference
   article: https://github.com/natydasilva/PPforest/articles
-
