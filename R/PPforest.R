@@ -54,7 +54,10 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     id <- NULL
 
     if (std) {
-        dataux <- data %>% dplyr::select(-(!!class)) %>% apply(2, FUN = scale) %>% tibble::as_tibble()
+        dataux <- data %>% 
+          dplyr::select(-(!!class)) %>% 
+          apply(2, FUN = scale) %>%
+          tibble::as_tibble()
         data <- data.frame(data[, class], dataux)
         colnames(data)[1] <- class
     }

@@ -26,7 +26,7 @@ baggtree(
 
 \item{lambda}{a parameter for PDA index}
 
-\item{size.p}{proportion of random sample variables in each split.}
+\item{size.p}{proportion of random sample variables in each split if  size.p= 1 it is bagging and if size.p<1 it is a forest.}
 
 \item{parallel}{logical condition, if it is TRUE then  parallelize the function}
 
@@ -41,7 +41,7 @@ For each bootstrap sample grow a projection pursuit tree (PPtree object).
 \examples{
 #crab data set
 crab.trees <- baggtree(data = crab, class = 'Type',
-m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5 , parallel = TRUE, cores = 2)
+m =  200, PPmethod = 'LDA', lambda = .1, size.p = 1 , parallel = TRUE, cores = 2)
 str(crab.trees, max.level = 1)
 
 }
