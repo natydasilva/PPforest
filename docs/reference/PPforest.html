@@ -161,25 +161,25 @@ DOI: 10.1080/10618600.2020.1870480</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#crab example with all the observations used as training</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pprf.crab</span> <span class="op">&lt;-</span> <span class="fu">PPforest</span><span class="op">(</span>data <span class="op">=</span> <span class="va">crab</span>, class <span class="op">=</span> <span class="st">'Type'</span>,</span></span>
-<span class="r-in"><span> std <span class="op">=</span> <span class="cn">FALSE</span>, size.tr <span class="op">=</span> <span class="fl">1</span>, m <span class="op">=</span> <span class="fl">200</span>, size.p <span class="op">=</span> <span class="fl">.5</span>, </span></span>
+<span class="r-in"><span> std <span class="op">=</span> <span class="cn">FALSE</span>, size.tr <span class="op">=</span> <span class="fl">0.7</span>, m <span class="op">=</span> <span class="fl">200</span>, size.p <span class="op">=</span> <span class="fl">.5</span>, </span></span>
 <span class="r-in"><span> PPmethod <span class="op">=</span> <span class="st">'LDA'</span> , parallel <span class="op">=</span> <span class="cn">TRUE</span>, cores <span class="op">=</span> <span class="fl">2</span>, rule<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pprf.crab</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  PPforest(data = crab, class = "Type", std = FALSE, size.tr = 1,      m = 200, PPmethod = "LDA", size.p = 0.5, parallel = TRUE,      cores = 2, rule = 1) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PPforest(data = crab, class = "Type", std = FALSE, size.tr = 0.7,      m = 200, PPmethod = "LDA", size.p = 0.5, parallel = TRUE,      cores = 2, rule = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Type of random forest: Classification</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      Number of trees: 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No. of variables tried at each split: 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         OOB estimate of  error rate: 6.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         OOB estimate of  error rate: 5.71%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Confusion matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              BlueFemale BlueMale OrangeFemale OrangeMale class.error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BlueFemale           47        3            0          0        0.06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BlueMale              6       44            0          0        0.12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OrangeFemale          0        0           46          4        0.08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> OrangeMale            0        0            0         50        0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BlueFemale           33        2            0          0        0.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BlueMale              3       32            0          0        0.09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OrangeFemale          0        0           33          2        0.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> OrangeMale            0        1            0         34        0.03</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

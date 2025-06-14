@@ -80,7 +80,7 @@
 
 
 <dt id="arg-size-p">size.p<a class="anchor" aria-label="anchor" href="#arg-size-p"></a></dt>
-<dd><p>proportion of random sample variables in each split.</p></dd>
+<dd><p>proportion of random sample variables in each split if  size.p= 1 it is bagging and if size.p&lt;1 it is a forest.</p></dd>
 
 
 <dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
@@ -100,7 +100,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#crab data set</span></span></span>
 <span class="r-in"><span><span class="va">crab.trees</span> <span class="op">&lt;-</span> <span class="fu">baggtree</span><span class="op">(</span>data <span class="op">=</span> <span class="va">crab</span>, class <span class="op">=</span> <span class="st">'Type'</span>,</span></span>
-<span class="r-in"><span>m <span class="op">=</span>  <span class="fl">200</span>, PPmethod <span class="op">=</span> <span class="st">'LDA'</span>, lambda <span class="op">=</span> <span class="fl">.1</span>, size.p <span class="op">=</span> <span class="fl">0.5</span> , parallel <span class="op">=</span> <span class="cn">TRUE</span>, cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>m <span class="op">=</span>  <span class="fl">200</span>, PPmethod <span class="op">=</span> <span class="st">'LDA'</span>, lambda <span class="op">=</span> <span class="fl">.1</span>, size.p <span class="op">=</span> <span class="fl">1</span> , parallel <span class="op">=</span> <span class="cn">TRUE</span>, cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">crab.trees</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ 1  :List of 2</span>

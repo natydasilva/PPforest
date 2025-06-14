@@ -45,7 +45,7 @@ Overview PPforest package
 |PPforest|Runs a Projection pursuit random forest|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |print.PPforest| Print PPforest object|
-|predict.PPforest|Predict class for the test set and calculate prediction error|
+|predict.PPforest|Predict a PPforest object for newdata|
 |ternary_str|Data structure with the  projected and boundary by node and class|
 |tree_pred|Obtain predicted class for new data using PPforest t.|
 
@@ -67,24 +67,27 @@ The number of trees in the forest is specified using the argument `m`. The argum
 
 ```r 
 
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200,
+pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = 0.7, m = 200,
                                 size.p =  .5,  PPmethod = 'LDA',  parallel =TRUE, cores = 2)
 
 pprf.crab
 
 Call:
- PPforest::PPforest(data = crab, class = "Type", size.tr = 1,      m = 200, PPmethod = "LDA", size.p = 0.5, parallel = TRUE,      cores = 2) 
+ PPforest::PPforest(data = crab, class = "Type", size.tr = 0.7,      m = 200, PPmethod = "LDA", size.p = 0.5, parallel = TRUE,      cores = 2) 
                Type of random forest: Classification
                      Number of trees: 200
-No. of variables tried at each split: 2
+No. of variables tried at each split: 3
 
-        OOB estimate of  error rate: 5%
+        OOB estimate of  error rate: 4.29%
 Confusion matrix:
              BlueFemale BlueMale OrangeFemale OrangeMale class.error
-BlueFemale           49        1            0          0        0.02
-BlueMale              6       44            0          0        0.12
-OrangeFemale          0        0           47          3        0.06
-OrangeMale            0        0            0         50        0.00
+BlueFemale           35        0            0          0        0.00
+BlueMale              3       32            0          0        0.09
+OrangeFemale          0        0           32          3        0.09
+OrangeMale            0        0            0         35        0.00
+
+ 
+
 ```
 
 `PPforest` print a summary result from the model with the confusion matrix information and the oob-error rate in a similar way randomForest packages does.
@@ -94,30 +97,44 @@ This function returns the predicted values of the training data, training error,
 The printed version of a `PPforest` object follows the `randomForest` printed version to make them comparable. Based on confusion matrix, we can observe that the biggest error is for BlueMale class. Most of the wrong classified values are between BlueFemale and BlueMale.
 
 ```r
-str(pprf.crab,max.level=1 )
-List of 21
- $ predicting.training: Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 1 2 2 2 2 1 2 2 1 ...
- $ training.error     : num 0.045
- $ prediction.test    : NULL
- $ error.test         : NULL
- $ oob.error.forest   : num 0.05
- $ oob.error.tree     : num [1:200, 1] 0.1918 0.0597 0.12 0.1519 0.303 ...
+str(pprf.crab, max.level = 1)
+List of 22
+ $ predicting.training: Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 1 2 2 2 2 1 2 1 2 ...
+ $ training.error     : num 0.0429
+ $ prediction.test    : Factor w/ 4 levels "BlueFemale","BlueMale",..: 1 2 2 2 1 2 2 2 1 2 ...
+ $ error.test         : num 0.05
+ $ oob.error.forest   : num 0.0429
+ $ oob.error.tree     : num [1:200, 1] 0.3158 0.1404 0.16 0.102 0.0769 ...
  $ boot.samp          :List of 200
  $ output.trees       :List of 200
- $ proximity          : num [1:200, 1:200] 0 0.72 0.835 0.85 0.78 0.865 0.32 0.875 0.765 0.29 ...
- $ votes              : num [1:200, 1:4] 0.375 0.605 0.372 0.417 0.253 ...
- $ prediction.oob     : Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 1 2 2 2 2 1 2 2 1 ...
+ $ proximity          : num [1:140, 1:140] 0 0.68 0.855 0.845 0.785 0.87 0.35 0.71 0.395 0.48 ...
+ $ votes              : num [1:140, 1:4] 0.415 0.802 0.481 0.191 0.2 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ prediction.oob     : Factor w/ 4 levels "BlueFemale","BlueMale",..: 2 1 2 2 2 2 1 2 1 2 ...
  $ n.tree             : num 200
- $ n.var              : num 2
+ $ n.var              : int 3
  $ type               : chr "Classification"
- $ confusion          : num [1:4, 1:5] 49 6 0 0 1 44 0 0 0 0 ...
+ $ confusion          : num [1:4, 1:5] 35 3 0 0 0 32 0 0 0 0 ...
   ..- attr(*, "dimnames")=List of 2
- $ call               : language PPforest::PPforest(data = crab, class = "Type", size.tr = 1, m = 200, PPmethod = "LDA", size.p = 0.5,      parall| __truncated__
- $ train              :Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	200 obs. of  6 variables:
- $ test               : NULL
- $ vote.mat           : num [1:200, 1:200] 1 2 4 2 1 2 1 2 4 2 ...
+ $ call               : language PPforest::PPforest(data = crab, class = "Type", size.tr = 0.7, m = 200, PPmethod = "LDA",      size.p = 0.5, para| __truncated__
+ $ train              :'data.frame':	140 obs. of  6 variables:
+ $ test               :'data.frame':	60 obs. of  5 variables:
+ $ vote.mat           : num [1:200, 1:140] 1 1 2 2 2 2 1 2 1 1 ...
   ..- attr(*, "dimnames")=List of 2
+ $ vote.mat_cl        : chr [1:4] "BlueFemale" "BlueMale" "OrangeFemale" "OrangeMale"
  $ class.var          : chr "Type"
- $ oob.obs            : num [1:200, 1:200] 1 0 1 0 0 1 0 1 0 0 ...
+ $ oob.obs            : num [1:200, 1:140] 0 1 1 0 1 0 0 0 0 1 ...
  - attr(*, "class")= chr "PPforest"
 ```
+
+The `PPforest` object can be used to predict new data using the `predict` function. The predicted values are returned as a factor with the class levels.
+```{r}
+
+pred.crab <- predict(pprf.crab, newdata = crab[1:10,-1 ])
+
+pred.crab[[3]] 
+ [1] BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale
+ [9] BlueFemale BlueFemale
+Levels: BlueFemale BlueMale OrangeFemale OrangeMale
+```
+

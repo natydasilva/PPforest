@@ -6,6 +6,7 @@
 <url><loc>https://github.com/natydasilva/PPforest/index.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/news/index.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/NCI60.html</loc></url>
+<url><loc>https://github.com/natydasilva/PPforest/reference/PPclassify.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/PPclassify2.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/PPforest.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/PPtree_split.html</loc></url>
@@ -23,6 +24,7 @@
 <url><loc>https://github.com/natydasilva/PPforest/reference/permute_importance.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/ppf_avg_imp.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/ppf_global_imp.html</loc></url>
+<url><loc>https://github.com/natydasilva/PPforest/reference/predict.PPforest.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/print.PPforest.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/ternary_str.html</loc></url>
 <url><loc>https://github.com/natydasilva/PPforest/reference/trees_pred.html</loc></url>

@@ -24,9 +24,12 @@
 #'
 PPclassify<- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
    cllev <- levels(as.factor(Tree.result[[4]]) )
-   if (is.null(test.data)) 
-        test.data <- Tree.result$origdata
-    test.data <- as.matrix(test.data)
+   
+   if (is.null(test.data)){
+    test.data <- Tree.result$origdata
+   }
+   test.data <- as.matrix(test.data)
+   
     if (!is.null(true.class)) {
         true.class <- as.matrix(true.class)
         if (nrow(true.class) == 1) 
