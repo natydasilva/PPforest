@@ -15,16 +15,16 @@
 #' @keywords tree
 #' @examples
 #' #crab data set
-#'
-#' Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
+#'set.seed(143)
+#' idx <-sample(1:200, 150)
+#' Tree.crab <- PPtree_split('Type~.', data = crab[idx,], PPmethod = 'LDA', size.p = 1)
 #' Tree.crab
-#' 
-#' 
-#' PPclassify2(Tree.crab)
+#' PPclassify2(Tree.crab, test.data = crab[-idx, 2:6], Rule = 1,true.class = crab[-idx, 1])
 #' 
 #'
 PPclassify2<- function(Tree.result, test.data = NULL, Rule = 1, true.class = NULL) {
-    if (is.null(test.data)) 
+   cllev <- levels(as.factor(Tree.result[[4]]) )
+   if (is.null(test.data)) 
         test.data <- Tree.result$origdata
     test.data <- as.matrix(test.data)
     if (!is.null(true.class)) {
@@ -56,15 +56,17 @@ PPclassify2<- function(Tree.result, test.data = NULL, Rule = 1, true.class = NUL
         temp <- PPclassification(as.matrix(Tree.result$Tree.Struct), as.matrix(temp$testclassindex[-1, 
             ]), as.vector(IOindex), as.vector(test.class), 0, 0)
     }
-    
+   
     
     if (!is.null(true.class)) {
-        predict.error <- sum(true.class != temp$test.class)
+        predict.error <- sum(true.class != temp$testclass)/dim(true.class)[1]
     } else {
         predict.error <- NA
     }
-    # class.name <- names(table(Tree.result$origclass)) predict.class <-
-    # class.name[temp$testclass]
+    
+    temp$testclass <-as.factor(temp$testclass)
+    levels(temp$testclass) <- cllev
+    
     list(predict.error = predict.error, predict.class = temp$testclass)
     
 }

@@ -59,6 +59,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
         colnames(data)[1] <- class
     }
     
+    cllev <- levels(as.factor(data[, class]))
     clnum <- as.numeric(as.factor(data[, class]))
     tr.index <- trainfn(as.matrix(clnum), as.matrix(data[, setdiff(colnames(data), class)]), 
         sizetr = size.tr) + 1
@@ -142,7 +143,7 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
         error.test = error.test, oob.error.forest = oob.error, oob.error.tree = oob.err.tree,
         boot.samp = data.b, output.trees = output, proximity = proximity, votes = vote.matrix.prop,
         prediction.oob = oob.pred, n.tree = m, n.var = var.sel, type = "Classification", confusion = confusion,
-        call = match.call(), train = train, test = test, vote.mat = pred.tr$predtree, class.var = class,
+        call = match.call(), train = train, test = test, vote.mat = pred.tr$predtree, vote.mat_cl= cllev, class.var = class,
         oob.obs = oob.obs)
   
     

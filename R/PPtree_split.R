@@ -13,7 +13,7 @@
 #' \item{Tree.Struct}{Tree structure of projection pursuit classification tree}
 #' \item{projbest.node}{1-dim optimal projections of each split node}
 #' \item{splitCutoff.node}{cutoff values of each split node}
-#' \item{origclass}{original class} 
+#' \item{origclass_num}{original class numeric} 
 #' \item{origdata}{original data}
 #' @references Lee, YD, Cook, D., Park JW, and Lee, EK (2013) 
 #' PPtree: Projection pursuit classification tree, 
@@ -39,13 +39,13 @@ PPtree_split <- function(form, data, PPmethod = "LDA", size.p = 1, lambda = 0.1,
     origdata <- data[, -which(colnames(data) %in% cls)]
     origdata <- as.matrix(origdata)
     pp <- ncol(origdata)
-    origclass <- as.numeric(as.factor(origclass))
+    origclass_num <- as.numeric(as.factor(origclass))
     
     
-    g <- table(origclass)
+    g <- table(origclass_num)
     G <- length(g)
     
-    Tree.final <- treeconstruct(origclass, origdata, Treestruct = cbind(1:(2 * G - 1), matrix(0, 
+    Tree.final <- treeconstruct(origclass_num, origdata, Treestruct = cbind(1:(2 * G - 1), matrix(0, 
         ncol = 4, nrow = 2 * G - 1)), id = 0, rep = 1, rep1 = 2, rep2 = 1, projbestnode = matrix(0, 
         ncol = pp, nrow = 1), splitCutoffnode = matrix(0, ncol = 8, nrow = 1), PPmethod, lambda, 
         size.p)
@@ -68,7 +68,7 @@ PPtree_split <- function(form, data, PPmethod = "LDA", size.p = 1, lambda = 0.1,
         projbest.node <- Tree.final$projbestnode[-1, ]
     }
     treeobj <- list(Tree.Struct = Tree.Struct, projbest.node = projbest.node, splitCutoff.node = splitCutoff.node, 
-        origclass = origclass, origdata = origdata)
+        origclass = origclass, origclass_num = origclass_num, origdata = origdata)
     
     class(treeobj) <- append(class(treeobj), "PPtreeclass")
     

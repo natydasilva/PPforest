@@ -4,7 +4,15 @@
 #' @param xnew data frame with explicative variables used to get new predicted values.
 #' @param parallel logical condition, if it is TRUE then  parallelize the function
 #' @param cores number of cores used in the parallelization
-#' @param rule split rule 1: mean of two group means 2: weighted mean of two group means - weight with group size 3: weighted mean of two group means - weight with group sd 4: weighted mean of two group means - weight with group se 5: mean of two group medians 6: weighted mean of two group medians - weight with group size 7: weighted mean of two group median - weight with group IQR 8: weighted mean of two group median - weight with group IQR and size
+#' @param rule Split rule used in classification (integer from 1 to 8). 
+#'  1: mean of two group means 
+#'  2: weighted mean of two group means - weight with group size
+#'  3: weighted mean of two group means - weight with group sd 
+#'  4: weighted mean of two group means - weight with group se 
+#'  5: mean of two group medians 
+#'  6: weighted mean of two group medians - weight with group size 
+#'  7: weighted mean of two group median - weight with group IQR 
+#'  8: weighted mean of two group median - weight with group IQR and size
 #' @return predicted values from PPforest or baggtree
 #' @export
 #' @importFrom magrittr %>%

@@ -15,7 +15,15 @@ trees_pred(object, xnew, parallel = FALSE, cores = 2, rule = 1)
 
 \item{cores}{number of cores used in the parallelization}
 
-\item{rule}{split rule 1: mean of two group means 2: weighted mean of two group means - weight with group size 3: weighted mean of two group means - weight with group sd 4: weighted mean of two group means - weight with group se 5: mean of two group medians 6: weighted mean of two group medians - weight with group size 7: weighted mean of two group median - weight with group IQR 8: weighted mean of two group median - weight with group IQR and size}
+\item{rule}{Split rule used in classification (integer from 1 to 8). 
+1: mean of two group means 
+2: weighted mean of two group means - weight with group size
+3: weighted mean of two group means - weight with group sd 
+4: weighted mean of two group means - weight with group se 
+5: mean of two group medians 
+6: weighted mean of two group medians - weight with group size 
+7: weighted mean of two group median - weight with group IQR 
+8: weighted mean of two group median - weight with group IQR and size}
 }
 \value{
 predicted values from PPforest or baggtree

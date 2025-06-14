@@ -25,12 +25,11 @@ Predict class for the test set and calculate prediction error after finding the 
 }
 \examples{
 #crab data set
-
-Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
+set.seed(143)
+idx <-sample(1:200, 150)
+Tree.crab <- PPtree_split('Type~.', data = crab[idx,], PPmethod = 'LDA', size.p = 1)
 Tree.crab
-
-
-PPclassify2(Tree.crab)
+PPclassify2(Tree.crab, test.data = crab[-idx, 2:6], Rule = 1,true.class = crab[-idx, 1])
 
 
 }

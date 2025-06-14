@@ -25,7 +25,7 @@ An object of class \code{PPtreeclass} with components
 \item{Tree.Struct}{Tree structure of projection pursuit classification tree}
 \item{projbest.node}{1-dim optimal projections of each split node}
 \item{splitCutoff.node}{cutoff values of each split node}
-\item{origclass}{original class} 
+\item{origclass_num}{original class numeric} 
 \item{origdata}{original data}
 }
 \description{

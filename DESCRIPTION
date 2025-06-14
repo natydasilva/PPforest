@@ -9,7 +9,7 @@ License: GPL (>= 2)
 URL: https://github.com/natydasilva/PPforest
 LazyData: yes
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.5.0)
 Imports:
     Rcpp (>= 0.12.7),
     magrittr,
