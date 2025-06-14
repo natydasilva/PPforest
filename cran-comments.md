@@ -1,8 +1,7 @@
 
-This is the third version of the package. I have fixed some bugs without adding any significant new features. I have changed the vignette that contain unbalanced codechunk delimiters and I have included PPforest paper references
-
+This is the fifth version of the package. It includes bug fixes and the addition of a predict() S3 method for PPforest objects.
 # Test Environments
-* local OS X (Catalina) install, R 4.1.1
+* local OS X (SEquoia) install, R 4.5.0
 * win-builder (devel and release)
 
 

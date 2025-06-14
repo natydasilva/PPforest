@@ -1,6 +1,6 @@
 Package: PPforest
 Type: Package
-Version: 0.1.3
+Version: 0.1.4
 Title: Projection Pursuit Classification Forest
 Authors@R: 
   c(person(given = "Natalia",
