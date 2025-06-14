@@ -1,5 +1,6 @@
-# PPforest 0.1.3
+# PPforest 0.1.4
 
-* This is the fourth release of the package, minor changes were included.
-* Since R 4.2.0 switched to use HTML5 for documentation pages. Fix problems in the HTML generated from package Rd files.
-* Changed some deprecated functions.
+* This is the fifth release of the package, minor changes were included.
+* Added predict() S3 method for PPforest objects.
+* Fixed some bugs
+
