@@ -39,7 +39,7 @@
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
-#' 
+#' set.seed(123)
 #'pprf.crab <- PPforest(data = crab, class = 'Type',
 #'  std = FALSE, size.tr = 1, m = 200, size.p = .5, 
 #'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
@@ -67,7 +67,6 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     train <- data %>% dplyr::slice(tr.index)
     
     type = "Classification"
-    #var.sel <- round((ncol(train) - 1) * size.p) error en print que no coincide con Andres avisa
     
     outputaux <- baggtree(data = train, class = class, m = m, PPmethod = PPmethod, lambda = lambda, 
         size.p = size.p, parallel = parallel, cores = cores)

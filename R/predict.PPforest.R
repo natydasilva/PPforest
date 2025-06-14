@@ -35,10 +35,10 @@ predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores =
     doParallel::registerDoParallel(cores)
   }
   
-  votes2 <- plyr::ldply(
+  votes <- plyr::ldply(
     object[[8]],  #  contains the trees in a list
     function(x) {
-     pred <- as.numeric(PPforest::PPclassify2(Tree.result = x, test.data = newdata, Rule = rule)[[2]])
+     pred <- as.numeric(PPforest::PPclassify(Tree.result = x, test.data = newdata, Rule = rule)[[2]])
     },
     .parallel = parallel
   )[, -1]

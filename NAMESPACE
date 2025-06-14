@@ -2,7 +2,7 @@
 
 S3method(predict,PPforest)
 S3method(print,PPforest)
-export(PPclassify2)
+export(PPclassify)
 export(PPforest)
 export(PPtree_split)
 export(baggtree)
