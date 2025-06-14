@@ -200,9 +200,15 @@
 <span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a> <span class="sc">$</span> class.var          <span class="sc">:</span> chr <span class="st">"Type"</span></span>
 <span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a> <span class="sc">$</span> oob.obs            <span class="sc">:</span> num [<span class="dv">1</span><span class="sc">:</span><span class="dv">200</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">140</span>] <span class="dv">0</span> <span class="dv">1</span> <span class="dv">1</span> <span class="dv">0</span> <span class="dv">1</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">0</span> <span class="dv">1</span> ...</span>
 <span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a> <span class="sc">-</span> <span class="fu">attr</span>(<span class="sc">*</span>, <span class="st">"class"</span>)<span class="ot">=</span> chr <span class="st">"PPforest"</span></span></code></pre></div>
-<p>The <code>PPforest</code> object can be used to predict new data using the <code>predict</code> function. The predicted values are returned as a factor with the class levels. ```{r}</p>
-<p>pred.crab &lt;- predict(pprf.crab, newdata = crab[1:10,-1 ])</p>
-<p>pred.crab[[3]] [1] BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale [9] BlueFemale BlueFemale Levels: BlueFemale BlueMale OrangeFemale OrangeMale ```</p>
+<p>The <code>PPforest</code> object can be used to predict new data using the <code>predict</code> function. The predicted values are returned as a factor with the class levels.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>pred.crab <span class="ot">&lt;-</span> <span class="fu">predict</span>(pprf.crab, <span class="at">newdata =</span> crab[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="sc">-</span><span class="dv">1</span> ])</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>pred.crab[[<span class="dv">3</span>]] </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a> [<span class="dv">1</span>] BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a> [<span class="dv">9</span>] BlueFemale BlueFemale</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a> </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>Levels<span class="sc">:</span> BlueFemale BlueMale OrangeFemale OrangeMale</span></code></pre></div>
 </div>
 </div>
 

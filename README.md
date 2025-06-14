@@ -128,13 +128,15 @@ List of 22
 ```
 
 The `PPforest` object can be used to predict new data using the `predict` function. The predicted values are returned as a factor with the class levels.
-```{r}
+
+```r
 
 pred.crab <- predict(pprf.crab, newdata = crab[1:10,-1 ])
 
 pred.crab[[3]] 
  [1] BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale BlueFemale
  [9] BlueFemale BlueFemale
+ 
 Levels: BlueFemale BlueMale OrangeFemale OrangeMale
 ```
 
