@@ -1,5 +1,5 @@
 ---
-title: "Projection pursuit classification random forest"
+title: "PPforest"
 author: "N. da Silva, D. Cook & E.K Lee "
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,8 +9,8 @@ nocite: |
   @devtools
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Projection pursuit classification random forest}
-  \usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{PPforest}
+  %\VignetteEncoding{UTF-8} 
 ---
 ```{r libraries, cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE}
 require(PPforest)
@@ -153,8 +153,8 @@ The number of trees in the forest is specified using the argument `m`. The argum
 
 ```{r ppf}
 
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", size.tr = .8, m = 200,
-                                size.p =  .5,  PPmethod = 'LDA',  parallel =FALSE, cores = 2)
+pprf.crab <- PPforest::PPforest(data = crab, class = "Type", std = FALSE, size.tr = .7, m = 200,
+                                size.p =  .8,  PPmethod = 'LDA',  parallel = TRUE, cores = 2)
 
 pprf.crab
 ```
