@@ -32,8 +32,9 @@ Imports:
     plyr,
     dplyr (>= 0.7.5),
     tidyr,
-     doParallel,
-     tibble
+    doParallel,
+    tibble,
+    tidyselect
 Suggests:
     knitr,
     gridExtra,
