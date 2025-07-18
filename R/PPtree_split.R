@@ -1,11 +1,11 @@
 #' Projection pursuit classification tree with random variable selection in each split
 #' 
-#' Find tree structure using various projection pursuit indices of classification in each split.
+#' Find tree structure using  projection pursuit indices of classification in each split.
 #' @usage PPtree_split(form, data, PPmethod='LDA', 
 #' size.p=1,  lambda = 0.1,...) 
 #' @param form A character with the name of the class variable.
 #' @param data Data frame with the complete data set.
-#' @param PPmethod index to use for projection pursuit: 'LDA', 'PDA'
+#' @param PPmethod index to use for projection pursuit: 'LDA' and 'PDA'
 #' @param size.p proportion of variables randomly sampled in each split, default is 1, returns a PPtree.
 #' @param lambda penalty parameter in PDA index and is between 0 to 1 . If \code{lambda = 0}, no penalty parameter is added and the PDA index is the same as LDA index. If \code{lambda = 1} all variables are treated as uncorrelated. The default value is \code{lambda = 0.1}.
 #' @param ... arguments to be passed to methods

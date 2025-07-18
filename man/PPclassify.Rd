@@ -7,7 +7,7 @@
 PPclassify( Tree.result, test.data = NULL, Rule = 1, true.class = NULL)
 }
 \arguments{
-\item{Tree.result}{the result of PP.Tree}
+\item{Tree.result}{the result from PPtree_split}
 
 \item{test.data}{the test dataset}
 

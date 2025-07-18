@@ -21,6 +21,14 @@
 #'   \item{predforest}{Final predicted classes based on majority vote}
 #' }
 #' @export
+#' @examples 
+#' \dontrun{
+#' pprf.crab <- PPforest(data = crab, class = 'Type',
+#'  xstd = 'min-max', size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+#'  
+#' predict(pprf.crab, newdata = pprf.crab$test, parallel = TRUE) 
+#' 
+#' }
 predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores = 2, ...) {
   
   if (!inherits(object, "PPforest")) {

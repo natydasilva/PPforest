@@ -4,12 +4,15 @@
 #' @param ppf is a PPforest object
 #' @param class A character with the name of the class variable. 
 #' @return Data frame with the global importance measure
+#'@references da Silva, N., Cook, D., & Lee, E. K. (2021). A projection pursuit forest 
+#'algorithm for supervised classification. Journal of Computational and Graphical Statistics,
+#' 30(4), 1168-1180.
 #' @export
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
 #' 
-#' pprf.crab <- PPforest(data = crab, std =TRUE, class = 'Type',
+#' pprf.crab <- PPforest(data = crab, xstd = 'min-max', class = 'Type',
 #'  size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
 #'  ppf_avg_imp(pprf.crab, 'Type') 
 #'  

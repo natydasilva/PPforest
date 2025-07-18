@@ -19,8 +19,8 @@ require(RColorBrewer)
 require(GGally)
 require(gridExtra)
 require(PPtreeViz)
-library(ggplot2)
-library(knitr)
+require(ggplot2)
+require(knitr)
 set.seed(310756) #reproducibility
 ```
 
@@ -153,7 +153,7 @@ The number of trees in the forest is specified using the argument `m`. The argum
 
 ```{r ppf}
 
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", std = FALSE, size.tr = .7, m = 200,
+pprf.crab <- PPforest::PPforest(data = crab, class = "Type", xstd = 'min-max', size.tr = .7, m = 200,
                                 size.p =  .8,  PPmethod = 'LDA',  parallel = TRUE, cores = 2)
 
 pprf.crab

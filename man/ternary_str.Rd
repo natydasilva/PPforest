@@ -25,7 +25,7 @@ Data structure with the  projected and boundary by node and class.
 }
 \examples{
 #crab data set with all the observations used as training
-pprf.crab <- PPforest(data = crab, std =TRUE, class = "Type",
+pprf.crab <- PPforest(data = crab, xstd ='min-max', class = "Type",
  size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
  require(dplyr)
 pl_ter <- function(dat, dx, dy ){
@@ -45,4 +45,7 @@ pl_ter <- function(dat, dx, dy ){
 #ternary plot in tree different selected dierections
  pl_ter(ternary_str(pprf.crab, id = c(1, 2, 3), sp = 3, dx = 1, dy = 2), 1, 2 )
 
+}
+\references{
+da da Silva, N., Cook, D. & Lee, EK. Interactive graphics for visually diagnosing forest classifiers in R. Comput Stat 40, 3105–3125 (2025). https://doi.org/10.1007/s00180-023-01323-x
 }

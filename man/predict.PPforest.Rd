@@ -37,3 +37,12 @@ A list with:
 \description{
 Predict method for PPforest objects
 }
+\examples{
+\dontrun{
+pprf.crab <- PPforest(data = crab, class = 'Type',
+ xstd = 'min-max', size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+ 
+predict(pprf.crab, newdata = pprf.crab$test, parallel = TRUE) 
+
+}
+}

@@ -2,7 +2,7 @@
 #' Predict class for the test set and calculate prediction error after finding the PPtree structure, .
 #' 
 #' @usage PPclassify( Tree.result, test.data = NULL, Rule = 1, true.class = NULL)  
-#' @param Tree.result the result of PP.Tree
+#' @param Tree.result the result from PPtree_split
 #' @param test.data  the test dataset
 #' @param Rule split rule 1:mean of two group means, 2:weighted mean, 3: mean of max(left group) and min(right group), 4: weighted mean of max(left group) and min(right group)
 #' @param true.class true class of test dataset if available
