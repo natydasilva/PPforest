@@ -1,11 +1,11 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(data, class, std = TRUE, size.tr, m, PPmethod, size.p,
+#' @usage PPforest(data, class, xstd = 'min-max', size.tr, m, PPmethod, size.p,
 #'  lambda = .1, parallel = FALSE, cores = 2, rule = 1)
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable.
-#' @param std if TRUE standardize the data set, needed to compute global importance measure. 
+#' @param xstd if TRUE standardize the data set, needed to compute global importance measure. 
 #' @param size.tr is the size proportion of the training if we want to split the data in training and test.
 #' @param m is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this number no too small. \code{m = 500} is by default.
 #' @param PPmethod is the projection pursuit index to optimize in each classification tree. The options are \code{LDA} and \code{PDA}, linear discriminant and penalized linear discriminant. By default it is \code{LDA}.
@@ -32,20 +32,19 @@
 #' \item{call}{the original call to \code{PPforest}.}
 #' \item{train}{is the training data based on \code{size.tr} sample proportion}
 #' \item{test}{is the test data based on \code{1-size.tr} sample proportion}
-#'@references Natalia da Silva, Dianne Cook & Eun-Kyung Lee (2021) 
-#'A Projection Pursuit Forest Algorithm for Supervised Classification, 
-#'Journal of Computational and Graphical Statistics,
-#' DOI: 10.1080/10618600.2020.1870480
+#'@references da Silva, N., Cook, D., & Lee, E. K. (2021). A projection pursuit forest 
+#'algorithm for supervised classification. Journal of Computational and Graphical Statistics,
+#' 30(4), 1168-1180.
 #' @export
 #' @examples
 #' #crab example with all the observations used as training
 #' set.seed(123)
 #'pprf.crab <- PPforest(data = crab, class = 'Type',
-#'  std = FALSE, size.tr = 0.7, m = 200, size.p = .5, 
+#'  xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .5, 
 #'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
 #' pprf.crab
 #' 
-PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
+PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
     parallel = FALSE, cores = 2, rule = 1) {
     
     Var1 <- NULL
@@ -53,14 +52,43 @@ PPforest <- function(data, class, std = TRUE, size.tr = 2/3, m = 500, PPmethod, 
     pred <- NULL
     id <- NULL
 
-    if (std) {
+    
+    # Variable scaling.
+    if (xstd != "no") {
+      
+      if (xstd == "min-max") {
+        dataux <- data %>% 
+          dplyr::select(-(!!class)) |>  tibble::as_tibble()
+        mincol <- dataux |> apply( 2, min)
+        maxmincol <- dataux |> apply(2, function(x) {
+          max(x) - min(x)
+        })
+      }
+      if (xstd == "quant") {
+        dataux <- data %>% 
+          dplyr::select(-(!!class)) |>  tibble::as_tibble()
+        mincol <- dataux |> apply( 2, stats::quantile, 0.05) 
+        maxmincol <- dataux |> apply(2, function(x) {
+          stats::quantile(x, 0.95) - stats::quantile(x, 0.05)
+        }) 
+      }
+    
+      if (xstd == 'scale') {
         dataux <- data %>% 
           dplyr::select(-(!!class)) %>% 
           apply(2, FUN = scale) %>%
           tibble::as_tibble()
-        data <- data.frame(data[, class], dataux)
-        colnames(data)[1] <- class
+        
     }
+    if(xstd %in% c('min-max', 'quant')) {
+    datauxscale <- (dataux  - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T)
+    data <- data.frame(data[, class], datauxscale)
+    colnames(data)[1] <- class
+    }else{
+      data <- data.frame(data[, class], dataux)
+      colnames(data)[1] <- class
+    }
+    }  
     
     cllev <- levels(as.factor(data[, class]))
     clnum <- as.numeric(as.factor(data[, class]))
