@@ -39,10 +39,14 @@ Predict method for PPforest objects
 }
 \examples{
 \dontrun{
-pprf.crab <- PPforest(data = crab, class = 'Type',
- xstd = 'min-max', size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+set.seed(1883)
+train <- sample(1:nrow(crab), nrow(crab)*.7)
+crab_train <- data.frame(crab[train, ])
+crab_test <- data.frame(crab[-train, ])
+pprf.crab <- PPforest(data = crab_train, class = 'Type',
+ xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
-predict(pprf.crab, newdata = pprf.crab$test, parallel = TRUE) 
-
+pred <- predict(pprf.crab, newdata = crab_test[,-1], parallel = TRUE) 
+1 - sum(as.numeric(as.factor(crab_test[,1])) == as.numeric(as.factor(pred[[2]])))/length(pred[[2]])
 }
 }

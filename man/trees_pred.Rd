@@ -33,15 +33,24 @@ Obtain predicted class for new data from baggtree function or PPforest
 }
 \examples{
 \dontrun{
-crab.trees <- baggtree(data = crab, class = 'Type', 
-m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
+set.seed(12399)  
+train <- sample(1:nrow(crab), nrow(crab)*.7)
+crab_train <- data.frame(crab[train, ])
+crab_test <- data.frame(crab[-train, ])
+crab.trees <- baggtree(data = crab_train, class = 'Type', 
+m =  1, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
  
-pr <- trees_pred(  crab.trees, xnew = crab[, -1], parallel= FALSE, cores = 2)
+pr <- trees_pred(  crab.trees, xnew = crab_test[, -1], parallel= FALSE, cores = 2)
+ mean(pr[[2]] != as.numeric(crab_test[, 1]))
 
-pprf.crab <- PPforest(data = crab, class = 'Type',
- std = TRUE, size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+
+pprf.crab <- PPforest(data = crab_train, class = 'Type',
+ xstd = "no", size.tr = 0.7, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
-trees_pred(pprf.crab, xnew = pprf.crab$test ,parallel = TRUE)
-pprf.crab$error.test
+pprf.pred <-trees_pred(pprf.crab, xnew = crab_test[,-1], parallel = TRUE)
+1 - sum(as.numeric(as.factor(crab_test[,1])) == pprf.pred[[2]])/length(pprf.pred[[2]])
+mean(pprf.pred[[2]] != as.numeric(crab_test[, 1]))
+
+
 }
 }
