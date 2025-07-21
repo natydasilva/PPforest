@@ -15,7 +15,7 @@
 #' @examples
 #' #crab data set
 #' crab.trees <- baggtree(data = crab, class = 'Type',
-#' m =  200, PPmethod = 'LDA', lambda = .1, size.p = 0.5, parallel = TRUE, cores = 2)
+#' m =  1, PPmethod = 'LDA', lambda = .1, size.p = 0.4, parallel = TRUE, cores = 2)
 #' str(crab.trees, max.level = 1)
 #' 
 baggtree <- function(data, class, m = 500, PPmethod = "LDA", lambda = 0.1, size.p = 1, parallel = FALSE, 

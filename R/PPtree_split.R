@@ -27,7 +27,7 @@
 #' 
 #' Tree.crab <- PPtree_split('Type~.', data = crab, PPmethod = 'LDA', size.p = 0.5)
 #' Tree.crab
-#' 
+#'
 PPtree_split <- function(form, data, PPmethod = "LDA", size.p = 1, lambda = 0.1, ...) {
     
     formula <- stats::as.formula(form)

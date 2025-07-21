@@ -23,11 +23,15 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' pprf.crab <- PPforest(data = crab, class = 'Type',
-#'  xstd = 'min-max', size.tr = 2/3, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+#' set.seed(1883)
+#' train <- sample(1:nrow(crab), nrow(crab)*.7)
+#' crab_train <- data.frame(crab[train, ])
+#' crab_test <- data.frame(crab[-train, ])
+#' pprf.crab <- PPforest(data = crab_train, class = 'Type',
+#'  xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
 #'  
-#' predict(pprf.crab, newdata = pprf.crab$test, parallel = TRUE) 
-#' 
+#' pred <- predict(pprf.crab, newdata = crab_test[,-1], parallel = TRUE) 
+#' 1 - sum(as.numeric(as.factor(crab_test[,1])) == as.numeric(as.factor(pred[[2]])))/length(pred[[2]])
 #' }
 predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores = 2, ...) {
   
@@ -43,8 +47,38 @@ predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores =
     doParallel::registerDoParallel(cores)
   }
   
+   if(object$xstd != "no"){
+   if (object$xstd == "min-max") {
+      dataux <- newdata %>%  tibble::as_tibble()
+      mincol <- dataux |> apply( 2, min)
+      maxmincol <- dataux |> apply(2, function(x) {
+        max(x) - min(x)
+      })
+    }
+  #   if (object$xstd  == "quant") {
+  #     dataux <- xnew |>  tibble::as_tibble()
+  #     mincol <- dataux |> apply( 2, stats::quantile, 0.05) 
+  #     maxmincol <- dataux |> apply(2, function(x) {
+  #       stats::quantile(x, 0.95) - stats::quantile(x, 0.05)
+  #     }) 
+  #   }
+  #   
+  #   if (object$xstd  == 'scale') {
+  #     dataux <- xnew %>% 
+  #       apply(2, FUN = scale) %>%
+  #       tibble::as_tibble()
+  #     
+  #   }
+  #   if(object$xstd  %in% c('min-max', 'quant')) {
+     datauxscale <- data.frame((dataux  - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T))
+    newdata <- datauxscale
+  #     }else{
+  #     xnew <- dataux
+  #     #colnames(data)[1] <- object$class.var
+  #     } 
+}
   votes <- plyr::ldply(
-    object[[8]],  #  contains the trees in a list
+    object$output.trees,  #  contains the trees in a list
     function(x) {
      pred <- as.numeric(PPforest::PPclassify(Tree.result = x, test.data = newdata, Rule = rule)[[2]])
     },
@@ -60,6 +94,5 @@ predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores =
   max.vote <- mvote(as.matrix(vote.mat) ) 
   max.vote_cl <- as.factor(max.vote)
   levels(max.vote_cl) <- object$vote.mat_cl
-  
   return(list(predtree = vote.mat, predforest = max.vote, predforest_cl <- max.vote_cl ))
 }
