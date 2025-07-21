@@ -40,7 +40,7 @@
 #' #crab example with all the observations used as training
 #' set.seed(123)
 #'pprf.crab <- PPforest(data = crab, class = 'Type',
-#'  xstd = 'no', size.tr = 0.7, m = 200, size.p = .4, 
+#'  xstd = 'quant', size.tr = 0.7, m = 200, size.p = .4, 
 #'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule = 1)
 #' pprf.crab
 #' 
@@ -84,35 +84,29 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
       }
     
       if (xstd == 'scale') {
-        # dataux1 <- train %>% 
-        #   dplyr::select(-(!!class)) %>% 
-        #   apply(2, FUN = scale) %>%
-        #   tibble::as_tibble()
-        meanx <- train |>  dplyr::select(-(!!class)) |>  dplyr::summarise(dplyr::across(dplyr::everything(), mean)) |> unlist()
-        sdx   <- train |>  dplyr::select(-(!!class)) |>  dplyr::summarise(dplyr::across(dplyr::everything(), stats::sd))   |> unlist()
-        dataux <- train |> 
-          dplyr::select(-(!!class)) |>
-          dplyr::mutate( dplyr::across( dplyr::everything(), 
-                        ~ (.x - meanx[cur_column()]) / sdx[cur_column()]))
+        dataux <- scale(train |> dplyr::select(-(!!class)) )
+        train_mean <- attr( dataux, "scaled:center")
+        train_sd <- attr( dataux, "scaled:scale")
     }
     if(xstd %in% c('min-max', 'quant')) {
-    trainscale <- (dataux  - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T)
+    trainscale <- (dataux - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T)
     train <- data.frame(train[, class], trainscale)
     colnames(train)[1] <- class
     if (dim(test)[1] != 0){
-      testscale <- (test |> dplyr::select(-(!!class))  - matrix(mincol, nrow(test), ncol(test), byrow = T)) / matrix(maxmincol, nrow(test), ncol(test), byrow = T)
+      testscale <- test |> dplyr::select(-(!!class)) |> as.matrix()
+      testscale <- (testscale  - matrix(mincol, nrow(testscale), ncol(testscale), byrow = T)) / matrix(maxmincol, nrow(testscale), ncol(testscale), byrow = T)
       test <-  data.frame(test[, class], testscale)
       colnames(test)[1] <- class
       }
     
     }else{
-      train <- data.frame(data[, class], dataux)
+      train <- data.frame(train[, class], dataux)
       colnames(train)[1] <- class
       if (dim(test)[1] != 0){
         testscale <- test |> 
-          dplyr::select(-(!!class)) |>
-          dplyr::mutate(dplyr::across(dplyr::everything(), 
-                        ~ (.x - meanx[cur_column()]) / sdx[cur_column()]))
+          dplyr::select(-(!!class)) |> as.matrix() 
+        testscale <- sweep(testscale, 2, train_mean, "-")
+        testscale <- sweep( testscale,2, train_sd, "/")
         test <- data.frame(test[, class], testscale)
         colnames(test)[1] <- class
         
@@ -162,8 +156,8 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
     if (dim(test)[1] != 0){
       
         pred.test <- trees_pred(outputaux, xnew = dplyr::select(test, -(!!class)), parallel, cores = cores, rule = rule)
-        error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
-        pred.test = as.factor(pred.test[[2]])
+        error.test <- 1 - sum(as.numeric(as.factor(test[, class])) == pred.test[[2]])/length(pred.test[[2]])
+         pred.test = as.factor(pred.test[[2]])
         levels(pred.test) <- levels(as.factor(train[, class]))
     } else {
         pred.test <- NULL
