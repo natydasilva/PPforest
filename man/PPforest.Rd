@@ -57,7 +57,7 @@ An object of class \code{PPforest} with components.
 #crab example with all the observations used as training
 set.seed(123)
 pprf.crab <- PPforest(data = crab, class = 'Type',
- xstd = 'no', size.tr = 0.7, m = 200, size.p = .4, 
+ xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .4, 
  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule = 1)
 pprf.crab
 
