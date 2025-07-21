@@ -4,7 +4,7 @@
 \alias{PPforest}
 \title{Projection Pursuit Random Forest}
 \usage{
-PPforest(data, class, xstd = 'min-max', size.tr, m, PPmethod, size.p,
+PPforest(data, class, xstd = 'no', size.tr, m, PPmethod, size.p,
  lambda = .1, parallel = FALSE, cores = 2, rule = 1)
 }
 \arguments{
@@ -57,7 +57,7 @@ An object of class \code{PPforest} with components.
 #crab example with all the observations used as training
 set.seed(123)
 pprf.crab <- PPforest(data = crab, class = 'Type',
- xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .4, 
+ xstd = 'no', size.tr = 0.7, m = 200, size.p = .4, 
  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule = 1)
 pprf.crab
 

@@ -1,7 +1,7 @@
 #' Projection Pursuit Random Forest
 #'
 #'\code{PPforest} implements a random forest using projection pursuit trees algorithm (based on PPtreeViz package).
-#' @usage PPforest(data, class, xstd = 'min-max', size.tr, m, PPmethod, size.p,
+#' @usage PPforest(data, class, xstd = 'no', size.tr, m, PPmethod, size.p,
 #'  lambda = .1, parallel = FALSE, cores = 2, rule = 1)
 #' @param data Data frame with the complete data set.
 #' @param class A character with the name of the class variable.
@@ -40,11 +40,11 @@
 #' #crab example with all the observations used as training
 #' set.seed(123)
 #'pprf.crab <- PPforest(data = crab, class = 'Type',
-#'  xstd = 'quant', size.tr = 0.7, m = 200, size.p = .4, 
+#'  xstd = 'no', size.tr = 0.7, m = 200, size.p = .4, 
 #'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule = 1)
 #' pprf.crab
 #' 
-PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
+PPforest <- function(data, class, xstd = 'no', size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
     parallel = FALSE, cores = 2, rule = 1) {
     
     Var1 <- NULL
