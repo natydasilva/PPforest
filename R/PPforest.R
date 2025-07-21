@@ -40,8 +40,8 @@
 #' #crab example with all the observations used as training
 #' set.seed(123)
 #'pprf.crab <- PPforest(data = crab, class = 'Type',
-#'  xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .5, 
-#'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule=1)
+#'  xstd = 'no', size.tr = 0.7, m = 200, size.p = .4, 
+#'  PPmethod = 'LDA' , parallel = TRUE, cores = 2, rule = 1)
 #' pprf.crab
 #' 
 PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPmethod, size.p, lambda = 0.1, 
@@ -52,12 +52,22 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
     pred <- NULL
     id <- NULL
 
+    cllev <- levels(as.factor(data[, class]))
+    clnum <- as.numeric(as.factor(data[, class]))
+    tr.index <- trainfn(as.matrix(clnum), as.matrix(data[, setdiff(colnames(data), class)]), 
+                        sizetr = size.tr) + 1
+    tr.index <- as.vector(tr.index)
+    train <- data %>% dplyr::slice(tr.index)
+    test <- data[-tr.index, ] 
+    #%>% dplyr::select(-(!!class)) 
+    
+    type = "Classification"
     
     # Variable scaling.
     if (xstd != "no") {
       
       if (xstd == "min-max") {
-        dataux <- data %>% 
+        dataux <- train %>% 
           dplyr::select(-(!!class)) |>  tibble::as_tibble()
         mincol <- dataux |> apply( 2, min)
         maxmincol <- dataux |> apply(2, function(x) {
@@ -65,7 +75,7 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
         })
       }
       if (xstd == "quant") {
-        dataux <- data %>% 
+        dataux <- train %>% 
           dplyr::select(-(!!class)) |>  tibble::as_tibble()
         mincol <- dataux |> apply( 2, stats::quantile, 0.05) 
         maxmincol <- dataux |> apply(2, function(x) {
@@ -74,30 +84,41 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
       }
     
       if (xstd == 'scale') {
-        dataux <- data %>% 
-          dplyr::select(-(!!class)) %>% 
-          apply(2, FUN = scale) %>%
-          tibble::as_tibble()
-        
+        # dataux1 <- train %>% 
+        #   dplyr::select(-(!!class)) %>% 
+        #   apply(2, FUN = scale) %>%
+        #   tibble::as_tibble()
+        meanx <- train |>  dplyr::select(-(!!class)) |>  dplyr::summarise(dplyr::across(dplyr::everything(), mean)) |> unlist()
+        sdx   <- train |>  dplyr::select(-(!!class)) |>  dplyr::summarise(dplyr::across(dplyr::everything(), stats::sd))   |> unlist()
+        dataux <- train |> 
+          dplyr::select(-(!!class)) |>
+          dplyr::mutate( dplyr::across( dplyr::everything(), 
+                        ~ (.x - meanx[cur_column()]) / sdx[cur_column()]))
     }
     if(xstd %in% c('min-max', 'quant')) {
-    datauxscale <- (dataux  - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T)
-    data <- data.frame(data[, class], datauxscale)
-    colnames(data)[1] <- class
+    trainscale <- (dataux  - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T)
+    train <- data.frame(train[, class], trainscale)
+    colnames(train)[1] <- class
+    if (dim(test)[1] != 0){
+      testscale <- (test |> dplyr::select(-(!!class))  - matrix(mincol, nrow(test), ncol(test), byrow = T)) / matrix(maxmincol, nrow(test), ncol(test), byrow = T)
+      test <-  data.frame(test[, class], testscale)
+      colnames(test)[1] <- class
+      }
+    
     }else{
-      data <- data.frame(data[, class], dataux)
-      colnames(data)[1] <- class
-    }
+      train <- data.frame(data[, class], dataux)
+      colnames(train)[1] <- class
+      if (dim(test)[1] != 0){
+        testscale <- test |> 
+          dplyr::select(-(!!class)) |>
+          dplyr::mutate(dplyr::across(dplyr::everything(), 
+                        ~ (.x - meanx[cur_column()]) / sdx[cur_column()]))
+        test <- data.frame(test[, class], testscale)
+        colnames(test)[1] <- class
+        
+      }
+      }
     }  
-    
-    cllev <- levels(as.factor(data[, class]))
-    clnum <- as.numeric(as.factor(data[, class]))
-    tr.index <- trainfn(as.matrix(clnum), as.matrix(data[, setdiff(colnames(data), class)]), 
-        sizetr = size.tr) + 1
-    tr.index <- as.vector(tr.index)
-    train <- data %>% dplyr::slice(tr.index)
-    
-    type = "Classification"
     
     outputaux <- baggtree(data = train, class = class, m = m, PPmethod = PPmethod, lambda = lambda, 
         size.p = size.p, parallel = parallel, cores = cores)
@@ -136,13 +157,14 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
     
   
     error.tr <- 1 - sum(as.numeric(as.factor(unlist(train[, class]))) == pred.tr$predforest)/length(pred.tr$predforest)
-    test <- data[-tr.index, ] %>% dplyr::select(-(!!class)) 
+   
     
-    if (dim(test)[1] != 0) {
-        pred.test <- trees_pred(outputaux, xnew = test, parallel, cores = cores, rule = rule)
+    if (dim(test)[1] != 0){
+      
+        pred.test <- trees_pred(outputaux, xnew = dplyr::select(test, -(!!class)), parallel, cores = cores, rule = rule)
         error.test <- 1 - sum(as.numeric(as.factor(data[-tr.index, class])) == pred.test[[2]])/length(pred.test[[2]])
         pred.test = as.factor(pred.test[[2]])
-        levels(pred.test) <- levels(unlist(train[, class]))
+        levels(pred.test) <- levels(as.factor(train[, class]))
     } else {
         pred.test <- NULL
         error.test <- NULL
@@ -174,7 +196,7 @@ PPforest <- function(data, class, xstd = 'min-max', size.tr = 2/3, m = 500, PPme
         boot.samp = data.b, output.trees = output, proximity = proximity, votes = vote.matrix.prop,
         prediction.oob = oob.pred, n.tree = m, n.var = var.sel, type = "Classification", confusion = confusion,
         call = match.call(), train = train, test = test, vote.mat = pred.tr$predtree, vote.mat_cl= cllev, class.var = class,
-        oob.obs = oob.obs)
+        oob.obs = oob.obs, xstd = xstd)
   
     
     class(results) <- "PPforest"
