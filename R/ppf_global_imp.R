@@ -1,7 +1,7 @@
 #' Global importance measure for a PPforest object
 #' 
 #' @param data Data frame with the complete data set.
-#' @param class A character with the name of the class variable. 
+#' @param y A character with the name of the class variable. 
 #' @param ppf is a PPforest object
 #' @return Data frame with the global importance measure
 #' @references da Silva, N., Cook, D., & Lee, E. K. (2021). A projection pursuit forest 
@@ -11,25 +11,25 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' #crab data set with all the observations used as training
-#' 
-#' pprf.crab <- PPforest(data = crab, xstd = 'min-max', class = 'Type',
-#'  size.tr = 1, m = 200, size.p = .5, PPmethod = 'LDA', parallel = TRUE, cores = 2)
+#' pprf.crab <- PPforest(data = crab, y = 'Type',
+#'  std = 'no',  size.tr = 1, m = 200, size.p = .5, 
+#'  PPmethod = 'LDA', parallel = TRUE, cores = 2)
 #'  
-#' ppf_global_imp(data = crab, class = 'Type', pprf.crab) 
+#' ppf_global_imp(data = crab, y = 'Type', pprf.crab) 
 #' 
-ppf_global_imp <- function(data, class, ppf) {
+ppf_global_imp <- function(data, y, ppf) {
     
     value <- NULL
     variable <- NULL
     node <- NULL
     
-    y <- data[, class]
+    #y <- data[, class]
     
     mat.proj <- lapply(ppf[["output.trees"]], function(x) {
         data.frame(node = 1:nrow(x[[2]]), abs(x[[2]]))
     }) %>% dplyr::bind_rows()
     
-    colnames(mat.proj)[-1] <- colnames(dplyr::select(data, -class))
+    colnames(mat.proj)[-1] <- colnames(dplyr::select(data, -y))
     
     index <- lapply(ppf[["output.trees"]], function(x) {
         data.frame(index = x$Tree.Struct[, "Index"][x$Tree.Struct[, "Index"] != 0])

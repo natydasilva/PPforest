@@ -23,15 +23,16 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' set.seed(1883)
+#' set.seed(123)
 #' train <- sample(1:nrow(crab), nrow(crab)*.7)
 #' crab_train <- data.frame(crab[train, ])
 #' crab_test <- data.frame(crab[-train, ])
+#' 
+#' # if you split your data in training and test outside PPforest size.tr should be 1.
 #' pprf.crab <- PPforest(data = crab_train, class = 'Type',
-#'  xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+#'  std = 'scale', size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
 #'  
 #' pred <- predict(pprf.crab, newdata = crab_test[,-1], parallel = TRUE) 
-#' 1 - sum(as.numeric(as.factor(crab_test[,1])) == as.numeric(as.factor(pred[[2]])))/length(pred[[2]])
 #' }
 predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores = 2, ...) {
   
@@ -47,40 +48,27 @@ predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores =
     doParallel::registerDoParallel(cores)
   }
   
-   if(object$xstd != "no"){
-   if (object$xstd == "min-max") {
-      dataux <- newdata %>%  tibble::as_tibble()
-      mincol <- dataux |> apply( 2, min)
-      maxmincol <- dataux |> apply(2, function(x) {
-        max(x) - min(x)
-      })
+  
+  # Variable scaling.
+  if (object$std != "no") {
+    if(object$std %in% c('min-max', 'quant')) {
+      testscale <- (newdata - matrix(object$mincol, nrow(newdata), ncol(newdata), byrow = T)) / matrix(object$maxmincol, nrow(newdata), ncol(newdata), byrow = T)
+  
+    }else{
+        testscale <- newdata |>  as.matrix() 
+        testscale <- sweep(testscale, 2, object$train_mean, "-")
+        testscale <- sweep( testscale,2, object$train_sd, "/")
+        
     }
-  #   if (object$xstd  == "quant") {
-  #     dataux <- xnew |>  tibble::as_tibble()
-  #     mincol <- dataux |> apply( 2, stats::quantile, 0.05) 
-  #     maxmincol <- dataux |> apply(2, function(x) {
-  #       stats::quantile(x, 0.95) - stats::quantile(x, 0.05)
-  #     }) 
-  #   }
-  #   
-  #   if (object$xstd  == 'scale') {
-  #     dataux <- xnew %>% 
-  #       apply(2, FUN = scale) %>%
-  #       tibble::as_tibble()
-  #     
-  #   }
-  #   if(object$xstd  %in% c('min-max', 'quant')) {
-     datauxscale <- data.frame((dataux  - matrix(mincol, nrow(dataux), ncol(dataux), byrow = T)) / matrix(maxmincol, nrow(dataux), ncol(dataux), byrow = T))
-    newdata <- datauxscale
-  #     }else{
-  #     xnew <- dataux
-  #     #colnames(data)[1] <- object$class.var
-  #     } 
-}
+    newdata <-  testscale
+  }
+
+  
+  
   votes <- plyr::ldply(
     object$output.trees,  #  contains the trees in a list
     function(x) {
-     pred <- as.numeric(PPforest::PPclassify(Tree.result = x, test.data = newdata, Rule = rule)[[2]])
+     pred <- as.numeric(PPclassify(Tree.result = x, test.data = newdata, Rule = rule)[[2]])
     },
     .parallel = parallel
   )[, -1]

@@ -11,7 +11,7 @@
 #' @references da da Silva, N., Cook, D. & Lee, EK. Interactive graphics for visually diagnosing forest classifiers in R. Comput Stat 40, 3105–3125 (2025). https://doi.org/10.1007/s00180-023-01323-x
 #' @examples
 #' #crab data set with all the observations used as training
-#' pprf.crab <- PPforest(data = crab, xstd ='min-max', class = "Type",
+#' pprf.crab <- PPforest(data = crab, std ='min-max', y = "Type",
 #'  size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
 #'  require(dplyr)
 #' pl_ter <- function(dat, dx, dy ){
