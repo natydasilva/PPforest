@@ -2,7 +2,7 @@
 #' in the forest
 #' 
 #' @param ppf is a PPforest object
-#' @param class A character with the name of the class variable. 
+#' @param y A character with the name of the class variable. 
 #' @return Data frame with the global importance measure
 #'@references da Silva, N., Cook, D., & Lee, E. K. (2021). A projection pursuit forest 
 #'algorithm for supervised classification. Journal of Computational and Graphical Statistics,
@@ -12,11 +12,11 @@
 #' @examples
 #' #crab data set with all the observations used as training
 #' 
-#' pprf.crab <- PPforest(data = crab, xstd = 'min-max', class = 'Type',
+#' pprf.crab <- PPforest(data = crab, std = 'min-max', y = 'Type',
 #'  size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
 #'  ppf_avg_imp(pprf.crab, 'Type') 
 #'  
-ppf_avg_imp <- function(ppf, class) {
+ppf_avg_imp <- function(ppf, y) {
     node.id <- NULL
     nodecl <- NULL
     node <- NULL
@@ -42,7 +42,7 @@ ppf_avg_imp <- function(ppf, class) {
     
     infond <- apply(data.frame(1:ppf$n.tree), 1, function(x) nodecl(x)$clt)  #info to weight importance
     info <- data.frame(clnd = matrix(infond, ncol = 1, nrow = ppf$n.tree * nrow(infond), byrow = T))
-    colnames(mat.proj)[-1] <- colnames(dplyr::select(ppf$train, -class))
+    colnames(mat.proj)[-1] <- colnames(dplyr::select(ppf$train, -y))
     
     mat.proj %>% dplyr::bind_cols(clnd = info) %>% dplyr::mutate(tr = rep(1:ppf$n.tree, dim(nn)[1])) %>% 
         tidyr::gather(variable, value, -node, -tr, -clnd) %>% dplyr::mutate(impaux = value/clnd) %>% 
