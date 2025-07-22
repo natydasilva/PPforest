@@ -82,18 +82,16 @@ Projection pursuit random forest algorithm description
 
 | Function |Description |
 | ----------------- | --------------------------------------------------------------  |
-|baggtree|For each bootstrap sample grow a projection pursuit tree (PPtree object).|
 |node_data|Data structure with the  projected and boundary by node and class|
 |permute_importance|Obtain the permuted importance variable measure|
 |ppf_avg_imp| Computes a global importance measure for a PPforest object, average importance measure for a pptree over all the trees.|
-|PPclassify| Predict class for the test set and calculate prediction error after finding the PPtree structure|
 |ppf_global_imp| Computes a global importance measure for a PPforest object|
 |PPforest|Runs a Projection pursuit random forest|
 |PPtree_split|Projection pursuit classification tree with random variable selection in each split|
 |print.PPforest| Print PPforest object|
 |predict.PPforest|Predict class for the test set and calculate prediction error|
 |ternary_str|Data structure with the  projected and boundary by node and class|
-|tree_pred|Obtain predicted class for new data from baggtree function or PPforest |
+
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 
@@ -153,7 +151,7 @@ The number of trees in the forest is specified using the argument `m`. The argum
 
 ```{r ppf}
 
-pprf.crab <- PPforest::PPforest(data = crab, class = "Type", xstd = 'min-max', size.tr = .7, m = 200,
+pprf.crab <- PPforest::PPforest(data = crab,y = "Type", std = 'min-max', size.tr = .7, m = 200,
                                 size.p =  .8,  PPmethod = 'LDA',  parallel = TRUE, cores = 2)
 
 pprf.crab
@@ -267,7 +265,7 @@ Finally you can get the last importance measure we have proposed for the PPfores
 &nbsp;
 
 ```{r impo3}
-impo3 <- ppf_global_imp(data = crab, class = "Type", pprf.crab)
+impo3 <- ppf_global_imp(data = crab, y = "Type", pprf.crab)
 impo3
 ```
 &nbsp;
