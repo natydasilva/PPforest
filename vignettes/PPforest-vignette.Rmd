@@ -8,8 +8,8 @@ bibliography: biblio.bib
 nocite: |
   @devtools
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{PPforest}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8} 
 ---
 ```{r libraries, cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE}
