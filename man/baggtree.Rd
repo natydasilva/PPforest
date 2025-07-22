@@ -6,7 +6,7 @@
 \usage{
 baggtree(
   data,
-  class,
+  y,
   m = 500,
   PPmethod = "LDA",
   lambda = 0.1,
@@ -18,7 +18,7 @@ baggtree(
 \arguments{
 \item{data}{Data frame with the complete data set.}
 
-\item{class}{A character with the name of the class variable.}
+\item{y}{A character with the name of the y variable.}
 
 \item{m}{is the number of bootstrap replicates, this corresponds with the number of trees to grow. To ensure that each observation is predicted a few times we have to select this number no too small. \code{m = 500} is by default.}
 
@@ -37,11 +37,4 @@ data frame with trees_pp output for all the bootstraps samples.
 }
 \description{
 For each bootstrap sample grow a projection pursuit tree (PPtree object).
-}
-\examples{
-#crab data set
-crab.trees <- baggtree(data = crab, class = 'Type',
-m =  1, PPmethod = 'LDA', lambda = .1, size.p = 0.4, parallel = TRUE, cores = 2)
-str(crab.trees, max.level = 1)
-
 }

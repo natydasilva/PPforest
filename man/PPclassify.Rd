@@ -23,20 +23,6 @@ predict.error prediction error
 \description{
 Predict class for the test set and calculate prediction error after finding the PPtree structure, .
 }
-\examples{
-#crab data set
-set.seed(123)
-train <- sample(1:nrow(crab), nrow(crab)*.7)
-crab_train <- data.frame(crab[train, ])
-crab_test <- data.frame(crab[-train, ])
-Tree.crab <- PPtree_split('Type~.', data = crab_train, PPmethod = 'LDA', size.p = 0.4)
-Tree.crab
-PPclassify(Tree.crab, test.data =crab_test[,-1], Rule = 1, true.class = crab_test[, 1])
-
- pprf.crab <- PPforest(data = crab_train, class = 'Type',
- xstd = "min-max", size.tr = 1, m = 2, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
-
-}
 \references{
 Lee, YD, Cook, D., Park JW, and Lee, EK(2013) 
 PPtree: Projection pursuit classification tree, 

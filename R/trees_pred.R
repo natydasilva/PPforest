@@ -14,30 +14,7 @@
 #'  7: weighted mean of two group median - weight with group IQR 
 #'  8: weighted mean of two group median - weight with group IQR and size
 #' @return predicted values from PPforest or baggtree
-#' @export
 #' @importFrom magrittr %>%
-#' @examples 
-#' \dontrun{
-#' set.seed(12399)  
-#' train <- sample(1:nrow(crab), nrow(crab)*.7)
-#' crab_train <- data.frame(crab[train, ])
-#' crab_test <- data.frame(crab[-train, ])
-#' crab.trees <- baggtree(data = crab_train, class = 'Type', 
-#' m =  1, PPmethod = 'LDA', lambda = .1, size.p = 0.4 )
-#'  
-#' pr <- trees_pred(  crab.trees, xnew = crab_test[, -1], parallel= FALSE, cores = 2)
-#'  mean(pr[[2]] != as.numeric(crab_test[, 1]))
-#'
-#'
-#' pprf.crab <- PPforest(data = crab_train, class = 'Type',
-#'  xstd = "no", size.tr = 0.7, m = 100, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
-#'  
-#' pprf.pred <-trees_pred(pprf.crab, xnew = crab_test[,-1], parallel = TRUE)
-#' 1 - sum(as.numeric(as.factor(crab_test[,1])) == pprf.pred[[2]])/length(pprf.pred[[2]])
-#' mean(pprf.pred[[2]] != as.numeric(crab_test[, 1]))
-#' 
-#'
-#' }
 trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, rule = 1) {
 
         if (parallel) {
@@ -48,7 +25,7 @@ trees_pred <- function(object, xnew, parallel = FALSE, cores = 2, rule = 1) {
   
   
         if (inherits(object,"PPforest")) {
-            votes <-  plyr::ldply(object[[8]], function(x) as.numeric(PPforest::PPclassify(Tree.result = x, 
+            votes <-  plyr::ldply(object[[8]], function(x) as.numeric(PPclassify(Tree.result = x, 
                 test.data = xnew, Rule = rule)[[2]]), .parallel = parallel)[, -1]
          
           } else {

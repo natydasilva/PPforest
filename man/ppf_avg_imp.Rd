@@ -5,12 +5,12 @@
 \title{Global importance measure for a PPforest object as the average IMP PPtree measure over all the trees 
 in the forest}
 \usage{
-ppf_avg_imp(ppf, class)
+ppf_avg_imp(ppf, y)
 }
 \arguments{
 \item{ppf}{is a PPforest object}
 
-\item{class}{A character with the name of the class variable.}
+\item{y}{A character with the name of the class variable.}
 }
 \value{
 Data frame with the global importance measure
@@ -22,7 +22,7 @@ in the forest
 \examples{
 #crab data set with all the observations used as training
 
-pprf.crab <- PPforest(data = crab, xstd = 'min-max', class = 'Type',
+pprf.crab <- PPforest(data = crab, std = 'min-max', y = 'Type',
  size.tr = 1, m = 100, size.p = .5, PPmethod = 'LDA')
  ppf_avg_imp(pprf.crab, 'Type') 
  

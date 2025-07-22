@@ -39,14 +39,15 @@ Predict method for PPforest objects
 }
 \examples{
 \dontrun{
-set.seed(1883)
+set.seed(123)
 train <- sample(1:nrow(crab), nrow(crab)*.7)
 crab_train <- data.frame(crab[train, ])
 crab_test <- data.frame(crab[-train, ])
+
+# if you split your data in training and test outside PPforest size.tr should be 1.
 pprf.crab <- PPforest(data = crab_train, class = 'Type',
- xstd = 'min-max', size.tr = 0.7, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
+ std = 'scale', size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
 pred <- predict(pprf.crab, newdata = crab_test[,-1], parallel = TRUE) 
-1 - sum(as.numeric(as.factor(crab_test[,1])) == as.numeric(as.factor(pred[[2]])))/length(pred[[2]])
 }
 }
