@@ -3,12 +3,7 @@
 \docType{data}
 \name{leukemia}
 \alias{leukemia}
-\title{Leukemia data set
-This dataset comes from a study of gene expression in two types of acute leukemias, acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML). Gene expression levels were measured using Affymetrix high density oligonucleotide arrays containing 6817 human genes. A data set containing 72 observations from 3 leukemia types classes. 
-\describe{
-  \item{Type}{has 3 classes with 38 cases of B-cell ALL, 25 cases of AML and 9 cases of T-cell ALL.} 
-  \item{Gene1 to Gen 40}{ gene expression levels.}
-  }}
+\title{Leukemia data set}
 \format{
 A data frame with 72 rows and 41 variables
 }
@@ -19,11 +14,10 @@ Dudoit, S., Fridlyand, J. and Speed, T. P. (2002). Comparison of Discrimination 
 data(leukemia)
 }
 \description{
-Leukemia data set
 This dataset comes from a study of gene expression in two types of acute leukemias, acute lymphoblastic leukemia (ALL) and acute myeloid leukemia (AML). Gene expression levels were measured using Affymetrix high density oligonucleotide arrays containing 6817 human genes. A data set containing 72 observations from 3 leukemia types classes. 
 \describe{
   \item{Type}{has 3 classes with 38 cases of B-cell ALL, 25 cases of AML and 9 cases of T-cell ALL.} 
-  \item{Gene1 to Gen 40}{ gene expression levels.}
-  }
+  \item{Gene1, Gen2, ..., Gen40}{ gene expression levels.}
+}
 }
 \keyword{datasets}
