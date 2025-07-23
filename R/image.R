@@ -1,6 +1,6 @@
 #' The image data set 
 #'
-#' contains  2310 observations of instances from 7 outdoor images
+#' @format Contains  2310 observations of instances from 7 outdoor images
 #' \describe{
 #' \item{Type}{has 7 types of outdoor images, brickface, cement,  foliage, grass, path, sky, and window.}
 #' \item{X1}{the column of the center pixel of the region} 

@@ -5,15 +5,6 @@
 \alias{parkinson}
 \title{Parkinson data set}
 \format{
-A data frame with 195 rows and 23 variables
-}
-\source{
-{https://archive.ics.uci.edu/ml/datasets/Parkinsons}(Parkinson)
-}
-\usage{
-data(parkinson)
-}
-\description{
 A data set containing 195 observations from 2 parkinson types.
 \describe{
  \item{Type}{Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures.} 
@@ -40,5 +31,16 @@ A data set containing 195 observations from 2 parkinson types.
   \item{X21}{spread2 Nonlinear measures of fundamental frequency variation.}
   \item{X22}{PPE Nonlinear measures of fundamental frequency variation.}
   }
+
+A data frame with 195 rows and 23 variables
+}
+\source{
+<https://archive.ics.uci.edu/ml/datasets/Parkinsons>
+}
+\usage{
+data(parkinson)
+}
+\description{
+Parkinson data set
 }
 \keyword{datasets}

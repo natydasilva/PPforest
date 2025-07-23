@@ -5,13 +5,7 @@
 \alias{olive}
 \title{The olive data set}
 \format{
-A data frame contains 573 observations and 10 variables
-}
-\usage{
-data(olive)
-}
-\description{
-contains  572 observations and 10 variables
+Contains  572 observations and 10 variables
 \describe{
 \item{Region}{Three super-classes of Italy: North, South and the island of Sardinia.}
 \item{area}{Nine collection areas: three from North, four from South and 2 from Sardinia.} 
@@ -24,5 +18,13 @@ contains  572 observations and 10 variables
 \item{arachidic}{fatty acids percent x 100.}
 \item{eicosenoic}{fatty acids percent x 100.}
 }
+
+A data frame contains 573 observations and 10 variables
+}
+\usage{
+data(olive)
+}
+\description{
+The olive data set
 }
 \keyword{datasets}

@@ -1,6 +1,6 @@
 #' Astralian crabs 
 #' 
-#' Measurements on rock crabs of the genus Leptograpsus. The data set contains 200 observations
+#' @format Measurements on rock crabs of the genus Leptograpsus. The data set contains 200 observations
 #'  from two species of crab (blue and orange), there are 50 specimens of each sex of each species,
 #'   collected on site at Fremantle, Western Australia. 
 #' \describe{

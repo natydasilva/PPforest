@@ -5,15 +5,6 @@
 \alias{fishcatch}
 \title{Fish catch data set}
 \format{
-A data frame with 159 rows and 7 variables
-}
-\source{
-{http://www.amstat.org/publications/jse/jse_data_archive.htm}(fishcatch)
-}
-\usage{
-data(fishcatch)
-}
-\description{
 There are 159 fishes of 7 species are caught and measured. Altogether there are
   7 variables.  All the fishes are caught from the same lake(Laengelmavesi) near Tampere in Finland.
 \describe{
@@ -25,5 +16,16 @@ There are 159 fishes of 7 species are caught and measured. Altogether there are
 \item{height}{Maximal height as \% of Length3.}
 \item{width}{Maximal width as \% of Length3.}
 }
+
+A data frame with 159 rows and 7 variables
+}
+\source{
+<http://www.amstat.org/publications/jse/jse_data_archive.htm>
+}
+\usage{
+data(fishcatch)
+}
+\description{
+Fish catch data set
 }
 \keyword{datasets}

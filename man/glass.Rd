@@ -5,12 +5,6 @@
 \alias{glass}
 \title{Glass data set}
 \format{
-A data frame with 214 rows and 10 variables
-}
-\usage{
-data(glass)
-}
-\description{
 Contains measurements 214 observations of 6 types of glass; defined in terms of their oxide content.
 \describe{
 \item{Type}{has 6 types of glasses.}
@@ -24,5 +18,13 @@ Contains measurements 214 observations of 6 types of glass; defined in terms of 
 \item{X8}{Barium.}
 \item{X9}{Iron.}
 }
+
+A data frame with 214 rows and 10 variables
+}
+\usage{
+data(glass)
+}
+\description{
+Glass data set
 }
 \keyword{datasets}

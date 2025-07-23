@@ -5,13 +5,7 @@
 \alias{image}
 \title{The image data set}
 \format{
-A data frame contains 2310 observations and 19 variables
-}
-\usage{
-data(image)
-}
-\description{
-contains  2310 observations of instances from 7 outdoor images
+Contains  2310 observations of instances from 7 outdoor images
 \describe{
 \item{Type}{has 7 types of outdoor images, brickface, cement,  foliage, grass, path, sky, and window.}
 \item{X1}{the column of the center pixel of the region} 
@@ -33,5 +27,13 @@ contains  2310 observations of instances from 7 outdoor images
 \item{X17}{mean of X16.}
 \item{X18}{hue  mean.}
 }
+
+A data frame contains 2310 observations and 19 variables
+}
+\usage{
+data(image)
+}
+\description{
+The image data set
 }
 \keyword{datasets}
