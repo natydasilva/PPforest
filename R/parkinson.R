@@ -2,34 +2,34 @@
 #' 
 #' A data set containing 195 observations from 2 parkinson types.
 #' \describe{
-#'  \item{Type}{ Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures}. 
-#'   \item{X1}{ Average vocal fundamental frequency}
-#'   \item{X2}{ Maximum vocal fundamental frequency} 
-#'   \item{X3}{ Minimum vocal fundamental frequency}
-#'   \item{X4}{ MDVP:Jitter(\%) measures of variation in fundamental frequency}
-#'   \item{X5}{ MDVP:Jitter(Abs) measures of variation in fundamental frequency}
-#'   \item{X6}{ MDVP:RAP measures of variation in fundamental frequency}
-#'   \item{X7}{ MDVP:PPQ measures of variation in fundamental frequency}
-#'   \item{X8}{ Jitter:DDP measures of variation in fundamental frequency}
-#'   \item{X9}{ MDVP:Shimmer measures of variation in amplitude}
-#'   \item{X10}{ MDVP:Shimmer(dB) measures of variation in amplitude}
-#'   \item{X11}{ Shimmer:APQ3 measures of variation in amplitude}
-#'   \item{X12}{ Shimmer:APQ5 measures of variation in amplitude}
-#'   \item{X13}{ MDVP:APQ measures of variation in amplitude}
-#'   \item{X14}{ Shimmer:DDA measures of variation in amplitude}
-#'   \item{X15}{ NHR measures of ratio of noise to tonal components in the voice}
-#'   \item{X16}{ HNR measures of ratio of noise to tonal components in the voice}
-#'   \item{X17}{ RPDE nonlinear dynamical complexity measures}
-#'   \item{X18}{ D2 nonlinear dynamical complexity measures}
-#'   \item{X19}{ DFA - Signal fractal scaling exponent}
-#'   \item{X20}{ spread1 Nonlinear measures of fundamental frequency variation}
-#'   \item{X21}{ spread2 Nonlinear measures of fundamental frequency variation}
-#'   \item{X22}{ PPE Nonlinear measures of fundamental frequency variation}
+#'  \item{Type}{Class variable has 2 classes, there are 48 cases of healthy people and 147 cases with Parkinson. The feature variables are biomedical voice measures.} 
+#'   \item{X1}{Average vocal fundamental frequency.}
+#'   \item{X2}{Maximum vocal fundamental frequency.} 
+#'   \item{X3}{Minimum vocal fundamental frequency.}
+#'   \item{X4}{MDVP:Jitter(\%) measures of variation in fundamental frequency.}
+#'   \item{X5}{MDVP:Jitter(Abs) measures of variation in fundamental frequency.}
+#'   \item{X6}{MDVP:RAP measures of variation in fundamental frequency.}
+#'   \item{X7}{MDVP:PPQ measures of variation in fundamental frequency.}
+#'   \item{X8}{Jitter:DDP measures of variation in fundamental frequency.}
+#'   \item{X9}{MDVP:Shimmer measures of variation in amplitude.}
+#'   \item{X10}{MDVP:Shimmer(dB) measures of variation in amplitude.}
+#'   \item{X11}{Shimmer:APQ3 measures of variation in amplitude.}
+#'   \item{X12}{Shimmer:APQ5 measures of variation in amplitude.}
+#'   \item{X13}{MDVP:APQ measures of variation in amplitude.}
+#'   \item{X14}{Shimmer:DDA measures of variation in amplitude.}
+#'   \item{X15}{NHR measures of ratio of noise to tonal components in the voice.}
+#'   \item{X16}{HNR measures of ratio of noise to tonal components in the voice.}
+#'   \item{X17}{RPDE nonlinear dynamical complexity measures.}
+#'   \item{X18}{D2 nonlinear dynamical complexity measures.}
+#'   \item{X19}{DFA - Signal fractal scaling exponent.}
+#'   \item{X20}{spread1 Nonlinear measures of fundamental frequency variation.}
+#'   \item{X21}{spread2 Nonlinear measures of fundamental frequency variation.}
+#'   \item{X22}{PPE Nonlinear measures of fundamental frequency variation.}
 #'   }
 #' @docType data
 #' @keywords datasets
 #' @name parkinson
 #' @usage data(parkinson)
 #' @format A data frame with 195 rows and 23 variables
-#' @source [https://archive.ics.uci.edu/ml/datasets/Parkinsons](Parkinson)
+#' @source {https://archive.ics.uci.edu/ml/datasets/Parkinsons}(Parkinson)
 NULL
