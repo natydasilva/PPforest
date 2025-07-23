@@ -7,4 +7,4 @@ This is the fifth version of the package. It includes bug fixes and the addition
 
 # R CMD check results
 
-There were no ERRORs or WARNINGs, one Note.
+There were no ERRORs or WARNINGs or Note.
