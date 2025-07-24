@@ -49,7 +49,7 @@ Overview PPforest package
 |print.PPforest| Print PPforest object|
 |predict.PPforest|Predict a PPforest object for newdata|
 |ternary_str|Data structure with the projected and boundary by node and class|
-|tree_pred|Obtain predicted class for new data using PPforest t.|
+
 
 Also `PPforest` package includes some data set that were used to test the predictive performance of our method. The data sets included are: crab, fishcatch, glass, image, leukemia, lymphoma NCI60, parkinson and wine.
 

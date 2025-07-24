@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PPforest</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/PPforest-vignette.html">Projection pursuit classification random forest</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/PPforest-vignette.html">PPforest</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -37,10 +37,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.3" id="ppforest-013">PPforest 0.1.3<a class="anchor" aria-label="anchor" href="#ppforest-013"></a></h2><p class="text-muted">CRAN release: 2022-09-09</p>
-<ul><li>This is the fourth release of the package, minor changes were included.</li>
-<li>Since R 4.2.0 switched to use HTML5 for documentation pages. Fix problems in the HTML generated from package Rd files.</li>
-<li>Changed some deprecated functions.</li>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="ppforest-020">PPforest 0.2.0<a class="anchor" aria-label="anchor" href="#ppforest-020"></a></h2><p class="text-muted">CRAN release: 2025-07-23</p>
+<ul><li>Changes in version 0.2.0</li>
+<li>This is the fifth release of the package, with minor changes.</li>
+<li>Added a predict() S3 method for PPforest objects.</li>
+<li>Included new data standardization methods: min-max, quantile, and scale. If the PPforest object was fitted using any of these standardizations, the predict() method will apply the same transformation to newdata.</li>
+<li>Argument class in PPforest version 0.1.3 was renamed as y</li>
+<li>In version 0.1.3, the functions PPclasifly, baggtrees, and tres.pred were exported. In this version, they are now kept as internal functions.</li>
+<li>Fixed several bugs.</li>
 </ul></div>
   </main></div>
 

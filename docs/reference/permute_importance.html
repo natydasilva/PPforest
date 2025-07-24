@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PPforest</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/PPforest-vignette.html">Projection pursuit classification random forest</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/PPforest-vignette.html">PPforest</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -63,15 +63,15 @@ also the standardized mesure.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pprf.crab</span> <span class="op">&lt;-</span> <span class="fu"><a href="PPforest.html">PPforest</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">crab</span>, class <span class="op">=</span> <span class="st">'Type'</span>,</span></span>
-<span class="r-in"><span>std <span class="op">=</span> <span class="cn">TRUE</span>, size.tr <span class="op">=</span> <span class="fl">1</span>, m <span class="op">=</span> <span class="fl">100</span>, size.p <span class="op">=</span> <span class="fl">.4</span>, PPmethod <span class="op">=</span> <span class="st">'LDA'</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, core <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pprf.crab</span> <span class="op">&lt;-</span> <span class="fu"><a href="PPforest.html">PPforest</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">crab</span>, y <span class="op">=</span> <span class="st">'Type'</span>,</span></span>
+<span class="r-in"><span>std <span class="op">=</span> <span class="st">'min-max'</span>, size.tr <span class="op">=</span> <span class="fl">1</span>, m <span class="op">=</span> <span class="fl">100</span>, size.p <span class="op">=</span> <span class="fl">.4</span>, PPmethod <span class="op">=</span> <span class="st">'LDA'</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, core <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">permute_importance</span><span class="op">(</span>ppf <span class="op">=</span> <span class="va">pprf.crab</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   nm   imp   sd.imp      imp2   sd.imp2 imp2.std  imp.std</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 CW 11.69 10.98272 0.1601326 0.1496193 1.070267 1.064400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 BD 13.80 12.18046 0.1910307 0.1700485 1.123389 1.132962</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 CL 15.03 12.03988 0.2062711 0.1638146 1.259174 1.248351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 FL 17.10 12.43691 0.2350805 0.1704783 1.378947 1.374939</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 RW 17.24 11.36815 0.2356610 0.1548813 1.521559 1.516518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 CW 12.33 10.18620 0.1683782 0.1369413 1.229565 1.210461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 CL 13.53 11.46664 0.1863579 0.1566416 1.189709 1.179944</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 BD 15.38 12.76420 0.2105262 0.1738368 1.211056 1.204932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 FL 17.02 13.37190 0.2329609 0.1807638 1.288759 1.272818</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 RW 17.32 11.24734 0.2363852 0.1525993 1.549058 1.539920</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
