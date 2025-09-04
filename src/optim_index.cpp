@@ -188,7 +188,7 @@ double signC(double x) {
    W = arma::trans(rr) * rr;
         
 // eigen decomposition and compute projection
-  W = arma::inv(W + B);
+  W = arma::pinv(W + B);
   B = W * B;
   cx_vec eigval;
   cx_mat eigvec;
@@ -376,7 +376,7 @@ arma::vec PDAopt(arma::vec origclass,arma::mat origdata,int q=1,
   
   
   // eigen decomposition and compute projection
-  Wt = arma::inv(Wt+B);
+  Wt = arma::pinv(Wt+B);
   B = Wt * B;
   cx_vec eigval;
   cx_mat eigvec;

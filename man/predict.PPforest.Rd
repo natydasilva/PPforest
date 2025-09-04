@@ -45,7 +45,7 @@ crab_train <- data.frame(crab[train, ])
 crab_test <- data.frame(crab[-train, ])
 
 # if you split your data in training and test outside PPforest size.tr should be 1.
-pprf.crab <- PPforest(data = crab_train, class = 'Type',
+pprf.crab <- PPforest(data = crab_train, y = 'Type',
  std = 'scale', size.tr = 1, m = 200, size.p = .4, PPmethod = 'LDA', parallel = TRUE )
  
 pred <- predict(pprf.crab, newdata = crab_test[,-1], parallel = TRUE) 
