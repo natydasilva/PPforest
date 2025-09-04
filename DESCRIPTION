@@ -27,10 +27,10 @@ LazyData: yes
 Depends:
     R (>= 4.1.0)
 Imports:
-    Rcpp (>= 0.12.7),
+    Rcpp (>= 1.1.0),
     magrittr,
     plyr,
-    dplyr (>= 0.7.5),
+    dplyr (>= 1.1.4),
     tidyr,
     doParallel,
     tibble,
@@ -41,7 +41,7 @@ Suggests:
     GGally,
     ggplot2,
     RColorBrewer,
-    roxygen2 (>= 3.0.0),
+    roxygen2 (>= 7.3.0),
     PPtreeViz,
     rmarkdown
 VignetteBuilder: knitr
