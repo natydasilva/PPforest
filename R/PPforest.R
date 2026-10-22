@@ -141,7 +141,7 @@ PPforest <- function(data, y, std = 'scale', size.tr = 2/3, m = 500, PPmethod, s
     
     oob.obs <- oobobs(index)
     
-    mvote.oob <- mvoteoob(pred.tr$predtree, oob.obs)
+    mvote.oob <- mvoteoob(pred.tr$predtree, oob.obs, length(unique(clnum)))
     oob.pred <- mvote.oob[, length(unique(clnum)) + 1]
     
     votes <- mvote.oob[, -(length(unique(clnum)) + 1)]
@@ -149,8 +149,8 @@ PPforest <- function(data, y, std = 'scale', size.tr = 2/3, m = 500, PPmethod, s
     
     vote.matrix.prop <- votes/rowSums(votes)
     
-    oob.error <- 1 - sum(diag(table(oob.pred, unlist(train[, y]))))/length(unlist(train[, 
-        y]))
+    class.levels <- levels(as.factor(unlist(train[, y])))
+    oob.error <- mean(oob.pred != match(as.character(unlist(train[, y])), class.levels))
     
     oob.err.tree <- ooberrortree(pred.tr$predtree, oob.obs, as.numeric(as.factor(unlist(train[, 
         y]))), m)
@@ -162,28 +162,18 @@ PPforest <- function(data, y, std = 'scale', size.tr = 2/3, m = 500, PPmethod, s
     if (dim(test)[1] != 0){
       
         pred.test <- trees_pred(outputaux, xnew = dplyr::select(test, -(!!y)), parallel, cores = cores, rule = rule)
-        error.test <- 1 - sum(as.numeric(as.factor(test[, y])) == pred.test[[2]])/length(pred.test[[2]])
-         pred.test = as.factor(pred.test[[2]])
-        levels(pred.test) <- levels(as.factor(train[, y]))
+        error.test <- mean(pred.test[[2]] != match(as.character(unlist(test[, y])), class.levels))
+        pred.test <- factor(pred.test[[2]], levels = seq_along(class.levels), labels = class.levels)
     } else {
         pred.test <- NULL
         error.test <- NULL
         test <- NULL
     }
     
-    oob.pred <- as.factor(oob.pred)
-    if (is.factor(unlist(train[, y]))) {
-        levels(oob.pred) <- levels(unlist(train[, y]))
-    } else {
-        levels(oob.pred) <- levels(as.factor(unlist(train[, y])))
-    }
-    
-    prediction.training <- as.factor(pred.tr$predforest)
-    if (is.factor(unlist(train[, y]))) {
-        levels(prediction.training) <- levels(unlist(train[, y]))
-    } else {
-        levels(prediction.training) <- levels(as.factor(unlist(train[, y])))
-    }
+    # Predictions are group codes 1..q; map each code to its own label, whichever
+    # codes occur.
+    oob.pred <- factor(oob.pred, levels = seq_along(class.levels), labels = class.levels)
+    prediction.training <- factor(pred.tr$predforest, levels = seq_along(class.levels), labels = class.levels)
     
     
     tab.tr <- table(Observed = unlist(train[, y]), Predicted = oob.pred)

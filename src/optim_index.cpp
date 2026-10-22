@@ -918,26 +918,25 @@ return(prox/m);
 
 
 //maxvote used in tree_pred2
+//votes holds group labels 1..q, one row per tree and one column per observation.
+//The counts have one row per label up to the largest one voted, so a label that
+//no tree predicts does not shift the others.
 // [[Rcpp::export]]
 arma::vec mvote(arma::mat votes){
-  arma::vec clval = arma::unique(votes);
-  arma::mat counts( clval.size(), votes.n_cols, fill::zeros);
-    for(int k = 0; k < clval.size() ; k++) {
-     for(int j=0; j< votes.n_cols ;j++){
-      for(int i=0; i < votes.n_rows; i++) {
-        if( votes(i, j) == k+1 ) {
-          counts(k, j) += 1;
-        }
-        }
-      }
+  arma::uword nclass = votes.max();
+  arma::mat counts(nclass, votes.n_cols, fill::zeros);
+  for(arma::uword j = 0; j < votes.n_cols; j++){
+    for(arma::uword i = 0; i < votes.n_rows; i++) {
+      counts(votes(i, j) - 1, j) += 1;
     }
-    
-    arma::vec maxvote(votes.n_cols, fill::zeros);
-    for(int i = 0; i < votes.n_cols; i++) {
-      maxvote(i)= clval( index_max( counts.col(i) ));
-    }
-    return(maxvote);
-    }
+  }
+
+  arma::vec maxvote(votes.n_cols, fill::zeros);
+  for(arma::uword i = 0; i < votes.n_cols; i++) {
+    maxvote(i) = index_max(counts.col(i)) + 1;
+  }
+  return(maxvote);
+}
     
     
     
@@ -981,33 +980,31 @@ arma::vec mvote(arma::mat votes){
 
 //maxvote oob oob.pred here votes in pred.tr[[1]] I need to filtrate the oob observations
 //to get the oob prediction
+//votes holds group labels 1..nclass. The result has one column per group, in
+//label order, followed by the label with the most OOB votes, so a group that no
+//tree predicts keeps its column.
 // [[Rcpp::export]]
-arma::mat mvoteoob(arma::mat votes, arma::mat oobobs){
-  
-  arma::vec clval = arma::unique(votes);
-  arma::mat counts( votes.n_cols, clval.size(), fill::zeros);
-  for(int j=0; j< votes.n_cols ;j++){ //obs
-    for(int i=0; i < votes.n_rows; i++) {//trees
-      for(int k = 0; k < clval.size() ; k++) {
-        
-        if( (oobobs(i,j) > 0) && (votes(i, j) == k+1) ) { 
-          counts(j, k) += 1;
-        }
-       }
+arma::mat mvoteoob(arma::mat votes, arma::mat oobobs, int nclass){
+  arma::mat counts(votes.n_cols, nclass, fill::zeros);
+  for(arma::uword j = 0; j < votes.n_cols; j++){ //obs
+    for(arma::uword i = 0; i < votes.n_rows; i++) {//trees
+      if(oobobs(i, j) > 0) {
+        counts(j, votes(i, j) - 1) += 1;
       }
     }
-  
-  arma::vec maxvote(votes.n_cols, fill::zeros);
-  for(int j = 0; j < votes.n_cols; j++) {
-    maxvote(j)= clval( index_max( counts.row(j) ));
   }
-  
+
+  arma::vec maxvote(votes.n_cols, fill::zeros);
+  for(arma::uword j = 0; j < votes.n_cols; j++) {
+    maxvote(j) = index_max(counts.row(j)) + 1;
+  }
+
   counts.insert_cols(counts.n_cols, maxvote);
   return counts;
-  
+
   // return Rcpp::List::create(Rcpp::Named("Vote") = counts,
   //                           Rcpp::Named("maxvote") = maxvote);
-  }
+}
 
 // [[Rcpp::export]]
 arma::vec ooberrortree(arma::mat votes, arma::mat oobobs, arma::vec classe, int m){
