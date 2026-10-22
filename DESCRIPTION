@@ -1,6 +1,6 @@
 Package: PPforest
 Type: Package
-Version: 0.2.0
+Version: 0.2.1
 Title: Projection Pursuit Classification Forest
 Authors@R: 
   c(person(given = "Natalia",
@@ -43,9 +43,11 @@ Suggests:
     RColorBrewer,
     roxygen2 (>= 7.3.0),
     PPtreeViz,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 LinkingTo: Rcpp,RcppArmadillo
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 BugReports: https://github.com/natydasilva/PPforest/issues
+Config/testthat/edition: 3

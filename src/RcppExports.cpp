@@ -326,14 +326,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // mvoteoob
-arma::mat mvoteoob(arma::mat votes, arma::mat oobobs);
-RcppExport SEXP _PPforest_mvoteoob(SEXP votesSEXP, SEXP oobobsSEXP) {
+arma::mat mvoteoob(arma::mat votes, arma::mat oobobs, int nclass);
+RcppExport SEXP _PPforest_mvoteoob(SEXP votesSEXP, SEXP oobobsSEXP, SEXP nclassSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type votes(votesSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type oobobs(oobobsSEXP);
-    rcpp_result_gen = Rcpp::wrap(mvoteoob(votes, oobobs));
+    Rcpp::traits::input_parameter< int >::type nclass(nclassSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvoteoob(votes, oobobs, nclass));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -444,7 +445,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_PPforest_mvote", (DL_FUNC) &_PPforest_mvote, 1},
     {"_PPforest_oobindex", (DL_FUNC) &_PPforest_oobindex, 2},
     {"_PPforest_oobobs", (DL_FUNC) &_PPforest_oobobs, 1},
-    {"_PPforest_mvoteoob", (DL_FUNC) &_PPforest_mvoteoob, 2},
+    {"_PPforest_mvoteoob", (DL_FUNC) &_PPforest_mvoteoob, 3},
     {"_PPforest_ooberrortree", (DL_FUNC) &_PPforest_ooberrortree, 4},
     {"_PPforest_PPclassification", (DL_FUNC) &_PPforest_PPclassification, 6},
     {"_PPforest_PPclassindex", (DL_FUNC) &_PPforest_PPclassindex, 8},

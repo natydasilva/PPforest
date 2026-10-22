@@ -97,8 +97,8 @@ oobobs <- function(index) {
     .Call('_PPforest_oobobs', PACKAGE = 'PPforest', index)
 }
 
-mvoteoob <- function(votes, oobobs) {
-    .Call('_PPforest_mvoteoob', PACKAGE = 'PPforest', votes, oobobs)
+mvoteoob <- function(votes, oobobs, nclass) {
+    .Call('_PPforest_mvoteoob', PACKAGE = 'PPforest', votes, oobobs, nclass)
 }
 
 ooberrortree <- function(votes, oobobs, classe, m) {

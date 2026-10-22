@@ -80,7 +80,6 @@ predict.PPforest <- function(object, newdata, rule = 1, parallel = TRUE, cores =
   
   vote.mat <- as.matrix(votes, ncol = nrow(newdata), byrow = TRUE)
   max.vote <- mvote(as.matrix(vote.mat) ) 
-  max.vote_cl <- as.factor(max.vote)
-  levels(max.vote_cl) <- object$vote.mat_cl
+  max.vote_cl <- factor(max.vote, levels = seq_along(object$vote.mat_cl), labels = object$vote.mat_cl)
   return(list(predtree = vote.mat, predforest = max.vote, predforest_cl <- max.vote_cl ))
 }
